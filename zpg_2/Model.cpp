@@ -5,8 +5,6 @@ Model::Model(GLenum drawMode, const float* points) {
 	this->drawMode = drawMode;
 	this->points = points;
 
-	
-
 	//vertex buffer object (VBO)
 	glGenBuffers(1, &this->vbo); 
 	glBindBuffer(GL_ARRAY_BUFFER, this->vbo);

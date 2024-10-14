@@ -121,26 +121,31 @@ void Application::run()
 	glfwSetMouseButtonCallback(window, button_callback);*/
 
 	
-	Model* model = Model::createTree();
-	Transformation* transformation = new Transformation();
-	transformation->scale(0.2f);
+	Model* model1 = Model::createTree();
+	Transformation* transform1 = new Transformation();
+	transform1->scale(0.1f);
+	glm::vec3 translation1(0.0f, -4.0f, 0.0f);
+	transform1->translate(translation1);
 
-	DrawableObject* obj1 = new DrawableObject(shaderProgram, model, transformation);
-	vector<DrawableObject*> objects = { obj1 };
+	Model* model2 = Model::createTree();
+	Transformation* transform2 = new Transformation();
+	transform2->scale(0.2f);
+	glm::vec3 translation2(-2.0f, -5.0f, 0.0f);
+	transform2->translate(translation2);
+
+	DrawableObject* obj1 = new DrawableObject(shaderProgram, model1, transform1);
+	DrawableObject* obj2 = new DrawableObject(shaderProgram, model2, transform2);
+	vector<DrawableObject*> objects = { obj1, obj2 };
 	Scene scene(objects, shaderProgram);
 
 	GLint idModelTransform = glGetUniformLocation(shaderProgram->getProgramId(), "modelMatrix");
 
-	// Check if the uniform location is valid
-	if (idModelTransform == -1) {
-		fprintf(stderr, "Error: Uniform variable 'modelMatrix' not found in shader program.\n");
-	}
 
 	while (!glfwWindowShouldClose(this->window))
 	{		
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-		glUniformMatrix4fv(idModelTransform, 1, GL_FALSE, &transformation->getMatrix()[0][0]);
+		glUniformMatrix4fv(idModelTransform, 1, GL_FALSE, &transform1->getMatrix()[0][0]);
 		if (idModelTransform == -1) {
 			fprintf(stderr, "Uniform variable 'modelMatrix' not found in shader program.\n");
 		}
@@ -149,8 +154,7 @@ void Application::run()
 		glfwPollEvents();
 		glfwSwapBuffers(this->window);
 	}
-	delete obj1;
-	delete transformation;
+	
 	glfwTerminate();
 	exit(EXIT_SUCCESS);
 
