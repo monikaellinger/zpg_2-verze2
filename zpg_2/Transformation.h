@@ -27,6 +27,7 @@ private:
 public:
 	Transformation();
 	void scale(float scaleFactor);
+	void translate(const glm::vec3& translation);
 	glm::mat4 getMatrix() const;
 	/*
 	static glm::mat4 createIdentityMatrix();

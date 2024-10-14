@@ -22,9 +22,7 @@ private:
 	GLuint vao;
 	GLuint vbo;
 	const float* points;
-	GLuint vertexShader, fragmentShader;
 	GLenum drawMode;
-	int size;
 
 public:
 	Model(GLenum drawMode, const float* points);

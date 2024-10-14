@@ -13,6 +13,11 @@ glm::mat4 Transformation::getMatrix() const
 {
 	return this->modelMatrix;
 }
+
+void Transformation::translate(const glm::vec3& translation)
+{
+	this->modelMatrix = glm::translate(this->modelMatrix, translation);
+}
 /*
 
 glm::mat4 Transformation::createIdentityMatrix()

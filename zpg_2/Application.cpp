@@ -30,6 +30,7 @@ void Application::compileShaders()
 	const char* vertex_shader =
 		"#version 330\n"
 		"layout(location=0) in vec3 vp;"
+		"uniform mat4 modelMatrix;"
 		"void main () {"
 		"     gl_Position = modelMatrix * vec4 (vp, 1.0);"
 		"}";
@@ -122,17 +123,23 @@ void Application::run()
 	
 	Model* model = Model::createTree();
 	Transformation* transformation = new Transformation();
-	transformation->scale(0.5f);
+	transformation->scale(0.2f);
 
 	DrawableObject* obj1 = new DrawableObject(shaderProgram, model, transformation);
 	vector<DrawableObject*> objects = { obj1 };
 	Scene scene(objects, shaderProgram);
 
+	GLint idModelTransform = glGetUniformLocation(shaderProgram->getProgramId(), "modelMatrix");
+
+	// Check if the uniform location is valid
+	if (idModelTransform == -1) {
+		fprintf(stderr, "Error: Uniform variable 'modelMatrix' not found in shader program.\n");
+	}
+
 	while (!glfwWindowShouldClose(this->window))
 	{		
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-		GLint idModelTransform = glGetUniformLocation(shaderProgram->getProgramId(), "modelMatrix");
 		glUniformMatrix4fv(idModelTransform, 1, GL_FALSE, &transformation->getMatrix()[0][0]);
 		if (idModelTransform == -1) {
 			fprintf(stderr, "Uniform variable 'modelMatrix' not found in shader program.\n");
