@@ -29,7 +29,12 @@ private:
 	Model* model;
 	Transformation* transformation;
 public:
+	DrawableObject(ShaderProgram* shaderProgram);
 	DrawableObject(ShaderProgram* shaderProgram, Model* model, Transformation* transformation);
 	void draw();
+	void addModelTransformation(Model* model, Transformation* transformation);
+	void setScale(float scale);
+	void setTranslation(glm::vec3 matrix);
+	void setRotation(float angle, glm::vec3 axis);
 };
 

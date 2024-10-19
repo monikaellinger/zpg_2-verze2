@@ -15,6 +15,7 @@
 #include <stdio.h>
 
 #include "tree.h"
+#include "bushes.h"
 
 class Model
 {
@@ -23,12 +24,15 @@ private:
 	GLuint vbo;
 	const float* points;
 	GLenum drawMode;
+	int numVertices;
 
 public:
-	Model(GLenum drawMode, const float* points);
-	
+	Model(GLenum drawMode, const float* points, GLuint vao, GLuint vbo, int numVertices);
 	void drawModel();
+	void drawTree();
+	void drawBush();
 	static Model* createTree();
+	static Model* createBush();
 
 };
 

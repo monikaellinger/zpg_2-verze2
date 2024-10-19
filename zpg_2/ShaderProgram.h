@@ -29,13 +29,17 @@ private:
 	Shader* vertexShader;
 	Shader* fragmentShader;
 	GLuint shaderProgram;
+	GLuint programID;
 
 public:
 	
 	ShaderProgram(Shader* vertexShader, Shader* fragmentShader);
-	GLuint getProgramId();
 	void createShaderProgram();
 	void use();
+	void setMatrix();
+	void createVBO();
+	void createVAO();
+	GLuint getTransformID();
 	
 };
 

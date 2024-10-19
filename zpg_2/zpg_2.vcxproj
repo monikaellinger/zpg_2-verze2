@@ -142,6 +142,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\Documents\VSB\Models\Models\tree.h" />
     <ClInclude Include="Application.h" />
+    <ClInclude Include="bushes.h" />
     <ClInclude Include="DrawableObject.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Scene.h" />

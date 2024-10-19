@@ -26,9 +26,12 @@ private:
 
 public:
 	Transformation();
+	Transformation(float scale, glm::vec3 translation, float angle, glm::vec3 axis);
 	void scale(float scaleFactor);
 	void translate(const glm::vec3& translation);
-	glm::mat4 getMatrix() const;
+	void useTransformation(GLuint matrixID);
+	void rotate(float angle, glm::vec3 axis);
+
 	/*
 	static glm::mat4 createIdentityMatrix();
 	static glm::mat4 rotateY(float angle);

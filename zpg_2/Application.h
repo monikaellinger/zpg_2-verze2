@@ -32,10 +32,21 @@ class Application
 private:
 	
 	GLFWwindow* window;
-	Shader* vertexShader;
-	Shader* fragmentShader;
-	ShaderProgram* shaderProgram;
+	Shader* vertex_shader;
+	Shader* fragment_shader_tree;
+	Shader* fragment_shader_bush;
+	ShaderProgram* shader_program_tree;
+	ShaderProgram* shader_program_bush;
+	DrawableObject* tree_obj_1;
+	DrawableObject* tree_obj_2;
+	DrawableObject* bush_obj_1;
 	Model* model;
+	Scene* sceneForest;
+	Scene* sceneObjects;
+	bool forest;
+
+	void createForest();
+	void createObjects();
 	static void error_callback(int error, const char* description);
 	/*	
 	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -45,12 +56,15 @@ private:
 	static void cursor_callback(GLFWwindow* window, double x, double y);
 	static void button_callback(GLFWwindow* window, int button, int action, int mode);
 	*/
+
 public:
 	
 	Application();
 	~Application();
 	void initialize();
+
 	void compileShaders();
+	//vector<DrawableObject*> createForest();
 	void run();
 };
 

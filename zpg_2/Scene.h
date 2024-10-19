@@ -20,15 +20,21 @@ using namespace std;
 
 #include "DrawableObject.h"
 #include "ShaderProgram.h"
+#include "Model.h"
 
 class Scene
 {
 private:
 	vector<DrawableObject*> objects;
 	ShaderProgram* shaderProgram;
+
 public:
-	Scene(vector<DrawableObject*> objects, ShaderProgram* shaderProgram);
+	//Scene(ShaderProgram* shaderProgram);
+	Scene(vector<DrawableObject*>& objects);
+	void addObject(DrawableObject* object);
+	vector<DrawableObject*> getObjects();
 	void render();
+	
 
 };
 
