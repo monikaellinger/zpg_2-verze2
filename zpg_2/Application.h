@@ -40,13 +40,11 @@ private:
 	DrawableObject* tree_obj_1;
 	DrawableObject* tree_obj_2;
 	DrawableObject* bush_obj_1;
+	DrawableObject* bush_obj_2;
+	vector<DrawableObject*> objects;
 	Model* model;
 	Scene* sceneForest;
-	Scene* sceneObjects;
-	bool forest;
 
-	void createForest();
-	void createObjects();
 	static void error_callback(int error, const char* description);
 	/*	
 	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -64,7 +62,7 @@ public:
 	void initialize();
 
 	void compileShaders();
-	//vector<DrawableObject*> createForest();
+	vector<DrawableObject*> createForest();
 	void run();
 };
 

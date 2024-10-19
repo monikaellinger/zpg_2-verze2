@@ -26,10 +26,9 @@ class Scene
 {
 private:
 	vector<DrawableObject*> objects;
-	ShaderProgram* shaderProgram;
 
 public:
-	//Scene(ShaderProgram* shaderProgram);
+
 	Scene(vector<DrawableObject*>& objects);
 	void addObject(DrawableObject* object);
 	vector<DrawableObject*> getObjects();

@@ -2,16 +2,9 @@
 
 Transformation::Transformation()
 {
-	this->modelMatrix = glm::mat4(1.0f);
+	this->modelMatrix = glm::mat4(1.0f); // vytvori jednotkovou matici
 }
 
-Transformation::Transformation(float scale, glm::vec3 translation, float angle, glm::vec3 axis)
-{
-	this->modelMatrix = glm::mat4(1.0f);
-	this->scale(scale);
-	this->translate(translation);
-	this->rotate(angle, axis);
-}
 
 void Transformation::useTransformation(GLuint matrixID)
 {

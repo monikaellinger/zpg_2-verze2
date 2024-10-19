@@ -17,7 +17,7 @@ vector<DrawableObject*> Scene::getObjects()
 
 void Scene::render()
 {
-	this->shaderProgram->use();
+	//this->shaderProgram->use();
 	for (DrawableObject* obj : objects) {
 		obj->draw();
 	}

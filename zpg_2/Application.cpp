@@ -19,27 +19,23 @@ void Application::error_callback(int error, const char* description)
 
 void Application::compileShaders()
 {
-	/*
-	const char* vertex_shader =
-		"#version 330\n"
-		"layout(location=0) in vec3 vp;"
-		"void main () {"
-		"     gl_Position = vec4 (vp, 1.0);"
-		"}";
-*/
 	const char* vertex_shader_def =
 		"#version 330\n"
 		"layout(location=0) in vec3 vp;"
+		"layout(location=1) in vec3 vColor;"
+		"out vec3 fragColor;"
 		"uniform mat4 modelMatrix;"
 		"void main () {"
 		"     gl_Position = modelMatrix * vec4 (vp, 1.0);"
+		"     fragColor = vColor;"
 		"}";
 		
 	const char* fragment_shader_tree_def =
 		"#version 330\n"
+		"in vec3 fragColor;"
 		"out vec4 frag_colour;"
 		"void main () {"
-		"     frag_colour = vec4 (0.0, 1.0, 0.0, 1.0);" // green
+		"     frag_colour = vec4 (fragColor, 1.0);" // green
 		"}";
 
 	this->tree_obj_1 = new DrawableObject(new ShaderProgram(new Shader(GL_VERTEX_SHADER, vertex_shader_def), new Shader(GL_FRAGMENT_SHADER, fragment_shader_tree_def)));
@@ -53,18 +49,6 @@ void Application::compileShaders()
 		"}";
 
 	this->bush_obj_1 = new DrawableObject(new ShaderProgram(new Shader(GL_VERTEX_SHADER, vertex_shader_def), new Shader(GL_FRAGMENT_SHADER, fragment_shader_bush_def)));
-
-	/*
-	this->vertex_shader = new Shader(GL_VERTEX_SHADER, vertex_shader_def);
-	this->fragment_shader_tree = new Shader(GL_FRAGMENT_SHADER, fragment_shader_tree_def);
-	this->fragment_shader_bush = new Shader(GL_FRAGMENT_SHADER, fragment_shader_tree_def);
-	
-	this->shader_program_tree = new ShaderProgram(vertex_shader, fragment_shader_tree);
-	this->shader_program_tree->createShaderProgram();
-
-	this->shader_program_bush = new ShaderProgram(vertex_shader, fragment_shader_bush);
-	this->shader_program_bush->createShaderProgram();
-	*/
 }
 
 vector<DrawableObject*> Application::createForest()
@@ -89,21 +73,21 @@ vector<DrawableObject*> Application::createForest()
 	transform_bush1->scale(0.1f);
 	glm::vec3 translation_bush1(1.0f, -4.0f, 0.0f);
 	transform_bush1->translate(translation_bush1);
-	this->bush_obj_1->addModelTransformation(tree_model_2, transform_tree2);
+	this->bush_obj_1->addModelTransformation(tree_model_2, transform_bush1);
+	
 	/*
-	Model* bush2 = Model::createBush();
+	Model* bush_model_2 = Model::createBush();
 	Transformation* transform_bush2 = new Transformation();
 	transform_bush2->scale(0.5f);
 	glm::vec3 translation_bush2(2.0f, -5.0f, 0.0f);
 	transform_bush2->translate(translation_bush2);
+	this->bush_obj_2->addModelTransformation(bush_model_2, transform_bush2);
 	*/
 	
-	vector<DrawableObject*> objects = { tree_model_1, tree_model_2, bush_model_1 };
-	for (DrawableObject* obj : objects) {
-		obj->draw();
-	}
+	this->objects = { tree_obj_1, tree_obj_2, bush_obj_1 };
 
-	return objects;
+
+	return this->objects;
 }
 /*
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -179,23 +163,15 @@ void Application::run()
 	glfwSetMouseButtonCallback(window, button_callback);*/
 
 	glEnable(GL_DEPTH_TEST);
-	
-	
-
-	//GLint idModelTransform = glGetUniformLocation(shader_program_tree->getProgramId(), "modelMatrix");
-
+	vector<DrawableObject*> forest_objects = createForest();
+	Scene scene_forest(forest_objects);
 
 	while (!glfwWindowShouldClose(this->window))
 	{		
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	/*
-		if (idModelTransform == -1) {
-			fprintf(stderr, "Uniform variable 'modelMatrix' not found in shader program.\n");
-		}
-		*/
-		vector<DrawableObject*> forestObjects = createForest();
-		Scene scene_forest(forestObjects);
 
+		
+		scene_forest.render();
 		glfwPollEvents();
 		glfwSwapBuffers(this->window);
 	}

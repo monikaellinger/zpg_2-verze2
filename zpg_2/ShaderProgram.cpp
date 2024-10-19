@@ -51,13 +51,13 @@ void ShaderProgram::createShaderProgram() {
 
 void ShaderProgram::use()
 {
-	glUseProgram(this->shaderProgram);
+	glUseProgram(this->programID);
 }
 
 
 GLuint ShaderProgram::getTransformID()
 {
-	GLuint modelMatrix = glGetUniformLocation(this->shaderProgram, "modelMatrix");
+	GLuint modelMatrix = glGetUniformLocation(this->programID, "modelMatrix");
 	if (modelMatrix == -1)
 	{
 		fprintf(stderr, "Error: Uniform variable 'modelMatrix' not found in shader program.\n");
