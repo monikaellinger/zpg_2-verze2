@@ -26,6 +26,7 @@ class Scene
 {
 private:
 	vector<DrawableObject*> objects;
+	bool forest;
 
 public:
 

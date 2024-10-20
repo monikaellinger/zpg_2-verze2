@@ -65,3 +65,10 @@ GLuint ShaderProgram::getTransformID()
 	}
 	return modelMatrix;
 }
+
+void ShaderProgram::update(const glm::mat4& viewMatrix)
+{
+	glUseProgram(programID);
+	GLuint viewLoc = glGetUniformLocation(programID, "viewMatrix");
+	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &viewMatrix[0][0]);
+}

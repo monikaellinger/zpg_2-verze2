@@ -1,10 +1,11 @@
 #include "Application.h"
 
 
-Application::Application()
-{
-
+Application::Application() : lastX(400), lastY(300), firstMouse(true) {
+	this->camera = new Camera(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f);
+	this->forest = true;
 }
+
 
 Application::~Application()
 {
@@ -75,48 +76,16 @@ vector<DrawableObject*> Application::createForest()
 	transform_bush1->translate(translation_bush1);
 	this->bush_obj_1->addModelTransformation(tree_model_2, transform_bush1);
 	
-	/*
-	Model* bush_model_2 = Model::createBush();
-	Transformation* transform_bush2 = new Transformation();
-	transform_bush2->scale(0.5f);
-	glm::vec3 translation_bush2(2.0f, -5.0f, 0.0f);
-	transform_bush2->translate(translation_bush2);
-	this->bush_obj_2->addModelTransformation(bush_model_2, transform_bush2);
-	*/
 	
 	this->objects = { tree_obj_1, tree_obj_2, bush_obj_1 };
 
 
 	return this->objects;
 }
-/*
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
 
-	printf("key_callback [%d,%d,%d,%d] \n", key, scancode, action, mods);
-}
-
-static void window_focus_callback(GLFWwindow* window, int focused) { printf("window_focus_callback \n"); }
-
-static void window_iconify_callback(GLFWwindow* window, int iconified) { printf("window_iconify_callback \n"); }
-
-static void window_size_callback(GLFWwindow* window, int width, int height) {
-	printf("resize %d, %d \n", width, height);
-	glViewport(0, 0, width, height);
-}
-
-static void cursor_callback(GLFWwindow* window, double x, double y) { printf("cursor_callback \n"); }
-
-static void button_callback(GLFWwindow* window, int button, int action, int mode) {
-
-	if (action == GLFW_PRESS) printf("button_callback [%d,%d,%d]\n", button, action, mode);
-}
-*/
 void Application::initialize()
 {
-	glfwSetErrorCallback(this->error_callback);
+	glfwSetErrorCallback(this->error_callback_static);
 	if (!glfwInit()) {
 		fprintf(stderr, "ERROR: could not start GLFW3\n");
 		exit(EXIT_FAILURE);
@@ -127,7 +96,7 @@ void Application::initialize()
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
-
+	glfwSetWindowUserPointer(this->window, this);
 	glfwMakeContextCurrent(this->window);
 	glfwSwapInterval(1);
 
@@ -152,28 +121,133 @@ void Application::initialize()
 	glViewport(0, 0, width, height);
 }
 
-void Application::run()
+
+void Application::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	/*
-	glfwSetKeyCallback(window, key_callback);
-	glfwSetWindowFocusCallback(window, window_focus_callback);
-	glfwSetWindowIconifyCallback(window, window_iconify_callback);
-	glfwSetWindowSizeCallback(window, window_size_callback);
-	glfwSetCursorPosCallback(window, cursor_callback);
-	glfwSetMouseButtonCallback(window, button_callback);*/
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, GL_TRUE);
+
+	if (key == 32 && action == 1) {
+		this->forest = !this->forest;
+	}
+
+	if (key == 262) {
+		this->sceneForest->getObjects()[0]->setRotation(90, glm::vec3(0, 1, 0));
+	}
+	*/
+	
+
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, GL_TRUE);
+
+	float cameraSpeed = 0.05f;  // Mùžete upravit rychlost kamery
+
+	if (key == GLFW_KEY_W) camera->processKeyboard(GLFW_KEY_W, cameraSpeed);
+	if (key == GLFW_KEY_S) camera->processKeyboard(GLFW_KEY_S, cameraSpeed);
+	if (key == GLFW_KEY_A) camera->processKeyboard(GLFW_KEY_A, cameraSpeed);
+	if (key == GLFW_KEY_D) camera->processKeyboard(GLFW_KEY_D, cameraSpeed);
+
+	printf("key_callback [%d,%d,%d,%d] \n", key, scancode, action, mods);
+}
+
+void Application::window_focus_callback(GLFWwindow* window, int focused) { printf("window_focus_callback \n"); }
+
+void Application::window_iconify_callback(GLFWwindow* window, int iconified) { printf("window_iconify_callback \n"); }
+
+void Application::window_size_callback(GLFWwindow* window, int width, int height) {
+	printf("resize %d, %d \n", width, height);
+	glViewport(0, 0, width, height);
+}
+
+void Application::cursor_callback(GLFWwindow* window, double x, double y) { 
+	if (firstMouse) {
+		lastX = x;
+		lastY = y;
+		firstMouse = false;
+	}
+
+	float xoffset = x - lastX;
+	float yoffset = lastY - y;  // Obrácenì, protože y- souøadnice jde smìrem nahoru
+
+	lastX = x;
+	lastY = y;
+
+	camera->processMouseMovement(xoffset, yoffset);
+	printf("cursor_callback \n"); 
+}
+
+void Application::button_callback(GLFWwindow* window, int button, int action, int mode) {
+
+	if (action == GLFW_PRESS) printf("button_callback [%d,%d,%d]\n", button, action, mode);
+}
+
+void Application::error_callback_static(int error, const char* description) { fputs(description, stderr); }
+
+void Application::key_callback_static(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
+	app->key_callback(window, key, scancode, action, mods);
+}
+
+void Application::window_focus_callback_static(GLFWwindow* window, int focused) {
+	Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
+	app->window_focus_callback(window, focused);
+}
+
+void Application::window_iconify_callback_static(GLFWwindow* window, int iconified) {
+	Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
+	app->window_iconify_callback(window, iconified);
+}
+
+void Application::window_size_callback_static(GLFWwindow* window, int width, int height) {
+	Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
+	app->window_size_callback(window, width, height);
+}
+
+void Application::cursor_callback_static(GLFWwindow* window, double x, double y) {
+	Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
+	app->cursor_callback(window, x, y);
+}
+
+void Application::button_callback_static(GLFWwindow* window, int button, int action, int mode) {
+	Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
+	app->button_callback(window, button, action, mode);
+}
+
+
+void Application::run()
+{
+	
+	glfwSetKeyCallback(window, key_callback_static);
+	glfwSetWindowFocusCallback(window, window_focus_callback_static);
+	glfwSetWindowIconifyCallback(window, window_iconify_callback_static);
+	glfwSetWindowSizeCallback(window, window_size_callback_static);
+	glfwSetCursorPosCallback(window, cursor_callback_static);
+	glfwSetMouseButtonCallback(window, button_callback_static);
 
 	glEnable(GL_DEPTH_TEST);
 	vector<DrawableObject*> forest_objects = createForest();
 	Scene scene_forest(forest_objects);
+	glm::mat4 viewMatrix = camera->viewMatrix;
+
+	// Promìnné pro deltaTime
+	float lastFrame = 0.0f;
+	float deltaTime = 0.0f;
 
 	while (!glfwWindowShouldClose(this->window))
 	{		
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+		// Vypoèítání deltaTime
 		
-		scene_forest.render();
-		glfwPollEvents();
-		glfwSwapBuffers(this->window);
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		;
+
+		if (forest == true) {
+			scene_forest.render();
+			glfwPollEvents();
+			glfwSwapBuffers(this->window);
+		}
+		
 	}
 	
 	glfwTerminate();

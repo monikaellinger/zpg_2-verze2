@@ -21,8 +21,9 @@ using namespace std;
 //#include "Scene.h"
 //#include "DrawableObject.h"
 #include "Shader.h"
+#include "Camera.h"
 
-class ShaderProgram
+class ShaderProgram : public Observer
 {
 private:
 	
@@ -40,6 +41,7 @@ public:
 	void createVBO();
 	void createVAO();
 	GLuint getTransformID();
+	void update(const glm::mat4& viewMatrix);
 	
 };
 
