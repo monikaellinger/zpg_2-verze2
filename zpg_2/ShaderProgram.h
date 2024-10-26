@@ -18,30 +18,28 @@
 #include <vector>
 using namespace std;
 
-//#include "Scene.h"
-//#include "DrawableObject.h"
+
 #include "Shader.h"
 #include "Camera.h"
 
-class ShaderProgram : public Observer
-{
-private:
+	class ShaderProgram 
+	{
+	private:
 	
-	Shader* vertexShader;
-	Shader* fragmentShader;
-	GLuint shaderProgram;
-	GLuint programID;
+		Shader* vertexShader;
+		Shader* fragmentShader;
+		GLuint shaderProgram;
+		GLuint programID;
 
-public:
+	public:
 	
-	ShaderProgram(Shader* vertexShader, Shader* fragmentShader);
-	void createShaderProgram();
-	void use();
-	void setMatrix();
-	void createVBO();
-	void createVAO();
-	GLuint getTransformID();
-	void update(const glm::mat4& viewMatrix);
+		ShaderProgram(Shader* vertexShader, Shader* fragmentShader);
+		void use();
+		GLuint getProjectionMatrixID();
+		GLuint getViewMatrixID();
+		GLuint getTransformID();
+		void setCamMatrix(glm::mat4 projectionMat, glm::mat4 viewMat);
+		
 	
-};
+	};
 

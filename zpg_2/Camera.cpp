@@ -1,64 +1,61 @@
 #include "Camera.h"
 
-// Konstruktor kamery
-Camera::Camera(glm::vec3 startPosition, glm::vec3 upDirection, float startYaw, float startPitch)
-    : position(startPosition), worldUp(upDirection), yaw(startYaw), pitch(startPitch),
-    speed(5.0f), sensitivity(0.1f)
-{
-    updateCameraVectors();
+Camera::Camera(glm::vec3 position, glm::vec3 up) {
+	this->position = position;
+	this->worldUp = up;
+	this->yaw = -90.f;
+	this->pitch = 0.f;
+	this->speed = 0.2f;
+	this->sensitivity = 0.1f;
+	updateVectors();
 }
 
-// Pøidání pozorovatele (Observer)
-void Camera::addObserver(Observer* observer) {
-    observers.push_back(observer);
+glm::mat4 Camera::getViewMatrix() {
+	return glm::lookAt(this->position, this->position + this->front, this->up);
 }
 
-// Informování pozorovatelù o zmìnì
-void Camera::notifyObservers() {
-    for (Observer* observer : observers) {
-        observer->update(viewMatrix);
-    }
+glm::mat4 Camera::getProjectionMatrix(float fov, float aspect, float near, float far) {
+	return glm::perspective(glm::radians(fov), aspect, near, far);
 }
 
-// Aktualizace pohledové matice
-void Camera::updateViewMatrix() {
-    viewMatrix = glm::lookAt(position, position + front, up);
-    notifyObservers();  // Informování pozorovatelù o zmìnì
+void Camera::moveForward() {
+	this->position += this->front * this->speed;
+	updateVectors();
 }
 
-// Zpracování klávesnice
-void Camera::processKeyboard(int direction, float deltaTime) {
-    float velocity = speed * deltaTime;
-    if (direction == GLFW_KEY_W) position += front * velocity;
-    if (direction == GLFW_KEY_S) position -= front * velocity;
-    if (direction == GLFW_KEY_A) position -= right * velocity;
-    if (direction == GLFW_KEY_D) position += right * velocity;
-    updateViewMatrix();
+void Camera::moveBackward() {
+	this->position -= this->front * this->speed;
+	updateVectors();
 }
 
-// Zpracování pohybu myši
-void Camera::processMouseMovement(float xoffset, float yoffset) {
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
-
-    yaw += xoffset;
-    pitch += yoffset;
-
-    // Omezíme rozsah pitch
-    if (pitch > 89.0f) pitch = 89.0f;
-    if (pitch < -89.0f) pitch = -89.0f;
-
-    updateCameraVectors();
-    updateViewMatrix();
+void Camera::moveLeft() {
+	this->position -= this->right * this->speed;
+	updateVectors();
 }
 
-// Aktualizace smìrových vektorù kamery (front, right, up)
-void Camera::updateCameraVectors() {
-    glm::vec3 front;
-    front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    front.y = sin(glm::radians(pitch));
-    front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-    this->front = glm::normalize(front);
-    this->right = glm::normalize(glm::cross(this->front, this->worldUp));
-    this->up = glm::normalize(glm::cross(this->right, this->front));
+void Camera::moveRight() {
+	this->position += this->right * this->speed;
+	updateVectors();
+}
+
+void Camera::moveMouse(float width, float height, float posX, float posY) {
+	this->yaw = yaw + (posX - (width / 2)) * sensitivity;
+	this->pitch = pitch + ((height / 2) - posY) * sensitivity;
+
+	if (this->pitch > 89.0f)
+		this->pitch = 89.0f;
+	if (this->pitch < -89.0f)
+		this->pitch = -89.0f;
+
+	updateVectors();
+}
+
+void Camera::updateVectors() {
+	glm::vec3 newFfront;
+	newFfront.x = cos(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
+	newFfront.y = sin(glm::radians(this->pitch));
+	newFfront.z = sin(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
+	this->front = glm::normalize(newFfront);
+	this->right = glm::normalize(glm::cross(this->front, this->worldUp));
+	this->up = glm::normalize(glm::cross(this->right, this->front));
 }

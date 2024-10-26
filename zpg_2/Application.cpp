@@ -2,8 +2,9 @@
 
 
 Application::Application() : lastX(400), lastY(300), firstMouse(true) {
-	this->camera = new Camera(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f);
+	this->camera = new Camera(glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	this->forest = true;
+	this->triangle_s = false;
 }
 
 
@@ -20,14 +21,33 @@ void Application::error_callback(int error, const char* description)
 
 void Application::compileShaders()
 {
+	// triangle
+	const char* fragment_shader_triangle_def =
+		"#version 330\n"
+		"out vec4 frag_colour;"
+		"void main () {"
+		"     frag_colour = vec4 (1.5, 1.0, 0.5, 1.0);"
+		"}";	
+
+	// sphere
+	const char* fragment_shader_sphere_def =
+		"#version 330\n"
+		"out vec4 frag_colour;"
+		"void main () {"
+		"     frag_colour = vec4(0.65, 0.32, 0.16, 1.0);"
+		"}";
+
+	// tree
 	const char* vertex_shader_def =
 		"#version 330\n"
-		"layout(location=0) in vec3 vp;"
+		"layout(location=0) in vec3 vPos;"
 		"layout(location=1) in vec3 vColor;"
 		"out vec3 fragColor;"
 		"uniform mat4 modelMatrix;"
+		"uniform mat4 projectionMatrix;"
+		"uniform mat4 viewMatrix;"
 		"void main () {"
-		"     gl_Position = modelMatrix * vec4 (vp, 1.0);"
+		"     gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4 (vPos, 1.0);"
 		"     fragColor = vColor;"
 		"}";
 		
@@ -36,12 +56,43 @@ void Application::compileShaders()
 		"in vec3 fragColor;"
 		"out vec4 frag_colour;"
 		"void main () {"
-		"     frag_colour = vec4 (fragColor, 1.0);" // green
+		"     frag_colour = vec4 (fragColor, 1.0);" 
 		"}";
 
-	this->tree_obj_1 = new DrawableObject(new ShaderProgram(new Shader(GL_VERTEX_SHADER, vertex_shader_def), new Shader(GL_FRAGMENT_SHADER, fragment_shader_tree_def)));
-	this->tree_obj_2 = new DrawableObject(new ShaderProgram(new Shader(GL_VERTEX_SHADER, vertex_shader_def), new Shader(GL_FRAGMENT_SHADER, fragment_shader_tree_def)));
+	// triangle
+	this->triangle_objects.push_back(
+		new DrawableObject(
+			new ShaderProgram(
+				new Shader(GL_VERTEX_SHADER, vertex_shader_def),
+				new Shader(GL_FRAGMENT_SHADER, fragment_shader_triangle_def)
+			)
+		)
+	);
 
+	// tree
+	for (int i = 1; i <= 100; i++) {
+		this->objects.push_back(
+			new DrawableObject(
+				new ShaderProgram(
+					new Shader(GL_VERTEX_SHADER, vertex_shader_def),
+					new Shader(GL_FRAGMENT_SHADER, fragment_shader_tree_def)
+				)
+			)
+		);
+	}
+	/*
+	//sphere
+	this->objects.push_back(
+		new DrawableObject(
+			new ShaderProgram(
+				new Shader(GL_VERTEX_SHADER, vertex_shader_def),
+				new Shader(GL_FRAGMENT_SHADER, fragment_shader_sphere_def)
+			)
+		)
+	);
+	*/
+
+	// bush
 	const char* fragment_shader_bush_def =
 		"#version 330\n"
 		"out vec4 frag_colour;"
@@ -50,37 +101,74 @@ void Application::compileShaders()
 		"}";
 
 	this->bush_obj_1 = new DrawableObject(new ShaderProgram(new Shader(GL_VERTEX_SHADER, vertex_shader_def), new Shader(GL_FRAGMENT_SHADER, fragment_shader_bush_def)));
+	
+	/*
+	for (int i = 50; i <= 100; i++) {
+		this->objects.push_back(
+			new DrawableObject(
+				new ShaderProgram(
+					new Shader(GL_VERTEX_SHADER, vertex_shader_def),
+					new Shader(GL_FRAGMENT_SHADER, fragment_shader_bush_def)
+				)
+			)
+		);
+	}
+	*/
+}
+vector<DrawableObject*> Application::createTriangleScene()
+{
+
+	Model* triangle_model = Model::createTriangle();
+	Transformation* triangle_transform = new Transformation();
+
+	triangle_transform->scale(0.2f);
+
+	this->triangle_objects[0]->addModelTransformation(triangle_model, triangle_transform);
+	return this->triangle_objects;
+	
 }
 
 vector<DrawableObject*> Application::createForest()
 {
-	Model* tree_model_1 = Model::createTree();
-	Transformation* transform_tree1 = new Transformation();
-	transform_tree1->scale(0.1f);
-	glm::vec3 translation_tree1(0.0f, -4.0f, 0.0f);
-	transform_tree1->translate(translation_tree1);
-	this->tree_obj_1->addModelTransformation(tree_model_1, transform_tree1);
 
+	for (int i = 0; i < 50; ++i) {
+		Model* tree_model = Model::createTree();
+		Transformation* transform_tree = new Transformation();
 
-	Model* tree_model_2 = Model::createTree();
-	Transformation* transform_tree2 = new Transformation();
-	transform_tree2->scale(0.2f);
-	glm::vec3 translation_tree2(-2.0f, -5.0f, 0.0f);
-	transform_tree2->translate(translation_tree2);
-	this->tree_obj_2->addModelTransformation(tree_model_2, transform_tree2);
+		transform_tree->scale(0.2f);
 
-	Model* bush_model_1 = Model::createBush();
-	Transformation* transform_bush1 = new Transformation();
-	transform_bush1->scale(0.1f);
-	glm::vec3 translation_bush1(1.0f, -4.0f, 0.0f);
-	transform_bush1->translate(translation_bush1);
-	this->bush_obj_1->addModelTransformation(tree_model_2, transform_bush1);
+		glm::vec3 translation_tree((i % 5) * 10.0f, -4.0f, (i / 5) * 10.0f);
+		transform_tree->translate(translation_tree);
+
+		objects[i]->addModelTransformation(tree_model, transform_tree);
+	}
 	
-	
-	this->objects = { tree_obj_1, tree_obj_2, bush_obj_1 };
 
+	for (int i = 50; i < 100; ++i) {
+		Model* bush_model = Model::createBush();
+		Transformation* transform_bush = new Transformation();
 
+		transform_bush->scale(0.2f);
+
+		glm::vec3 translation_bush((i % 5) * 1.f, -4.0f, (i / 5) * 9.0f);
+		transform_bush->translate(translation_bush);
+
+		objects[i]->addModelTransformation(bush_model, transform_bush);
+	}
+	/*
+
+	Model* sphere_model = Model::createBush();
+	Transformation* transform_sphere = new Transformation();
+
+	transform_sphere->scale(0.2f);
+
+	glm::vec3 translation_sphere(0.f, 0.f, 0.f);
+	transform_sphere->translate(translation_sphere);
+
+	//objects[i]->addModelTransformation(sphere_model, transform_sphere);
+	*/
 	return this->objects;
+	
 }
 
 void Application::initialize()
@@ -124,30 +212,29 @@ void Application::initialize()
 
 void Application::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	/*
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
-
-	if (key == 32 && action == 1) {
-		this->forest = !this->forest;
+	if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+		this->camera->moveForward();
 	}
-
-	if (key == 262) {
-		this->sceneForest->getObjects()[0]->setRotation(90, glm::vec3(0, 1, 0));
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+		this->camera->moveBackward();
 	}
-	*/
-	
-
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
-
-	float cameraSpeed = 0.05f;  // Mùžete upravit rychlost kamery
-
-	if (key == GLFW_KEY_W) camera->processKeyboard(GLFW_KEY_W, cameraSpeed);
-	if (key == GLFW_KEY_S) camera->processKeyboard(GLFW_KEY_S, cameraSpeed);
-	if (key == GLFW_KEY_A) camera->processKeyboard(GLFW_KEY_A, cameraSpeed);
-	if (key == GLFW_KEY_D) camera->processKeyboard(GLFW_KEY_D, cameraSpeed);
-
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+		this->camera->moveLeft();
+	}
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+		this->camera->moveRight();
+	}
+	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) {
+		this->triangle_s = true;
+		this->forest = false;
+	}
+	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
+		this->triangle_s = false;
+		this->forest = true;
+	}
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+		glfwDestroyWindow(window);
+	}
 	printf("key_callback [%d,%d,%d,%d] \n", key, scancode, action, mods);
 }
 
@@ -161,19 +248,10 @@ void Application::window_size_callback(GLFWwindow* window, int width, int height
 }
 
 void Application::cursor_callback(GLFWwindow* window, double x, double y) { 
-	if (firstMouse) {
-		lastX = x;
-		lastY = y;
-		firstMouse = false;
-	}
-
-	float xoffset = x - lastX;
-	float yoffset = lastY - y;  // Obrácenì, protože y- souøadnice jde smìrem nahoru
-
-	lastX = x;
-	lastY = y;
-
-	camera->processMouseMovement(xoffset, yoffset);
+	int width, height;
+	glfwGetWindowSize(window, &width, &height);
+	glfwSetCursorPos(window, width / 2, height / 2);
+	this->camera->moveMouse(width, height, x, y);
 	printf("cursor_callback \n"); 
 }
 
@@ -226,28 +304,27 @@ void Application::run()
 	glfwSetMouseButtonCallback(window, button_callback_static);
 
 	glEnable(GL_DEPTH_TEST);
-	vector<DrawableObject*> forest_objects = createForest();
-	Scene scene_forest(forest_objects);
-	glm::mat4 viewMatrix = camera->viewMatrix;
+	vector<DrawableObject*> forest_objects_create = createForest();
+	vector<DrawableObject*> triangle_objects_create = createTriangleScene();
+	Scene scene_forest(forest_objects_create);
+	Scene scene_triangle(triangle_objects_create);
 
-	// Promìnné pro deltaTime
-	float lastFrame = 0.0f;
-	float deltaTime = 0.0f;
 
 	while (!glfwWindowShouldClose(this->window))
 	{		
-		// Vypoèítání deltaTime
-		
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		;
-
+		
 		if (forest == true) {
-			scene_forest.render();
-			glfwPollEvents();
-			glfwSwapBuffers(this->window);
+			scene_forest.render(this->camera);		
 		}
 		
+		if (triangle_s == true) {
+			scene_triangle.render(this->camera);
+		}
+
+		glfwPollEvents();
+		glfwSwapBuffers(this->window);
 	}
 	
 	glfwTerminate();

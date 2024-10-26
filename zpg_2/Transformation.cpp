@@ -5,6 +5,14 @@ Transformation::Transformation()
 	this->modelMatrix = glm::mat4(1.0f); // vytvori jednotkovou matici
 }
 
+Transformation::Transformation(float scale, glm::vec3 translation, float angle, glm::vec3 axis)
+{
+	this->modelMatrix = glm::mat4(1.0f);
+	this->scale(scale);
+	this->translate(translation);
+	this->rotate(angle, axis);
+}
+
 
 void Transformation::useTransformation(GLuint matrixID)
 {
@@ -26,37 +34,3 @@ void Transformation::translate(const glm::vec3& translation)
 {
 	this->modelMatrix = glm::translate(this->modelMatrix, translation);
 }
-/*
-
-glm::mat4 Transformation::createIdentityMatrix()
-{
-	return glm::mat4(1.0f);
-}
-
-glm::mat4 Transformation::rotateY(float angle)
-{
-	return glm::rotate(createIdentityMatrix(), angle, glm::vec3(0.0f, 1.0f, 0.0f));
-}
-
-glm::mat4 Transformation::rotateX(float angle, const glm::mat4& modelMatrix)
-{
-	return glm::rotate(modelMatrix, angle, glm::vec3(1.0f, 0.0f, 0.0f));
-}
-
-glm::mat4 Transformation::translate(float myView)
-{
-	return glm::translate(createIdentityMatrix(), glm::vec3(0.0f, 0.0f, myView));
-}
-
-
-
-glm::mat4 Transformation::combineTransformations(float angleY, float angleX, float myView, float scaleFactor)
-{
-	glm::mat4 modelMatrix = createIdentityMatrix();
-	modelMatrix = rotateY(angleY);
-	modelMatrix = rotateX(angleX, modelMatrix);
-	modelMatrix = translate(myView);
-	modelMatrix = scale(scaleFactor);
-	return modelMatrix;
-}
-*/

@@ -21,6 +21,8 @@ using namespace std;
 #include "ShaderProgram.h"
 #include "Model.h"
 #include "Transformation.h"
+#include "Camera.h"
+
 
 class DrawableObject
 {
@@ -28,10 +30,11 @@ private:
 	ShaderProgram* shaderProgram;
 	Model* model;
 	Transformation* transformation;
+	Camera* camera;
 public:
 	DrawableObject(ShaderProgram* shaderProgram);
 	DrawableObject(ShaderProgram* shaderProgram, Model* model, Transformation* transformation);
-	void draw();
+	void draw(Camera* camera);
 	void addModelTransformation(Model* model, Transformation* transformation);
 	void setScale(float scale);
 	void setTranslation(glm::vec3 matrix);

@@ -26,14 +26,14 @@ class Scene
 {
 private:
 	vector<DrawableObject*> objects;
+	vector<DrawableObject*> triangle_objects;
+	bool triangle;
 	bool forest;
 
 public:
 
 	Scene(vector<DrawableObject*>& objects);
-	void addObject(DrawableObject* object);
-	vector<DrawableObject*> getObjects();
-	void render();
+	void render(Camera* camera);
 	
 
 };

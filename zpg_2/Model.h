@@ -14,6 +14,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "triangle.h"
+#include "sphere.h"
 #include "tree.h"
 #include "bushes.h"
 
@@ -29,10 +31,9 @@ private:
 public:
 	Model(GLenum drawMode, const float* points, GLuint vao, GLuint vbo, int numVertices);
 	void drawModel();
-	void drawTree();
-	void drawBush();
+	static Model* createTriangle();
 	static Model* createTree();
 	static Model* createBush();
-
+	static Model* createSphere();
 };
 

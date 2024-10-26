@@ -13,15 +13,15 @@ DrawableObject::DrawableObject(ShaderProgram* shaderProgram, Model* model, Trans
 	this->shaderProgram = shaderProgram;
 	this->model = model;
 	this->transformation = transformation;
+
 }
 
-void DrawableObject::draw()
+void DrawableObject::draw(Camera* camera)
 {
-	if (this->model != nullptr && this->transformation != nullptr) {
 		this->shaderProgram->use();
+		this->shaderProgram->setCamMatrix(camera->getProjectionMatrix(45.f, 4.f / 3.f, 0.1f, 100.f), camera->getViewMatrix());
 		this->transformation->useTransformation(this->shaderProgram->getTransformID());
 		this->model->drawModel();
-	}
 }
 
 void DrawableObject::addModelTransformation(Model* model, Transformation* transformation)
