@@ -1,3 +1,4 @@
+// KONSTANT
 #version 330
 in vec3 fragColor;
 out vec4 frag_colour;

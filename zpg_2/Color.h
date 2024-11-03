@@ -6,15 +6,10 @@
 #include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
 #include <glm/gtc/type_ptr.hpp> // glm::value_ptr
 
-class Light
+class Color
 {
 public:
-	glm::vec3 position;
-	glm::vec3 color;
-	glm::vec3 obj_color;
-	Light(glm::vec3 position, glm::vec3 color);
-	Light(glm::vec3 position, glm::vec3 color, glm::vec3 obj_color);
-	//Light(glm::vec3 obj_color);
-	//void setPosition(glm::vec3 position);
+	glm::vec4 color;
+	Color(glm::vec4 color);
 };
 

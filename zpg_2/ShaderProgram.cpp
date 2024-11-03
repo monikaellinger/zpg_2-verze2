@@ -1,11 +1,18 @@
 #include "ShaderProgram.h"
 
 
-ShaderProgram::ShaderProgram(const char* vertex, const char* fragment)
+ShaderProgram::ShaderProgram(const char* vertexPath, const char* fragmentPath)
 {
 	ShaderLoader* shaderLoader = new ShaderLoader();
-	this->programID = shaderLoader->loadShader(vertex, fragment);
+	this->programID = shaderLoader->loadShader(vertexPath, fragmentPath);
 	this->light = NULL;
+}
+
+ShaderProgram::ShaderProgram(const char* vertexPath, const char* fragmentPath, Color* color)
+{
+	ShaderLoader* shaderLoader = new ShaderLoader();
+	this->programID = shaderLoader->loadShader(vertexPath, fragmentPath);
+	this->color = color;
 }
 
 ShaderProgram::ShaderProgram(const char* vertexPath, const char* fragmentPath, Light* light)
@@ -13,6 +20,14 @@ ShaderProgram::ShaderProgram(const char* vertexPath, const char* fragmentPath, L
 	ShaderLoader* shaderLoader = new ShaderLoader();
 	this->programID = shaderLoader->loadShader(vertexPath, fragmentPath);
 	this->light = light;
+}
+
+ShaderProgram::ShaderProgram(const char* vertexPath, const char* fragmentPath, Light* light, Color* color)
+{
+	ShaderLoader* shaderLoader = new ShaderLoader();
+	this->programID = shaderLoader->loadShader(vertexPath, fragmentPath);
+	this->light = light;
+	this->color = color;
 }
 
 
@@ -36,13 +51,26 @@ void ShaderProgram::setVec3Uniform(const char* name, glm::vec3 value)
 	glUniform3fv(id, 1, glm::value_ptr(value));
 }
 
+void ShaderProgram::setVec4Uniform(const char* name, glm::vec4 value)
+{
+	GLuint id = glGetUniformLocation(this->programID, name);
+	if (id == -1) {
+		fprintf(stderr, "Error: Uniform variable '%s' not found in shader program.\n", name);
+		exit(EXIT_FAILURE);
+	}
+	glUniform4fv(id, 1, glm::value_ptr(value));
+}
+
 void ShaderProgram::use()
 {
 	glUseProgram(this->programID);
-	if (this->light != NULL) {
+	if (this->light != NULL && this->color == NULL) {
 		this->setVec3Uniform("lightPosition", this->light->position);
 		this->setVec3Uniform("lightColor", this->light->color);
 		this->setVec3Uniform("objectColor", this->light->obj_color);
+	}
+	if (this->color != NULL && this->light == NULL) {
+		this->setVec4Uniform("objectColor", this->color->color);
 	}
 }
 

@@ -54,6 +54,9 @@
     <ClCompile Include="Light.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Color.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">
@@ -107,14 +110,17 @@
     <ClInclude Include="Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="vertex_balls_def.vert">
+    <Text Include="vertex_phong.vert">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <None Include="fragment_balls_def.frag">
+    <None Include="fragment_phong.frag">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="vertex_short_def.vert">
@@ -133,6 +139,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="fragment_tree_def.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="fragment_lambert.frag">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

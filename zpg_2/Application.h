@@ -37,7 +37,8 @@
 
 		bool forest_scene;
 		bool triangle_scene;
-		bool balls;
+		bool balls_scene;
+		bool shaders_example_scene;
 
 		float lastX, lastY; 
 		bool firstMouse;    
@@ -60,6 +61,7 @@
 		vector<DrawableObject*> createForest();
 		vector<DrawableObject*> createTriangleScene();
 		vector<DrawableObject*> createBallsScene();
+		vector<DrawableObject*> createShadersExampleScene();
 		void run();
 
 		void error_callback(int error, const char* description);
