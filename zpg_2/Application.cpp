@@ -3,9 +3,9 @@
 
 Application::Application() : lastX(400), lastY(300), firstMouse(true) {
 	this->camera = new Camera(glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	this->triangle_scene = false;
+	this->triangle_scene = true;
 	this->forest_scene = false;
-	this->balls = true;
+	this->balls = false;
 }
 
 
@@ -19,129 +19,100 @@ void Application::error_callback(int error, const char* description)
 	fputs(description, stderr);
 }
 
-
-void Application::compileShaders()
-{
-	/*this->triangle_objects.push_back(
-		new DrawableObject(new ShaderProgram("vertex_short_def.vert", "fragment_triangle_def.frag")));
-
-	//this->light_shader = new ShaderProgram("vertex_balls_def.vert", "fragment_balls_def.frag");
-	
-	// FOREST
-	for (int i = 1; i <= 100; i++) {
-		this->forest_objects.push_back(
-			new DrawableObject(
-				new ShaderProgram("vertex_def.vert", "fragment_tree_def.frag")));
-	}
-
-	this->plain = new DrawableObject(new ShaderProgram("vertex_def.vert", "fragment_plain_def.frag"));
-	this->forest_objects.push_back(plain);
-
-	this->sphere = new DrawableObject(new ShaderProgram("vertex_def.vert", "fragment_sphere_def.frag"));
-	this->forest_objects.push_back(sphere);
-	*/
-
-}
 vector<DrawableObject*> Application::createTriangleScene()
 {
+	DrawableObject* tr = new DrawableObject(new ShaderProgram("vertex_short_def.vert", "fragment_triangle_def.frag"));
+	vector<DrawableObject*> triangle_objects;
+	triangle_objects.push_back(tr);
 
 	Model* triangle_model = Model::createTriangle();
 	Transformation* triangle_transform = new Transformation();
 
 	triangle_transform->scale(5.f);
-	this->triangle_objects[0]->addModel(triangle_model);
-	return this->triangle_objects;
+	triangle_objects[0]->addModel(triangle_model);
+	return triangle_objects;
 	
 }
 
 vector<DrawableObject*> Application::createBallsScene()
 {
-	vector<DrawableObject*> objects;
-	ShaderProgram* spBalls = new ShaderProgram("vertex_balls_def.vert", "fragment_balls_def.frag");
-
-	//ball 1
-	/*Model* ball_model_1 = Model::createSphere();
-	Transformation* transform_ball_1 = new Transformation(0.5f, glm::vec3(0.f, 3.f, 0.f), 0.f, glm::vec3(0.f, 0.f, 0.f));
-	DrawableObject* ball_1 = new DrawableObject(spBalls, ball_model_1, transform_ball_1);
-	objects.push_back(ball_1);
-
-	this->balls_scene = new Scene(objects);
-	*/
-
-
+	vector<DrawableObject*> balls_objects;
 	
-	this->ball_obj_1 = new DrawableObject(new ShaderProgram("vertex_balls_def.vert", "fragment_balls_def.frag"));
-	this->balls_objects.push_back(ball_obj_1);
+	DrawableObject* ball_obj_1 = new DrawableObject(new ShaderProgram("vertex_balls_def.vert", "fragment_balls_def.frag", new Light(glm::vec3(0.f, 0.f, 0.f), glm::vec3(2.f, 2.f, 2.f), glm::vec3(0.2f, 0.2f, 0.2f))));
+	balls_objects.push_back(ball_obj_1);
 
-	this->ball_obj_2 = new DrawableObject(new ShaderProgram("vertex_balls_def.vert", "fragment_balls_def.frag"));
-	this->balls_objects.push_back(ball_obj_2);
+	DrawableObject* ball_obj_2 = new DrawableObject(new ShaderProgram("vertex_balls_def.vert", "fragment_balls_def.frag", new Light(glm::vec3(0.f, 0.f, 0.f), glm::vec3(2.f, 2.f, 2.f), glm::vec3(0.2f, 0.2f, 0.2f))));
+	balls_objects.push_back(ball_obj_2);
 
-	this->ball_obj_3 = new DrawableObject(new ShaderProgram("vertex_balls_def.vert", "fragment_balls_def.frag"));
-	this->balls_objects.push_back(ball_obj_3);
+	DrawableObject* ball_obj_3 = new DrawableObject(new ShaderProgram("vertex_balls_def.vert", "fragment_balls_def.frag", new Light(glm::vec3(0.f, 0.f, 0.f), glm::vec3(2.f, 2.f, 2.f), glm::vec3(0.2f, 0.2f, 0.2f))));
+	balls_objects.push_back(ball_obj_3);
 
-	this->ball_obj_4 = new DrawableObject(new ShaderProgram("vertex_balls_def.vert", "fragment_balls_def.frag"));
-	this->balls_objects.push_back(ball_obj_4);
+	DrawableObject* ball_obj_4 = new DrawableObject(new ShaderProgram("vertex_balls_def.vert", "fragment_balls_def.frag", new Light(glm::vec3(0.f, 0.f, 0.f), glm::vec3(2.f, 2.f, 2.f), glm::vec3(0.2f, 0.2f, 0.2f))));
+	balls_objects.push_back(ball_obj_4);
 
 	// ball 1
 	Model* balls_model_1 = Model::createSphere();
 	Transformation* transform_balls_1 = new Transformation();
-
 	transform_balls_1->scale(0.5f);
-
 	glm::vec3 translation_balls_1(0.f, 3.f, 0.f);
 	transform_balls_1->translate(translation_balls_1);
 
-	this->balls_objects[0]->addModel(balls_model_1);
-	this->balls_objects[0]->addTransformation(transform_balls_1);
+	ball_obj_1->addModel(balls_model_1);
+	ball_obj_1->addTransformation(transform_balls_1);
 	
 	// ball 2
 	Model* balls_model_2 = Model::createSphere();
 	Transformation* transform_balls_2 = new Transformation();
-
 	transform_balls_2->scale(0.5f);
-
 	glm::vec3 translation_balls_2(3.f, 0.f, 0.f);
 	transform_balls_2->translate(translation_balls_2);
 
-	this->balls_objects[1]->addModel(balls_model_2);
-	this->balls_objects[1]->addTransformation(transform_balls_2);
+	ball_obj_2->addModel(balls_model_2);
+	ball_obj_2->addTransformation(transform_balls_2);
 
 	// ball 3
 	Model* balls_model_3 = Model::createSphere();
 	Transformation* transform_balls_3 = new Transformation();
-
 	transform_balls_3->scale(0.5f);
-
 	glm::vec3 translation_balls_3(0.f, -3.f, 0.f);
 	transform_balls_3->translate(translation_balls_3);
 
-	this->balls_objects[2]->addModel(balls_model_3);
-	this->balls_objects[2]->addTransformation(transform_balls_3);
+	ball_obj_3->addModel(balls_model_3);
+	ball_obj_3->addTransformation(transform_balls_3);
 
 	// ball 4
 	Model* balls_model_4 = Model::createSphere();
 	Transformation* transform_balls_4 = new Transformation();
-
 	transform_balls_4->scale(0.5f);
-
 	glm::vec3 translation_balls_4(-3.f, 0.f, 0.f);
 	transform_balls_4->translate(translation_balls_4);
 
-	this->balls_objects[3]->addModel(balls_model_4);
-	this->balls_objects[3]->addTransformation(transform_balls_4);
+	ball_obj_4->addModel(balls_model_4);
+	ball_obj_4->addTransformation(transform_balls_4);
 
-	return this->balls_objects;
+	return balls_objects;
 }
 
 vector<DrawableObject*> Application::createForest()
 {
+	vector<DrawableObject*> forest_objects;
+	for (int i = 1; i <= 100; i++) {
+		forest_objects.push_back(
+			new DrawableObject(
+				new ShaderProgram("vertex_def.vert", "fragment_tree_def.frag")));
+	}
+
+	DrawableObject* plain = new DrawableObject(new ShaderProgram("vertex_def.vert", "fragment_plain_def.frag"));
+	forest_objects.push_back(plain);
+
+	DrawableObject* sphere = new DrawableObject(new ShaderProgram("vertex_balls_def.vert", "fragment_sphere_def.frag", new Light(glm::vec3(5.f, 5.f, 0.f), glm::vec3(5.f, 5.f, 5.f), glm::vec3(1.0f, 1.0f, 0.f))));
+	forest_objects.push_back(sphere);
+	
 
 	for (int i = 0; i < 50; ++i) {
 		Model* tree_model = Model::createTree();
 		Transformation* transform_tree = new Transformation();
-
 		transform_tree->scale(0.2f);
-
 		glm::vec3 translation_tree((i % 5) * 10.0f, -4.0f, (i / 5) * 10.0f);
 		transform_tree->translate(translation_tree);
 
@@ -168,18 +139,19 @@ vector<DrawableObject*> Application::createForest()
 	transform_plain->scale(100.0f);
 	glm::vec3 translation_plain (0.f, -0.008f, 0.0f);
 	transform_plain->translate(translation_plain);
-	this->plain->addModel(plain_model);
-	this->plain->addTransformation(transform_plain);
+
+	plain->addModel(plain_model);
+	plain->addTransformation(transform_plain);
 	
 	Model* sphere_model = Model::createSphere();
 	Transformation* transform_sphere = new Transformation();
 	transform_sphere->scale(1.0f);
 	glm::vec3 translation_sphere (5.f, 8.f, 0.0f);
 	transform_sphere->translate(translation_sphere);
-	this->sphere->addModel(sphere_model);
-	this->sphere->addTransformation(transform_sphere);
+	sphere->addModel(sphere_model);
+	sphere->addTransformation(transform_sphere);
 	
-	return this->forest_objects;
+	return forest_objects;
 	
 }
 
@@ -323,11 +295,11 @@ void Application::run()
 	glfwSetMouseButtonCallback(window, button_callback_static);
 
 	glEnable(GL_DEPTH_TEST);
-	//vector<DrawableObject*> forest_objects_create = createForest();
-	//vector<DrawableObject*> triangle_objects_create = createTriangleScene();
+	vector<DrawableObject*> forest_objects_create = createForest();
+	vector<DrawableObject*> triangle_objects_create = createTriangleScene();
 	vector<DrawableObject*> balls_objects_create = createBallsScene();
-	//Scene scene_forest(createForest());
-	//Scene scene_triangle(triangle_objects_create);
+	Scene scene_forest(forest_objects_create);
+	Scene scene_triangle(triangle_objects_create);
 	Scene scene_balls(balls_objects_create);
 
 
@@ -336,13 +308,13 @@ void Application::run()
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
-		/*if (forest_scene == true) {
+		if (forest_scene == true) {
 			scene_forest.render(this->camera);		
 		}
 		
 		if (triangle_scene == true) {
 			scene_triangle.render(this->camera);
-		}*/
+		}
 
 		if (balls == true) {
 			scene_balls.render(this->camera);

@@ -31,6 +31,7 @@ private:
 	Model* model;
 	Transformation* transformation;
 	Camera* camera;
+
 public:
 	DrawableObject(ShaderProgram* shaderProgram);
 	DrawableObject(ShaderProgram* shaderProgram, Model* model);

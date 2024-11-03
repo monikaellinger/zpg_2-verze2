@@ -8,6 +8,5 @@ int main(void)
 {
 	Application* app = new Application();
 	app->initialize();
-	app->compileShaders();
 	app->run();
 }

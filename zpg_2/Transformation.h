@@ -31,14 +31,6 @@ public:
 	void translate(const glm::vec3& translation);
 	void useTransformation(GLuint matrixID);
 	void rotate(float angle, glm::vec3 axis);
-
-	/*
-	static glm::mat4 createIdentityMatrix();
-	static glm::mat4 rotateY(float angle);
-	static glm::mat4 rotateX(float angle, const glm::mat4& modelMatrix);
-	static glm::mat4 translate(float myView);
-	static glm::mat4 combineTransformations(float angleY, float angleX, float myView, float scaleFactor);
-	*/
 };
 
 

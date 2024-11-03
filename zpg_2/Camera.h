@@ -25,7 +25,7 @@ using namespace std;
 class Camera
 {
 private:
-	
+	glm::vec3 position;
 	glm::vec3 front;
 	glm::vec3 up;
 	glm::vec3 right;
@@ -42,7 +42,6 @@ private:
 
 public:
 	Camera(glm::vec3 position, glm::vec3 up);
-	glm::vec3 position;
 	glm::mat4 getViewMatrix();
 	glm::mat4 getProjectionMatrix(float fov, float aspect, float near, float far);
 
