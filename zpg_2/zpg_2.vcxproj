@@ -135,24 +135,43 @@
     <ClCompile Include="DrawableObject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="Observer.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="ShaderLoader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
+    <ClCompile Include="Subject.cpp" />
     <ClCompile Include="Transformation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\Documents\VSB\Models\Models\tree.h" />
+    <ClInclude Include="..\..\..\..\Documents\VSB\Models\Models\plain.h" />
     <ClInclude Include="..\..\..\..\Documents\VSB\Models\Models\sphere.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="bushes.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DrawableObject.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="Observer.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="ShaderLoader.h" />
     <ClInclude Include="ShaderProgram.h" />
+    <ClInclude Include="Subject.h" />
     <ClInclude Include="Transformation.h" />
     <ClInclude Include="triangle.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="vertex_balls_def.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fragment_balls_def.frag" />
+    <None Include="fragment_plain_def.frag" />
+    <None Include="fragment_sphere_def.frag" />
+    <None Include="fragment_tree_def.frag" />
+    <None Include="fragment_triangle_def.frag" />
+    <None Include="vertex_def.vert" />
+    <None Include="vertex_short_def.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

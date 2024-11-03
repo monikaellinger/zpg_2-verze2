@@ -1,0 +1,28 @@
+1. Přepínání scén za běhu (Ano) (kde a jak)
+	- Přepínání mezi scénami: Forest (tlačítkem F), Triangle (tlačítko T)
+
+a) Základní scéna (Ano)
+
+b) Scéna s lesem (Ano)
+
+c) Scéna se čtyřmi kuličkami (Ano/Ne)
+
+d) Scéna pro demonstraci použití všech shaderů (Konstantní, Lambert, Phong a Blinn) (Ano/Ne)
+
+2. Světlo (Ano/Ne) (kde a jak máte naimplementováno, jak se updatuje změna světla)
+
+3. Základní třídy (ShaderProgram, DrowableObject, Camera, Controller) (Ano) (kdo zodpovídá za vykreslování, kde jsou uloženy modely, shadery atd.)
+	- 
+
+4. Transformace (Composite pattern) (Ano/Ne) (Máte pro transformace základní třídy? Co a jak jste použili?)
+
+5. Základy OOP
+
+a) Encapsulation (zapouzdření) (Ano)
+	- Ve všech třídách jsou jak privátní tak public proměnné/metody
+
+b) Inheritance (dědičnost) (Ano/Ne) (Kde a jak?)
+
+c) Polymorphism (polymorfismus neboli mnohotvárnost) (Ano/Ne) (Kde a jak?)
+
+6. Vertex a fragment shadery prosím uložte do textových souboru a použijte přiložený ShaderLoader pro jejich načítání (Ano/Ne) (Kde a jak jste použili?)

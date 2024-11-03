@@ -42,6 +42,15 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ShaderLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Observer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Subject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">
@@ -80,5 +89,45 @@
     <ClInclude Include="..\..\..\..\Documents\VSB\Models\Models\sphere.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Documents\VSB\Models\Models\plain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Observer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Subject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="vertex_balls_def.vert">
+      <Filter>Resource Files</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fragment_balls_def.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="vertex_short_def.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="fragment_triangle_def.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="fragment_plain_def.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="vertex_def.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="fragment_sphere_def.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="fragment_tree_def.frag">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

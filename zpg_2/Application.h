@@ -35,16 +35,26 @@
 	
 		GLFWwindow* window;
 
-		DrawableObject* triangle_obj;
-		DrawableObject* bush_obj_1;
-		DrawableObject* bush_obj_2;
-		vector<DrawableObject*> objects;
+		DrawableObject* sphere;
+		DrawableObject* plain;
+		DrawableObject* ball_obj_1;
+		DrawableObject* ball_obj_2;
+		DrawableObject* ball_obj_3;
+		DrawableObject* ball_obj_4;
+		DrawableObject* light_obj;
+		
+		vector<DrawableObject*> forest_objects;
 		vector<DrawableObject*> triangle_objects;
+		vector<DrawableObject*> balls_objects;
 
-		bool forest;
-		bool triangle_s;
+		ShaderProgram* light_shader;
+		glm::vec3 lightPos = glm::vec3(1.2f, 1.0f, 2.0f);
 
-		Camera* camera;  // Pøidáme ukazatel na kameru
+		bool forest_scene;
+		bool triangle_scene;
+		bool balls;
+		Scene* balls_scene;
+
 		float lastX, lastY;  // Sledování poslední pozice myši
 		bool firstMouse;     // První pohyb myší
 
@@ -62,9 +72,11 @@
 		~Application();
 		void initialize();
 
+		Camera* camera;
 		void compileShaders();
 		vector<DrawableObject*> createForest();
 		vector<DrawableObject*> createTriangleScene();
+		vector<DrawableObject*> createBallsScene();
 		void run();
 
 		void error_callback(int error, const char* description);

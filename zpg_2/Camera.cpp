@@ -50,6 +50,24 @@ void Camera::moveMouse(float width, float height, float posX, float posY) {
 	updateVectors();
 }
 
+void Camera::attach(Observer* observer)
+{
+	observers.push_back(observer);
+}
+
+void Camera::detach(Observer* observer)
+{
+	observers.erase(remove(observers.begin(), observers.end(), observer), observers.end());
+}
+
+void Camera::notify()
+{
+	for (Observer* observer : observers)
+	{
+		//observer->update(this);
+	}
+}
+
 void Camera::updateVectors() {
 	glm::vec3 newFfront;
 	newFfront.x = cos(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));

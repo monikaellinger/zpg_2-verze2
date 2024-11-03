@@ -36,3 +36,4 @@ void Shader::setUniformMatrix4fv(GLuint programID, const char* uniformName, cons
     }
     glUniformMatrix4fv(idModelTransform, 1, GL_FALSE, glm::value_ptr(matrix));
 }
+

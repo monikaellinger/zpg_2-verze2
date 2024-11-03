@@ -96,15 +96,36 @@ Model* Model::createSphere()
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
-	glEnableVertexAttribArray(0); // Pozice
-	glEnableVertexAttribArray(1); // Normály (nebo barvy)
+	glEnableVertexAttribArray(0); 
+	glEnableVertexAttribArray(1);
 
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*)0);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*)(3 * sizeof(float)));
-
 	glBindVertexArray(0);
 
 	return new Model(GL_TRIANGLES, sphere, vao, vbo, 2880);
+}
+
+Model* Model::createPlain()
+{
+	GLuint vbo;
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(plain), plain, GL_STATIC_DRAW);
+
+	GLuint vao;
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
+	glEnableVertexAttribArray(0); 
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*)0);
+
+	glBindVertexArray(0);
+
+	return new Model(GL_TRIANGLES, plain, vao, vbo, 6);
 }

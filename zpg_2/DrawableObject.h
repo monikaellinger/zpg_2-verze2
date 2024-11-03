@@ -33,9 +33,11 @@ private:
 	Camera* camera;
 public:
 	DrawableObject(ShaderProgram* shaderProgram);
+	DrawableObject(ShaderProgram* shaderProgram, Model* model);
 	DrawableObject(ShaderProgram* shaderProgram, Model* model, Transformation* transformation);
 	void draw(Camera* camera);
-	void addModelTransformation(Model* model, Transformation* transformation);
+	void addModel(Model* model);
+	void addTransformation(Transformation* transformation);
 	void setScale(float scale);
 	void setTranslation(glm::vec3 matrix);
 	void setRotation(float angle, glm::vec3 axis);

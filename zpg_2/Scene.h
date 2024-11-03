@@ -29,6 +29,7 @@ private:
 	vector<DrawableObject*> triangle_objects;
 	bool triangle;
 	bool forest;
+	bool balls;
 
 public:
 

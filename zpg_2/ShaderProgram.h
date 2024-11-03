@@ -21,8 +21,10 @@ using namespace std;
 
 #include "Shader.h"
 #include "Camera.h"
+#include "Observer.h"
+#include "ShaderLoader.h"
 
-	class ShaderProgram 
+	class ShaderProgram : public Observer
 	{
 	private:
 	
@@ -34,12 +36,12 @@ using namespace std;
 	public:
 	
 		ShaderProgram(Shader* vertexShader, Shader* fragmentShader);
+		ShaderProgram(const char* vertex, const char* fragment);
 		void use();
+		void update(Subject* subject) override;
 		GLuint getProjectionMatrixID();
 		GLuint getViewMatrixID();
 		GLuint getTransformID();
 		void setCamMatrix(glm::mat4 projectionMat, glm::mat4 viewMat);
-		
-	
 	};
 

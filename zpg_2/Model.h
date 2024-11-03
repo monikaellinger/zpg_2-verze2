@@ -15,6 +15,7 @@
 #include <stdio.h>
 
 #include "triangle.h"
+#include "plain.h"
 #include "sphere.h"
 #include "tree.h"
 #include "bushes.h"
@@ -35,5 +36,6 @@ public:
 	static Model* createTree();
 	static Model* createBush();
 	static Model* createSphere();
+	static Model* createPlain();
 };
 
