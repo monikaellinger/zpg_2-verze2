@@ -20,9 +20,10 @@ using namespace std;
 
 #include "ShaderProgram.h"
 #include "Observer.h"
+#include "Subject.h"
 
 
-class Camera
+class Camera : public Subject
 {
 private:
 	glm::vec3 position;
@@ -50,7 +51,8 @@ public:
 	void moveLeft();
 	void moveRight();
 	void moveMouse(float width, float height, float posX, float posY);
-	void attach(Observer* observer);
-	void detach(Observer* observer);
-	void notify();
+	void attach(Observer* observer) override;
+	void detach(Observer* observer) override;
+	void notify() override;
+	glm::vec3 getPosition();
 };

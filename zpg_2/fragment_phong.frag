@@ -7,7 +7,7 @@ in vec3 ex_worldNorm;
 out vec4 fragColor;
 
 uniform vec3 viewPosition;
-uniform vec3 objectColor;
+uniform vec4 objectColor;
 uniform vec3 lightPosition;
 uniform vec3 lightColor;
 
@@ -23,7 +23,7 @@ void main() {
     
     vec4 ambient = vec4(0.1, 0.1, 0.1, 1.0);
 
-    vec4 diffuse = diff * vec4(objectColor, 1.0) * vec4(lightColor, 1.0);
+    vec4 diffuse = diff * vec4(objectColor) * vec4(lightColor, 1.0);
     vec4 specular = spec * vec4(lightColor, 1.0);
     
     fragColor = ambient + diffuse + specular;

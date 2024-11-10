@@ -20,13 +20,13 @@
 	using namespace std;
 
 	#include "Model.h"
-	#include "Shader.h"
+	//#include "Shader.h"
 	#include "Scene.h"
 	#include "ShaderProgram.h"
 	#include "DrawableObject.h"
 	#include "Transformation.h"
 	#include "Camera.h"
-
+	#include <chrono>
 
 
 	class Application
@@ -56,7 +56,7 @@
 		Application();
 		~Application();
 		void initialize();
-
+		float getDeltaTime();
 		Camera* camera;
 		vector<DrawableObject*> createForest();
 		vector<DrawableObject*> createTriangleScene();

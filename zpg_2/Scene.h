@@ -27,6 +27,7 @@ class Scene
 private:
 	vector<DrawableObject*> objects;
 	vector<DrawableObject*> triangle_objects;
+	ShaderProgram* shader_program;
 	bool triangle;
 	bool forest;
 	bool balls;
@@ -34,9 +35,9 @@ private:
 public:
 
 	Scene(vector<DrawableObject*>& objects);
+	Scene(vector<DrawableObject*>& objects, ShaderProgram* shader_program);
 	void render(Camera* camera);
-	
-
+	ShaderProgram* getShaderProgram();
 };
 
  

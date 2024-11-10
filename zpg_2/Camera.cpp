@@ -21,21 +21,25 @@ glm::mat4 Camera::getProjectionMatrix(float fov, float aspect, float near, float
 void Camera::moveForward() {
 	this->position += this->front * this->speed;
 	updateVectors();
+	notify();
 }
 
 void Camera::moveBackward() {
 	this->position -= this->front * this->speed;
 	updateVectors();
+	notify();
 }
 
 void Camera::moveLeft() {
 	this->position -= this->right * this->speed;
 	updateVectors();
+	notify();
 }
 
 void Camera::moveRight() {
 	this->position += this->right * this->speed;
 	updateVectors();
+	notify();
 }
 
 void Camera::moveMouse(float width, float height, float posX, float posY) {
@@ -48,6 +52,7 @@ void Camera::moveMouse(float width, float height, float posX, float posY) {
 		this->pitch = -89.0f;
 
 	updateVectors();
+	notify();
 }
 
 void Camera::attach(Observer* observer)
@@ -64,8 +69,13 @@ void Camera::notify()
 {
 	for (Observer* observer : observers)
 	{
-		//observer->update(this);
+		observer->update(this);
 	}
+}
+
+glm::vec3 Camera::getPosition()
+{
+	return position;
 }
 
 void Camera::updateVectors() {

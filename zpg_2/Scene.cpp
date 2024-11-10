@@ -5,6 +5,12 @@ Scene::Scene(vector<DrawableObject*>& objects)
 	this->objects = objects;
 }
 
+Scene::Scene(vector<DrawableObject*>& objects, ShaderProgram* shader_program)
+{
+	this->objects = objects;
+	this->shader_program = shader_program;
+}
+
 void Scene::render(Camera* camera)
 {
 	
@@ -12,4 +18,9 @@ void Scene::render(Camera* camera)
 		obj->draw(camera);
 	}
 	
+}
+
+ShaderProgram* Scene::getShaderProgram()
+{
+	return shader_program;
 }

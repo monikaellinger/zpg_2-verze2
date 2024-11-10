@@ -12,9 +12,18 @@ Light::Light(glm::vec3 position, glm::vec3 color, glm::vec3 obj_color)
 	this->color = color;
 	this->obj_color = obj_color;
 }
-/*
-void Light::setPosition(glm::vec3 position)
+void Light::setPosition(glm::vec3 new_position)
 {
-	this->position = position;
+	position = new_position;
 }
-*/
+
+glm::vec3 Light::getPosition()
+{
+	return position;
+}
+
+glm::vec3 Light::getColor()
+{
+	return color;
+}
+

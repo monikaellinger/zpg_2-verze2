@@ -42,5 +42,8 @@ public:
 	void setScale(float scale);
 	void setTranslation(glm::vec3 matrix);
 	void setRotation(float angle, glm::vec3 axis);
+	Transformation* getTransformastion() const;
+	ShaderProgram* getShaderProgram() const;
+	void setSpin(float angle, float speed, glm::vec3 axis, float deltaTime);
 };
 

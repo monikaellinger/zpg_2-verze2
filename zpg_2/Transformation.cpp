@@ -24,6 +24,15 @@ void Transformation::rotate(float angle, glm::vec3 axis)
 	this->modelMatrix = glm::rotate(this->modelMatrix, glm::radians(angle), axis);
 }
 
+void Transformation::spin(float angle,float speed, glm::vec3 axis, float deltaTime)
+{
+	angle += speed * deltaTime;
+
+	if (angle >= 360.0f) angle -= 360.0f;
+
+	this->modelMatrix = glm::rotate(this->modelMatrix, glm::radians(angle), axis);
+}
+
 
 void Transformation::scale(float scaleFactor)
 {

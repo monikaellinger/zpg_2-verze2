@@ -51,9 +51,15 @@ void DrawableObject::setTranslation(glm::vec3 matrix)
 	this->transformation->translate(matrix);
 }
 
-void DrawableObject::setRotation(float angle, glm::vec3 axis)
+ShaderProgram* DrawableObject::getShaderProgram() const
 {
-	this->transformation->rotate(angle, axis);
+	return shaderProgram;
 }
+
+void DrawableObject::setSpin(float angle, float speed, glm::vec3 axis, float deltaTime)
+{
+	this->transformation->spin(angle, speed, axis, deltaTime);
+}
+
 
 

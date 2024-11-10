@@ -19,7 +19,7 @@
 using namespace std;
 
 
-#include "Shader.h"
+//#include "Shader.h"
 #include "Camera.h"
 #include "Observer.h"
 #include "ShaderLoader.h"
@@ -29,27 +29,28 @@ using namespace std;
 	class ShaderProgram : public Observer
 	{
 	private:
-	
-		Shader* vertexShader;
-		Shader* fragmentShader;
 		GLuint shaderProgram;
 		GLuint programID;
 		Light* light;
 		Color* color;
-		void setMat4Uniform(const char* name, glm::mat4 value);
-		void setVec3Uniform(const char* name, glm::vec3 value);
-		void setVec4Uniform(const char* name, glm::vec4 value);
+		
 
 	public:
 		ShaderProgram(const char* vertex, const char* fragment);
 		ShaderProgram(const char* vertex, const char* fragment, Color* color);
 		ShaderProgram(const char* vertex, const char* fragment, Light* light);
 		ShaderProgram(const char* vertexPath, const char* fragmentPath, Light* light, Color* color);
+		void setMat4Uniform(const char* name, glm::mat4 value);
+		void setVec3Uniform(const char* name, glm::vec3 value);
+		void setVec4Uniform(const char* name, glm::vec4 value);
 		void use();
 		void update(Subject* subject) override;
 		GLuint getProjectionMatrixID();
 		GLuint getViewMatrixID();
 		GLuint getTransformID();
 		void setCamMatrix(glm::mat4 projectionMat, glm::mat4 viewMat);
+		void sendLight(const string& baseName, int index, glm::vec4 position, glm::vec4 diffuse, glm::vec4 specular);
+		void setNumberOfLights(int count);
+		void setIntUniform(const char* name, int value);
 	};
 

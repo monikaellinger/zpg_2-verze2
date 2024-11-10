@@ -14,7 +14,8 @@ public:
 	glm::vec3 obj_color;
 	Light(glm::vec3 position, glm::vec3 color);
 	Light(glm::vec3 position, glm::vec3 color, glm::vec3 obj_color);
-	//Light(glm::vec3 obj_color);
-	//void setPosition(glm::vec3 position);
+	void setPosition(glm::vec3 new_position);
+	glm::vec3 getPosition();
+	glm::vec3 getColor();
 };
 
