@@ -7,6 +7,7 @@ Camera::Camera(glm::vec3 position, glm::vec3 up) {
 	this->pitch = 0.f;
 	this->speed = 0.2f;
 	this->sensitivity = 0.1f;
+	this->aspect = 4.f / 3.f;
 	updateVectors();
 }
 
@@ -14,8 +15,13 @@ glm::mat4 Camera::getViewMatrix() {
 	return glm::lookAt(this->position, this->position + this->front, this->up);
 }
 
-glm::mat4 Camera::getProjectionMatrix(float fov, float aspect, float near, float far) {
-	return glm::perspective(glm::radians(fov), aspect, near, far);
+glm::mat4 Camera::getProjectionMatrix(float fov, float near, float far) {
+	return glm::perspective(glm::radians(fov), this->aspect, near, far);
+}
+
+void Camera::setAspect(float aspect)
+{
+	this->aspect = aspect;
 }
 
 void Camera::moveForward() {

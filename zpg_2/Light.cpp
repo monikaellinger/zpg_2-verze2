@@ -1,20 +1,19 @@
 #include "Light.h"
 
-Light::Light(glm::vec3 position, glm::vec3 color)
+
+
+Light::Light(glm::vec4 position, glm::vec4 diffuse, glm::vec4 specular, glm::vec4 color)
 {
 	this->position = position;
+	this->diffuse = diffuse;
+	this->specular = specular;
 	this->color = color;
 }
 
-Light::Light(glm::vec3 position, glm::vec3 color, glm::vec3 obj_color)
+void Light::setPosition(glm::vec4 new_position)
 {
-	this->position = position;
-	this->color = color;
-	this->obj_color = obj_color;
-}
-void Light::setPosition(glm::vec3 new_position)
-{
-	position = new_position;
+	this->position = new_position;
+	//notify();
 }
 
 glm::vec3 Light::getPosition()
@@ -26,4 +25,18 @@ glm::vec3 Light::getColor()
 {
 	return color;
 }
+/*
+void Light::attach(Observer* observer)
+{
+	observers.push_back(observer);
+}
+
+void Light::notify()
+{
+	for (Observer* observer : observers)
+	{
+		observer->update(this);
+	}
+}
+*/
 

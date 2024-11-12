@@ -31,15 +31,15 @@ using namespace std;
 	private:
 		GLuint shaderProgram;
 		GLuint programID;
-		Light* light;
 		Color* color;
+		vector<Light*> lights;
+		int lightCount;
+	
 		
-
 	public:
 		ShaderProgram(const char* vertex, const char* fragment);
-		ShaderProgram(const char* vertex, const char* fragment, Color* color);
-		ShaderProgram(const char* vertex, const char* fragment, Light* light);
-		ShaderProgram(const char* vertexPath, const char* fragmentPath, Light* light, Color* color);
+		ShaderProgram(const char* vertexPath, const char* fragmentPath, Color* color);
+		ShaderProgram(const char* vertexPath, const char* fragmentPath, vector<Light*> lights, Color* color);
 		void setMat4Uniform(const char* name, glm::mat4 value);
 		void setVec3Uniform(const char* name, glm::vec3 value);
 		void setVec4Uniform(const char* name, glm::vec4 value);
@@ -49,8 +49,7 @@ using namespace std;
 		GLuint getViewMatrixID();
 		GLuint getTransformID();
 		void setCamMatrix(glm::mat4 projectionMat, glm::mat4 viewMat);
-		void sendLight(const string& baseName, int index, glm::vec4 position, glm::vec4 diffuse, glm::vec4 specular);
-		void setNumberOfLights(int count);
+		void sendLight(const std::string& baseName, int index, const Light& light);
 		void setIntUniform(const char* name, int value);
 	};
 

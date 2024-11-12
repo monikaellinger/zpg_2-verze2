@@ -5,7 +5,7 @@ ShaderProgram::ShaderProgram(const char* vertexPath, const char* fragmentPath)
 {
 	ShaderLoader* shaderLoader = new ShaderLoader();
 	this->programID = shaderLoader->loadShader(vertexPath, fragmentPath);
-	this->light = NULL;
+
 }
 
 ShaderProgram::ShaderProgram(const char* vertexPath, const char* fragmentPath, Color* color)
@@ -15,19 +15,14 @@ ShaderProgram::ShaderProgram(const char* vertexPath, const char* fragmentPath, C
 	this->color = color;
 }
 
-ShaderProgram::ShaderProgram(const char* vertexPath, const char* fragmentPath, Light* light)
-{
-	ShaderLoader* shaderLoader = new ShaderLoader();
-	this->programID = shaderLoader->loadShader(vertexPath, fragmentPath);
-	this->light = light;
-}
 
-ShaderProgram::ShaderProgram(const char* vertexPath, const char* fragmentPath, Light* light, Color* color)
+ShaderProgram::ShaderProgram(const char* vertexPath, const char* fragmentPath, vector<Light*> lights, Color* color)
 {
 	ShaderLoader* shaderLoader = new ShaderLoader();
 	this->programID = shaderLoader->loadShader(vertexPath, fragmentPath);
-	this->light = light;
+	this->lights = lights;
 	this->color = color;
+	this->lightCount = lights.size();
 }
 
 
@@ -61,23 +56,22 @@ void ShaderProgram::setVec4Uniform(const char* name, glm::vec4 value)
 	glUniform4fv(id, 1, glm::value_ptr(value));
 }
 
-void ShaderProgram::use()
-{
+void ShaderProgram::use() {
 	glUseProgram(this->programID);
-	if (this->light != NULL && this->color == NULL) {
-		this->setVec3Uniform("lightPosition", this->light->position);
-		this->setVec3Uniform("lightColor", this->light->color);
-		this->setVec3Uniform("objectColor", this->light->obj_color);
+
+	
+	this->setIntUniform("numberOfLights", this->lightCount);
+
+	for (int i = 0; i < this->lightCount; ++i) {
+		this->sendLight("lights", i, *this->lights[i]);
 	}
-	if (this->color != NULL && this->light == NULL) {
+
+	if (this->color != NULL) {
 		this->setVec4Uniform("objectColor", this->color->color);
 	}
-	if (this->light != NULL && this->color != NULL) {
-		this->setVec3Uniform("lightPosition", this->light->position);
-		this->setVec3Uniform("lightColor", this->light->color);
-		this->setVec4Uniform("objectColor", this->color->color);
-	}
+
 }
+
 
 GLuint ShaderProgram::getProjectionMatrixID()
 {
@@ -121,47 +115,39 @@ void ShaderProgram::setCamMatrix(glm::mat4 projectionMat, glm::mat4 viewMat)
 	glUniformMatrix4fv(this->getProjectionMatrixID(), 1, GL_FALSE, glm::value_ptr(projectionMat));
 }
 
-void ShaderProgram::sendLight(const string& baseName, int index, glm::vec4 position, glm::vec4 diffuse, glm::vec4 specular)
+void ShaderProgram::sendLight(const std::string& baseName, int index, const Light& light)
 {
 	string posName = baseName + "[" + to_string(index) + "].position";
 	string diffName = baseName + "[" + to_string(index) + "].diffuse";
 	string specName = baseName + "[" + to_string(index) + "].specular";
 
-	setVec4Uniform(posName.c_str(), position);
-	setVec4Uniform(diffName.c_str(), diffuse);
-	setVec4Uniform(specName.c_str(), specular);
+	setVec4Uniform(posName.c_str(), light.position);
+	setVec4Uniform(diffName.c_str(), light.diffuse);
+	setVec4Uniform(specName.c_str(), light.specular);
 }
 
-void ShaderProgram::setNumberOfLights(int count)
-{
-	setIntUniform("numberOfLights", count);
-}
 
 void ShaderProgram::setIntUniform(const char* name, int value)
 {
 	GLuint id = glGetUniformLocation(this->programID, name);
 	if (id == -1) {
-		//fprintf(stderr, "Error: Uniform variable '%s' not found in shader program.\n", name);
+		fprintf(stderr, "Error: Uniform variable '%s' not found in shader program.\n", name);
 		exit(EXIT_FAILURE);
 	}
 	glUniform1i(id, value);
-
 }
 
 
-void ShaderProgram::update(Subject* subject) 
+void ShaderProgram::update(Subject* subject)
 {
 	if (auto camera = dynamic_cast<Camera*>(subject)) {
-		use();
 		setMat4Uniform("viewMatrix", camera->getViewMatrix());
-		setMat4Uniform("projectionMatrix", camera->getProjectionMatrix(45.0f, 800.0f / 600.0f, 0.1f, 100.0f)); 
+		setMat4Uniform("projectionMatrix", camera->getProjectionMatrix(45.0f, 0.1f, 100.0f));
 	}
-	/*
-	if (auto light = dynamic_cast<Light*>(subject)
-	{
+
+	if (auto light = dynamic_cast<Light*>(subject)) {  
 		use();
-		setVec3Uniform("lightPosition", light->getPosition());
-		setVec3Uniform("lightColor", light->getPosition());
+	//	setVec3Uniform("lightPosition", light->getPosition());
+	//	setVec3Uniform("lightColor", glm::vec3(light->getColor())); 
 	}
-	*/
 }

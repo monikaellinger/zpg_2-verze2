@@ -25,6 +25,7 @@
 	#include "ShaderProgram.h"
 	#include "DrawableObject.h"
 	#include "Transformation.h"
+	#include "Light.h"
 	#include "Camera.h"
 	#include <chrono>
 
@@ -42,6 +43,7 @@
 
 		float lastX, lastY; 
 		bool firstMouse;    
+		glm::mat4 projection;
 
 		static void error_callback_static(int error, const char* description);
 		static void key_callback_static(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -58,6 +60,7 @@
 		void initialize();
 		float getDeltaTime();
 		Camera* camera;
+		vector<Light*> createLights();
 		vector<DrawableObject*> createForest();
 		vector<DrawableObject*> createTriangleScene();
 		vector<DrawableObject*> createBallsScene();

@@ -32,19 +32,25 @@ private:
 	glm::vec3 right;
 	glm::vec3 worldUp;
 
+
 	float yaw;
 	float pitch;
 	float speed;
 	float sensitivity;
 
+	float aspect;
+
 	void updateVectors();
 
 	vector<Observer*> observers;
 
+
 public:
 	Camera(glm::vec3 position, glm::vec3 up);
 	glm::mat4 getViewMatrix();
-	glm::mat4 getProjectionMatrix(float fov, float aspect, float near, float far);
+	glm::mat4 getProjectionMatrix(float fov, float near, float far);
+
+	void setAspect(float aspect);
 
 	void moveForward();
 	void moveBackward();

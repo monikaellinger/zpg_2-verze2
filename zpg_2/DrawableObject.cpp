@@ -26,7 +26,7 @@ DrawableObject::DrawableObject(ShaderProgram* shaderProgram, Model* model, Trans
 void DrawableObject::draw(Camera* camera)
 {
 		this->shaderProgram->use();
-		this->shaderProgram->setCamMatrix(camera->getProjectionMatrix(32.f, 4.f / 3.f, 0.1f, 100.f), camera->getViewMatrix());
+		this->shaderProgram->setCamMatrix(camera->getProjectionMatrix(45.f, 0.1f, 100.f), camera->getViewMatrix());
 		this->transformation->useTransformation(this->shaderProgram->getTransformID());
 		this->model->drawModel();
 }

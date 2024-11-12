@@ -5,17 +5,35 @@
 #include <glm/mat4x4.hpp> // glm::mat4
 #include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
 #include <glm/gtc/type_ptr.hpp> // glm::value_ptr
+#include <vector>
 
-class Light
+#include "Subject.h"
+#include "Observer.h"
+using namespace std;
+
+class Light //: public Subject
 {
+private:
+	vector<Observer*> observers;
 public:
-	glm::vec3 position;
-	glm::vec3 color;
-	glm::vec3 obj_color;
-	Light(glm::vec3 position, glm::vec3 color);
-	Light(glm::vec3 position, glm::vec3 color, glm::vec3 obj_color);
-	void setPosition(glm::vec3 new_position);
+	int num_of_lights;
+	//glm::vec3 position;
+	//glm::vec3 color;
+
+	glm::vec4 position;
+	glm::vec4 diffuse;
+	glm::vec4 specular;
+	glm::vec4 color;
+
+	//Light(glm::vec3 position, glm::vec3 color);
+	//Light(glm::vec3 position, glm::vec3 color, glm::vec3 obj_color);
+	Light(glm::vec4 position, glm::vec4 diffuse, glm::vec4 specular, glm::vec4 color);
+	void setPosition(glm::vec4 new_position);
 	glm::vec3 getPosition();
-	glm::vec3 getColor();
+	glm::vec3 getColor(); 
+
+	//void attach(Observer* observer) override;
+	//void detach(Observer* observer) override;
+	//void notify() override;
 };
 
