@@ -62,6 +62,7 @@
 		Camera* camera;
 		vector<Light*> createLights();
 		vector<Light*> createLightsForest();
+		vector<Light*> createLightsExample();
 		vector<DrawableObject*> createForest();
 		vector<DrawableObject*> createTriangleScene();
 		vector<DrawableObject*> createBallsScene();

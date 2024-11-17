@@ -126,9 +126,6 @@
     <None Include="fragment_plain_def.frag">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="vertex_def.vert">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="fragment_sphere_def.frag">
       <Filter>Resource Files</Filter>
     </None>
@@ -142,6 +139,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="fragment_scene.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="vertex_def.vert">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

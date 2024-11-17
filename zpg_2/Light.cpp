@@ -25,10 +25,16 @@ glm::vec3 Light::getColor()
 {
 	return color;
 }
-/*
+
+
 void Light::attach(Observer* observer)
 {
 	observers.push_back(observer);
+}
+
+void Light::detach(Observer* observer)
+{
+	observers.erase(remove(observers.begin(), observers.end(), observer), observers.end());
 }
 
 void Light::notify()
@@ -38,5 +44,4 @@ void Light::notify()
 		observer->update(this);
 	}
 }
-*/
 

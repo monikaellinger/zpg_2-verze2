@@ -116,10 +116,12 @@ void ShaderProgram::sendLight(const std::string& baseName, int index, const Ligh
 	string posName = baseName + "[" + to_string(index) + "].position";
 	string diffName = baseName + "[" + to_string(index) + "].diffuse";
 	string specName = baseName + "[" + to_string(index) + "].specular";
+	string colorName = baseName + "[" + to_string(index) + "].color";
 
 	setVec4Uniform(posName.c_str(), light.position);
 	setVec4Uniform(diffName.c_str(), light.diffuse);
 	setVec4Uniform(specName.c_str(), light.specular);
+	setVec4Uniform(colorName.c_str(), light.color);
 }
 
 

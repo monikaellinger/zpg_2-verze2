@@ -12,6 +12,7 @@ struct Light {
     vec4 position;
     vec4 diffuse;
     vec4 specular;
+    vec4 color;
 };
 
 uniform Light lights[MAX_LIGHTS];
@@ -28,20 +29,17 @@ void main() {
     vec4 totalDiffuse = vec4(0.0);
     vec4 totalSpecular = vec4(0.0);
 
-    // Iterate over all active lights
     for (int index = 0; index < numberOfLights; index++) {
         vec3 lightDir = normalize(vec3(lights[index].position) - vec3(ex_worldPos));
         vec3 reflectDir = reflect(-lightDir, norm);
 
-        // Calculate diffuse lighting
         float diff = max(dot(lightDir, norm), 0.0);
-        
-        // Calculate specular lighting
+         vec4 diffuseComponent = diff * lights[index].diffuse * lights[index].color * objectColor;
         float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
+        vec4 specularComponent = spec * lights[index].specular * lights[index].color;
 
-        // Accumulate diffuse and specular contributions
-        totalDiffuse += diff * lights[index].diffuse * objectColor;
-        totalSpecular += spec * lights[index].specular;
+        totalDiffuse += diffuseComponent;
+        totalSpecular += specularComponent;
     }
     
     // Final color output including ambient, diffuse, and specular components

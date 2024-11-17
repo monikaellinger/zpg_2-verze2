@@ -11,29 +11,24 @@
 #include "Observer.h"
 using namespace std;
 
-class Light //: public Subject
+class Light : public Subject
 {
-private:
-	vector<Observer*> observers;
+
 public:
-	int num_of_lights;
-	//glm::vec3 position;
-	//glm::vec3 color;
+	vector<Observer*> observers;
 
 	glm::vec4 position;
 	glm::vec4 diffuse;
 	glm::vec4 specular;
 	glm::vec4 color;
 
-	//Light(glm::vec3 position, glm::vec3 color);
-	//Light(glm::vec3 position, glm::vec3 color, glm::vec3 obj_color);
 	Light(glm::vec4 position, glm::vec4 diffuse, glm::vec4 specular, glm::vec4 color);
 	void setPosition(glm::vec4 new_position);
 	glm::vec3 getPosition();
 	glm::vec3 getColor(); 
 
-	//void attach(Observer* observer) override;
-	//void detach(Observer* observer) override;
-	//void notify() override;
+	void attach(Observer* observer) override;
+	void detach(Observer* observer) override;
+	void notify() override;
 };
 
