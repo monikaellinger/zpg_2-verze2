@@ -59,14 +59,14 @@ void ShaderProgram::setVec4Uniform(const char* name, glm::vec4 value)
 
 void ShaderProgram::use() {
 	glUseProgram(this->programID);
-	if (!this->lights.empty()) {
-		this->setIntUniform("numberOfLights", this->lightCount);
+	if (!lights.empty()) {
+		setIntUniform("numberOfLights", this->lightCount);
 		for (int i = 0; i < this->lightCount; ++i) {
-			this->sendLight("lights", i, *this->lights[i]);
+			sendLight("lights", i, *lights[i]);
 		}
 	}
-	
 }
+
 
 
 GLuint ShaderProgram::getProjectionMatrixID()
@@ -117,11 +117,17 @@ void ShaderProgram::sendLight(const std::string& baseName, int index, const Ligh
 	string diffName = baseName + "[" + to_string(index) + "].diffuse";
 	string specName = baseName + "[" + to_string(index) + "].specular";
 	string colorName = baseName + "[" + to_string(index) + "].color";
+	string dirName = baseName + "[" + to_string(index) + "].direction";
+	string cutName = baseName + "[" + to_string(index) + "].cutoff";
+	string outName = baseName + "[" + to_string(index) + "].outerCutoff";
 
 	setVec4Uniform(posName.c_str(), light.position);
 	setVec4Uniform(diffName.c_str(), light.diffuse);
 	setVec4Uniform(specName.c_str(), light.specular);
 	setVec4Uniform(colorName.c_str(), light.color);
+	setVec3Uniform(dirName.c_str(), light.direction);
+	setFloatUniform(cutName.c_str(), light.cutoff);
+	setFloatUniform(outName.c_str(), light.outerCutoff);
 }
 
 
@@ -135,6 +141,16 @@ void ShaderProgram::setIntUniform(const char* name, int value)
 	glUniform1i(id, value);
 }
 
+void ShaderProgram::setFloatUniform(const char* name, float value)
+{
+	GLuint id = glGetUniformLocation(this->programID, name);
+	if (id == -1) {
+		fprintf(stderr, "Error: Uniform variable '%s' not found in shader program.\n", name);
+		exit(EXIT_FAILURE);
+	}
+	glUniform1f(id, value);
+}
+
 
 void ShaderProgram::update(Subject* subject)
 {
@@ -143,9 +159,13 @@ void ShaderProgram::update(Subject* subject)
 		setMat4Uniform("projectionMatrix", camera->getProjectionMatrix(45.0f, 0.1f, 100.0f));
 	}
 
-	if (auto light = dynamic_cast<Light*>(subject)) {  
-		use();
-	//	setVec3Uniform("lightPosition", light->getPosition());
-	//	setVec3Uniform("lightColor", glm::vec3(light->getColor())); 
+	if (auto light = dynamic_cast<Light*>(subject)) {
+		for (size_t i = 0; i < lights.size(); ++i) {
+			if (lights[i] == light) {
+				use();
+				sendLight("lights", i, *light);
+				break;
+			}
+		}
 	}
 }

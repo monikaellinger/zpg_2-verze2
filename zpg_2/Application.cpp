@@ -2,11 +2,11 @@
 
 
 Application::Application() : lastX(400), lastY(300), firstMouse(true) {
-	this->camera = new Camera(glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	this->triangle_scene = true;
+	this->camera = new Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	this->triangle_scene = false;
 	this->forest_scene = false;
 	this->balls_scene = false;
-	this->shaders_example_scene = false;
+	this->shaders_example_scene = true;
 }
 
 
@@ -18,18 +18,6 @@ Application::~Application()
 void Application::error_callback(int error, const char* description)
 {
 	fputs(description, stderr);
-}
-
-vector<Light*> Application::createLights()
-{
-	vector<Light*> light_objects;
-	Light* light1 = new Light(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-	light_objects.push_back(light1);
-	
-
-	Light* light2 = new Light(glm::vec4(2.0f, 0.0f, 0.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	light_objects.push_back(light2);
-	return light_objects;
 }
 
 vector<DrawableObject*> Application::createTriangleScene()
@@ -50,15 +38,28 @@ vector<DrawableObject*> Application::createTriangleScene()
 vector<DrawableObject*> Application::createBallsScene()
 {
 	vector<DrawableObject*> balls_objects;
-	vector<Light*> lights = createLights();
-	ShaderProgram* shader = new ShaderProgram("vertex_phong.vert", "fragment_phong.frag", lights);
-	for (Light* light : lights)
+	vector<Light*> light_objects;
+
+	// Point Light
+	Light* light1 = new Light(
+		glm::vec4(0.f, 0.f, -5.0f, 0.0f),		// Position
+		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),      // Diffuse color
+		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),      // Specular color
+		glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),      // Light color
+		glm::vec3(0.0f, 0.0f, 0.0f),            // Direction (not used for point light)
+		0.0f,                                     // Cutoff (not used for point light)
+		0.0f);                                    // Outer cutoff (not used for point light)
+	light1->type = LIGHT_TYPE_POINT;
+	light_objects.push_back(light1);
+
+	ShaderProgram* shader = new ShaderProgram("vertex_phong.vert", "fragment_phong.frag", light_objects);
+	for (Light* light : light_objects)
 	{
 		light->attach(shader);
 	}
 
 
-	DrawableObject* ball_obj_1 = new DrawableObject(shader, glm::vec4(0.2f, 1.f, 0.2f, 1.f));
+	DrawableObject* ball_obj_1 = new DrawableObject(shader, glm::vec4(0.f, 1.f, 0.f, 1.f));
 	balls_objects.push_back(ball_obj_1);
 	this->camera->attach(ball_obj_1->getShaderProgram());
 
@@ -78,7 +79,7 @@ vector<DrawableObject*> Application::createBallsScene()
 	Model* balls_model_1 = Model::createSphere();
 	Transformation* transform_balls_1 = new Transformation();
 	transform_balls_1->scale(0.5f);
-	glm::vec3 translation_balls_1(0.f, 3.f, 0.f);
+	glm::vec3 translation_balls_1(0.f, 3.f, -10.f);
 	transform_balls_1->translate(translation_balls_1);
 
 	ball_obj_1->addModel(balls_model_1);
@@ -88,7 +89,7 @@ vector<DrawableObject*> Application::createBallsScene()
 	Model* balls_model_2 = Model::createSphere();
 	Transformation* transform_balls_2 = new Transformation();
 	transform_balls_2->scale(0.5f);
-	glm::vec3 translation_balls_2(3.f, 0.f, 0.f);
+	glm::vec3 translation_balls_2(3.f, 0.f, -10.f);
 	transform_balls_2->translate(translation_balls_2);
 
 	ball_obj_2->addModel(balls_model_2);
@@ -98,7 +99,7 @@ vector<DrawableObject*> Application::createBallsScene()
 	Model* balls_model_3 = Model::createSphere();
 	Transformation* transform_balls_3 = new Transformation();
 	transform_balls_3->scale(0.5f);
-	glm::vec3 translation_balls_3(0.f, -3.f, 0.f);
+	glm::vec3 translation_balls_3(0.f, -3.f, -10.f);
 	transform_balls_3->translate(translation_balls_3);
 
 	ball_obj_3->addModel(balls_model_3);
@@ -108,7 +109,7 @@ vector<DrawableObject*> Application::createBallsScene()
 	Model* balls_model_4 = Model::createSphere();
 	Transformation* transform_balls_4 = new Transformation();
 	transform_balls_4->scale(0.5f);
-	glm::vec3 translation_balls_4(-3.f, 0.f, 0.f);
+	glm::vec3 translation_balls_4(-3.f, 0.f, -10.f);
 	transform_balls_4->translate(translation_balls_4);
 
 	ball_obj_4->addModel(balls_model_4);
@@ -121,8 +122,42 @@ vector<DrawableObject*> Application::createBallsScene()
 vector<DrawableObject*> Application::createShadersExampleScene()
 {
 	vector<Light*> light_objects;
-	Light* light1 = new Light(glm::vec4(-100.0f, -10.0f, 10.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	light_objects.push_back(light1);
+
+	// Point Light
+	Light* light1 = new Light(glm::vec4(25.f, 25.f, 55.0f, 1.0f),  // Position
+		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),      // Diffuse color
+		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),      // Specular color
+		glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),      // Light color
+		glm::vec3(0.0f, 0.0f, 0.0f),            // Direction (not used for point light)
+		0.0f,                                     // Cutoff (not used for point light)
+		0.0f);                                    // Outer cutoff (not used for point light)
+	light1->type = LIGHT_TYPE_POINT;
+	//light_objects.push_back(light1);
+
+	// Directional Light	
+	Light* light2 = new Light(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),  // Position (use position as a direction for directional light)
+		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),      // Diffuse color
+		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),      // Specular color
+		glm::vec4(0.0f, 1.0f, 0.0f, 1.0f),      // Light color
+		glm::vec3(0.0f, 0.0f, 0.0f),           // Direction
+		0.0f,                                     // Cutoff (not used for directional light)
+		0.0f);                                    // Outer cutoff (not used for directional light)
+	light2->type = LIGHT_TYPE_DIRECTIONAL;
+	//light_objects.push_back(light2);
+
+	// Spot Light
+	Light* light3 = new Light(glm::vec4(0.f, 0.f, 0.0f, 1.0f),  // Pozice
+		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),                       // Diffuse color
+		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),                       // Specular color
+		glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),                       // Light color
+		glm::vec3(0.0f, 0.0f, -10.0f),                          // Direction
+		glm::cos(glm::radians(15.0f)),                          // Cutoff (inner cone angle)
+		glm::cos(glm::radians(20.0f)));   
+	// Outer cutoff (outer cone angle)
+	light3->type = LIGHT_TYPE_SPOT;
+	light_objects.push_back(light3);
+
+	// Shader setup
 	ShaderProgram* shader = new ShaderProgram("vertex_phong.vert", "fragment_phong.frag", light_objects);
 	ShaderProgram* shader_lambert = new ShaderProgram("vertex_phong.vert", "fragment_lambert.frag");
 
@@ -133,36 +168,33 @@ vector<DrawableObject*> Application::createShadersExampleScene()
 
 	vector<DrawableObject*> shaders_example_objects;
 
-	// phong
-	DrawableObject* ball_obj = new DrawableObject(shader, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	// Phong example - Sphere
+	DrawableObject* ball_obj = new DrawableObject(shader);
 	shaders_example_objects.push_back(ball_obj);
 	this->camera->attach(ball_obj->getShaderProgram());
 
 	Model* ball_model = Model::createSphere();
 	Transformation* transform_ball = new Transformation();
 	transform_ball->scale(0.5f);
-	glm::vec3 translation_ball(3.f, 0.f, 0.f);
+	glm::vec3 translation_ball(0.f, 0.f, -20.f);
 	transform_ball->translate(translation_ball);
 	ball_obj->addModel(ball_model);
 	ball_obj->addTransformation(transform_ball);
 
-
-	// konst
-	DrawableObject* tree_obj = new DrawableObject(shader, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	// Tree (constant object)
+	DrawableObject* tree_obj = new DrawableObject(shader);
 	shaders_example_objects.push_back(tree_obj);
 	this->camera->attach(tree_obj->getShaderProgram());
 
 	Model* tree_model = Model::createTree();
 	Transformation* transform_tree = new Transformation();
 	transform_tree->scale(0.5f);
-	glm::vec3 translation_tree(3.f, 0.f, 0.f);
+	glm::vec3 translation_tree(0.f, 0.f, -20.f);
 	transform_tree->translate(translation_tree);
 	tree_obj->addModel(tree_model);
 	tree_obj->addTransformation(transform_tree);
 
-
-
-	// lambert
+	// Lambert example - Sphere
 	DrawableObject* sphere = new DrawableObject(shader_lambert, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 	shaders_example_objects.push_back(sphere);
 	this->camera->attach(sphere->getShaderProgram());
@@ -178,7 +210,7 @@ vector<DrawableObject*> Application::createShadersExampleScene()
 	return shaders_example_objects;
 }
 
-
+/*
 vector<DrawableObject*> Application::createForest()
 {
 	vector<DrawableObject*> forest_objects;
@@ -271,7 +303,7 @@ vector<DrawableObject*> Application::createForest()
 	return forest_objects;
 
 }
-
+*/
 void Application::initialize()
 {
 
@@ -432,29 +464,29 @@ void Application::run()
 	glfwSetMouseButtonCallback(window, button_callback_static);
 
 	glEnable(GL_DEPTH_TEST);
-	vector<DrawableObject*> forest_objects_create = createForest();
+	//vector<DrawableObject*> forest_objects_create = createForest();
 	vector<DrawableObject*> triangle_objects_create = createTriangleScene();
 	vector<DrawableObject*> balls_objects_create = createBallsScene();
 	Scene scene_balls(balls_objects_create);
 	vector<DrawableObject*> shaders_example_objects_create = createShadersExampleScene();
-	Scene scene_forest(forest_objects_create);
+	//	Scene scene_forest(forest_objects_create);
 	Scene scene_triangle(triangle_objects_create);
 	Scene scene_shaders_example(shaders_example_objects_create);
-	
+
 
 	while (!glfwWindowShouldClose(this->window))
 	{
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
+		/*
 		if (forest_scene == true) {
 			scene_forest.render(this->camera);
 		}
-		
+		*/
 		if (triangle_scene == true) {
 			scene_triangle.render(this->camera);
 		}
-		
+
 		if (balls_scene == true) {
 			scene_balls.render(this->camera);
 		}
@@ -462,14 +494,12 @@ void Application::run()
 		if (shaders_example_scene == true) {
 			scene_shaders_example.render(this->camera);
 			shaders_example_objects_create[1]->setSpin(3.0f, 160.0f, glm::vec3(0.0f, 1.0f, 0.0f), 0.016f);
-			shaders_example_objects_create[0]->setSpin(3.0f, 160.0f, glm::vec3(0.0f, 1.0f, 0.0f), 0.016f);
 		}
-		
+
 		glfwPollEvents();
 		glfwSwapBuffers(this->window);
 	}
 
 	glfwTerminate();
 	exit(EXIT_SUCCESS);
-
 }

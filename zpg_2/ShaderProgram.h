@@ -43,6 +43,8 @@ using namespace std;
 		void setMat4Uniform(const char* name, glm::mat4 value);
 		void setVec3Uniform(const char* name, glm::vec3 value);
 		void setVec4Uniform(const char* name, glm::vec4 value);
+		void setIntUniform(const char* name, int value);
+		void setFloatUniform(const char* name, float value);
 		void use();
 		void update(Subject* subject) override;
 		GLuint getProjectionMatrixID();
@@ -50,6 +52,6 @@ using namespace std;
 		GLuint getTransformID();
 		void setCamMatrix(glm::mat4 projectionMat, glm::mat4 viewMat);
 		void sendLight(const std::string& baseName, int index, const Light& light);
-		void setIntUniform(const char* name, int value);
+		
 	};
 

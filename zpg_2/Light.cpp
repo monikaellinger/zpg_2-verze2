@@ -10,6 +10,17 @@ Light::Light(glm::vec4 position, glm::vec4 diffuse, glm::vec4 specular, glm::vec
 	this->color = color;
 }
 
+Light::Light(glm::vec4 position, glm::vec4 diffuse, glm::vec4 specular, glm::vec4 color, glm::vec3 direction, float cutoff, float outerCutoff)
+{
+	this->position = position;
+	this->diffuse = diffuse;
+	this->specular = specular;
+	this->color = color;
+	this->direction = direction;
+	this->cutoff = cutoff;
+	this->outerCutoff = outerCutoff;
+}
+
 void Light::setPosition(glm::vec4 new_position)
 {
 	this->position = new_position;
