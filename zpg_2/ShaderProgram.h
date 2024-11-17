@@ -38,7 +38,7 @@ using namespace std;
 		
 	public:
 		ShaderProgram(const char* vertex, const char* fragment);
-		ShaderProgram(const char* vertexPath, const char* fragmentPath, Color* color);
+		ShaderProgram(const char* vertexPath, const char* fragmentPath, vector<Light*> lights);
 		ShaderProgram(const char* vertexPath, const char* fragmentPath, vector<Light*> lights, Color* color);
 		void setMat4Uniform(const char* name, glm::mat4 value);
 		void setVec3Uniform(const char* name, glm::vec3 value);

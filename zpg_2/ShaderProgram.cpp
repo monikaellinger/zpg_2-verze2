@@ -8,11 +8,12 @@ ShaderProgram::ShaderProgram(const char* vertexPath, const char* fragmentPath)
 
 }
 
-ShaderProgram::ShaderProgram(const char* vertexPath, const char* fragmentPath, Color* color)
+ShaderProgram::ShaderProgram(const char* vertexPath, const char* fragmentPath, vector<Light*> lights)
 {
 	ShaderLoader* shaderLoader = new ShaderLoader();
 	this->programID = shaderLoader->loadShader(vertexPath, fragmentPath);
-	this->color = color;
+	this->lights = lights;
+	this->lightCount = lights.size();
 }
 
 
@@ -58,18 +59,13 @@ void ShaderProgram::setVec4Uniform(const char* name, glm::vec4 value)
 
 void ShaderProgram::use() {
 	glUseProgram(this->programID);
-
+	if (!this->lights.empty()) {
+		this->setIntUniform("numberOfLights", this->lightCount);
+		for (int i = 0; i < this->lightCount; ++i) {
+			this->sendLight("lights", i, *this->lights[i]);
+		}
+	}
 	
-	this->setIntUniform("numberOfLights", this->lightCount);
-
-	for (int i = 0; i < this->lightCount; ++i) {
-		this->sendLight("lights", i, *this->lights[i]);
-	}
-
-	if (this->color != NULL) {
-		this->setVec4Uniform("objectColor", this->color->color);
-	}
-
 }
 
 

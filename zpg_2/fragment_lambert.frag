@@ -21,7 +21,7 @@ void main() {
     vec4 ambient = vec4(0.1, 0.1, 0.1, 1.0);
 
     // Výpoèet difúzní složky svìtla
-    vec4 diffuse = diff * vec4(objectColor) * vec4(lightColor, 1.0);
+    vec4 diffuse = diff * objectColor * vec4(lightColor, 1.0);
 
     // Koneèná barva fragmentu jako souèet ambientní a difúzní složky
     fragColor = ambient + diffuse;

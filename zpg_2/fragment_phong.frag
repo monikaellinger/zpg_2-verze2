@@ -18,7 +18,7 @@ uniform Light lights[MAX_LIGHTS];
 uniform int numberOfLights;
 
 uniform vec3 viewPosition;
-uniform vec4 objectColor;
+uniform vec4 objectColor; 
 
 void main() {
     vec3 norm = normalize(ex_worldNorm);

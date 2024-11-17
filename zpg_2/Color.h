@@ -11,5 +11,6 @@ class Color
 public:
 	glm::vec4 color;
 	Color(glm::vec4 color);
+	glm::vec4 getColor();
 };
 

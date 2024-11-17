@@ -3,9 +3,9 @@
 
 Application::Application() : lastX(400), lastY(300), firstMouse(true) {
 	this->camera = new Camera(glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	//this->triangle_scene = true;
+	this->triangle_scene = true;
 	this->forest_scene = false;
-	this->balls_scene = true;
+	this->balls_scene = false;
 	this->shaders_example_scene = false;
 }
 
@@ -23,18 +23,17 @@ void Application::error_callback(int error, const char* description)
 vector<Light*> Application::createLights()
 {
 	vector<Light*> light_objects;
-	Light* light1 = new Light(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	Light* light1 = new Light(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 	light_objects.push_back(light1);
 
-	Light* light2 = new Light(glm::vec4(5.0f, 0.0f, 0.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	Light* light2 = new Light(glm::vec4(2.0f, 0.0f, 0.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	light_objects.push_back(light2);
 	return light_objects;
 }
 
 vector<DrawableObject*> Application::createTriangleScene()
 {
-
-	DrawableObject* tr = new DrawableObject(new ShaderProgram("vertex_short_def.vert", "fragment_triangle_def.frag"));
+	DrawableObject* tr = new DrawableObject(new ShaderProgram("vertex_short_def.vert", "fragment_triangle_def.frag"), glm::vec4(0.8f, 0.8f, 0.f, 1.f));
 	vector<DrawableObject*> triangle_objects;
 	triangle_objects.push_back(tr);
 
@@ -50,11 +49,12 @@ vector<DrawableObject*> Application::createTriangleScene()
 vector<DrawableObject*> Application::createBallsScene()
 {
 	vector<DrawableObject*> balls_objects;
-	ShaderProgram* shader = new ShaderProgram("vertex_phong.vert", "fragment_phong.frag", createLights(), new Color(glm::vec4(1.0f, 1.0f, 0.0f, 1.f)));
-	DrawableObject* ball_obj_1 = new DrawableObject(shader);
+	vector<Light*> lights = createLights();
+	ShaderProgram* shader = new ShaderProgram("vertex_phong.vert", "fragment_phong.frag", lights);
+
+	DrawableObject* ball_obj_1 = new DrawableObject(shader, glm::vec4(0.2f, 1.f, 0.2f, 1.f));
 	balls_objects.push_back(ball_obj_1);
 	this->camera->attach(ball_obj_1->getShaderProgram());
-
 
 	DrawableObject* ball_obj_2 = new DrawableObject(shader);
 	balls_objects.push_back(ball_obj_2);
@@ -110,12 +110,12 @@ vector<DrawableObject*> Application::createBallsScene()
 
 	return balls_objects;
 }
-/*
+
 vector<DrawableObject*> Application::createShadersExampleScene()
 {
 	vector<DrawableObject*> shaders_example_objects;
 	// phong
-	DrawableObject* ball_obj = new DrawableObject(new ShaderProgram("vertex_phong.vert", "fragment_phong.frag", new Color(glm::vec4(1.0f, 1.0f, 0.f, 1.f)), 1));
+	DrawableObject* ball_obj = new DrawableObject(new ShaderProgram("vertex_phong.vert", "fragment_phong.frag"));
 	shaders_example_objects.push_back(ball_obj);
 	this->camera->attach(ball_obj->getShaderProgram());
 
@@ -129,14 +129,13 @@ vector<DrawableObject*> Application::createShadersExampleScene()
 
 
 	// konst
-	DrawableObject* tree_obj = new DrawableObject(new ShaderProgram("vertex_phong.vert", "fragment_phong.frag", new Color(glm::vec4(0.2f, 1.f, 0.2f, 1.f)), 1));
+	DrawableObject* tree_obj = new DrawableObject(new ShaderProgram("vertex_phong.vert", "fragment_phong.frag"));
 	shaders_example_objects.push_back(tree_obj);
 	this->camera->attach(tree_obj->getShaderProgram());
 
 	Model* tree_model = Model::createTree();
 	Transformation* transform_tree = new Transformation();
 	transform_tree->scale(0.5f);
-
 	glm::vec3 translation_tree(3.f, 0.f, 0.f);
 	transform_tree->translate(translation_tree);
 	tree_obj->addModel(tree_model);
@@ -145,7 +144,7 @@ vector<DrawableObject*> Application::createShadersExampleScene()
 
 
 	// lambert
-	DrawableObject* sphere = new DrawableObject(new ShaderProgram("vertex_phong.vert", "fragment_lambert.frag", new Color(glm::vec4(0.0f, 0.f, 1.f, 1.f)), 1));
+	DrawableObject* sphere = new DrawableObject(new ShaderProgram("vertex_phong.vert", "fragment_lambert.frag"));
 	shaders_example_objects.push_back(sphere);
 	this->camera->attach(sphere->getShaderProgram());
 
@@ -159,21 +158,52 @@ vector<DrawableObject*> Application::createShadersExampleScene()
 
 	return shaders_example_objects;
 }
-*/
-/*
+
+
+vector<Light*> Application::createLightsForest()
+{
+	vector<Light*> light_objects;
+	for (int i = 0; i < 10; ++i) {
+		// Generování náhodných pozic, zajištìní y > 0
+		float x = static_cast<float>(rand() % 101 - 50); // -50 až 50
+		float y = static_cast<float>(rand() % 50 + 1);   // 1 až 50 (nad osou y = 0)
+		float z = static_cast<float>(rand() % 101 - 50); // -50 až 50
+
+		glm::vec4 position = glm::vec4(x, y, z, 1.0f);
+		glm::vec4 diffuse = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		glm::vec4 specular = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+		// Barva svìtla (mùžete mìnit podle potøeby)
+		glm::vec4 color = glm::vec4(
+			static_cast<float>(rand() % 100) / 100.0f, // Red (0.0 - 1.0)
+			static_cast<float>(rand() % 100) / 100.0f, // Green (0.0 - 1.0)
+			static_cast<float>(rand() % 100) / 100.0f, // Blue (0.0 - 1.0)
+			1.0f                                       // Alpha
+		);
+
+		Light* light = new Light(position, diffuse, specular, color);
+		light_objects.push_back(light);
+	}
+	return light_objects;
+}
+
 vector<DrawableObject*> Application::createForest()
 {
 	vector<DrawableObject*> forest_objects;
+	ShaderProgram* shader_tree = new ShaderProgram("vertex_def.vert", "fragment_tree_def.frag", createLightsForest());
+	ShaderProgram* shader_plain = new ShaderProgram("vertex_def.vert", "fragment_plain_def.frag");
+	ShaderProgram* shader_sphere = new ShaderProgram("vertex_phong.vert", "fragment_lambert.frag");
+
 	for (int i = 1; i <= 100; i++) {
-		forest_objects.push_back(new DrawableObject(new ShaderProgram("vertex_def.vert", "fragment_tree_def.frag")));
+		forest_objects.push_back(new DrawableObject(shader_tree));
 		this->camera->attach(forest_objects[i - 1]->getShaderProgram());
 	}
 
-	DrawableObject* plain = new DrawableObject(new ShaderProgram("vertex_def.vert", "fragment_plain_def.frag", new Color(glm::vec4(0.f, 0.5f, 0.f, 1.f)), 1));
+	DrawableObject* plain = new DrawableObject(shader_plain, glm::vec4(0.0f, 0.f, 1.f, 1.f));
 	forest_objects.push_back(plain);
 	this->camera->attach(plain->getShaderProgram());
 
-	DrawableObject* sphere = new DrawableObject(new ShaderProgram("vertex_phong.vert", "fragment_lambert.frag", new Color(glm::vec4(1.0f, 1.0f, 0.f, 1.f)), 1));
+	DrawableObject* sphere = new DrawableObject(shader_sphere, glm::vec4(0.0f, 0.f, 1.f, 1.f));
 	forest_objects.push_back(sphere);
 	this->camera->attach(sphere->getShaderProgram());
 
@@ -188,7 +218,7 @@ vector<DrawableObject*> Application::createForest()
 		forest_objects[i]->addModel(tree_model);
 		forest_objects[i]->addTransformation(transform_tree);
 	}
-	
+
 
 	for (int i = 50; i < 100; ++i) {
 		Model* bush_model = Model::createBush();
@@ -223,7 +253,7 @@ vector<DrawableObject*> Application::createForest()
 	return forest_objects;
 
 }
-*/
+
 void Application::initialize()
 {
 
@@ -258,7 +288,7 @@ void Application::initialize()
 
 	int width, height;
 	glfwGetFramebufferSize(this->window, &width, &height);
-	glViewport(0, 0, width, height); 
+	glViewport(0, 0, width, height);
 }
 
 float Application::getDeltaTime()
@@ -384,23 +414,21 @@ void Application::run()
 	glfwSetMouseButtonCallback(window, button_callback_static);
 
 	glEnable(GL_DEPTH_TEST);
-	//vector<DrawableObject*> forest_objects_create = createForest();
-	//vector<DrawableObject*> triangle_objects_create = createTriangleScene();
+	vector<DrawableObject*> forest_objects_create = createForest();
+	vector<DrawableObject*> triangle_objects_create = createTriangleScene();
 	vector<DrawableObject*> balls_objects_create = createBallsScene();
 	Scene scene_balls(balls_objects_create);
-	/*
-	vector<DrawableObject*> shaders_example_objects_create = createShadersExampleScene();
+	//vector<DrawableObject*> shaders_example_objects_create = createShadersExampleScene();
 	Scene scene_forest(forest_objects_create);
 	Scene scene_triangle(triangle_objects_create);
+	//Scene scene_shaders_example(shaders_example_objects_create);
 	
-	Scene scene_shaders_example(shaders_example_objects_create);
-	*/
 
 	while (!glfwWindowShouldClose(this->window))
 	{
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		/*
+		
 		if (forest_scene == true) {
 			scene_forest.render(this->camera);
 		}
@@ -408,7 +436,7 @@ void Application::run()
 		if (triangle_scene == true) {
 			scene_triangle.render(this->camera);
 		}
-		*/
+		
 		if (balls_scene == true) {
 			scene_balls.render(this->camera);
 		}
@@ -416,7 +444,7 @@ void Application::run()
 		if (shaders_example_scene == true) {
 			scene_shaders_example.render(this->camera);
 			shaders_example_objects_create[1]->setSpin(3.0f, 160.0f, glm::vec3(0.0f, 1.0f, 0.0f), 0.016f);
-		}		
+		}
 		*/
 		glfwPollEvents();
 		glfwSwapBuffers(this->window);

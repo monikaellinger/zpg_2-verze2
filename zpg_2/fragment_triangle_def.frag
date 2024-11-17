@@ -1,6 +1,9 @@
 // KONSTANT
 #version 330
+
+uniform vec4 objectColor; 
+
 	out vec4 frag_colour;
 	void main () {
-	     frag_colour = vec4 (1.5, 1.0, 0.5, 1.0);
+	     frag_colour = objectColor;
 	};

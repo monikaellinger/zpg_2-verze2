@@ -8,6 +8,12 @@ DrawableObject::DrawableObject(ShaderProgram* shaderProgram)
 	this->transformation = 0;
 }
 
+DrawableObject::DrawableObject(ShaderProgram* shaderProgram, glm::vec4 color)
+{
+	this->shaderProgram = shaderProgram;
+	this->color = color;
+}
+
 DrawableObject::DrawableObject(ShaderProgram* shaderProgram, Model* model)
 {
 	this->shaderProgram = shaderProgram;
@@ -22,13 +28,17 @@ DrawableObject::DrawableObject(ShaderProgram* shaderProgram, Model* model, Trans
 	this->transformation = transformation;
 
 }
-
 void DrawableObject::draw(Camera* camera)
 {
-		this->shaderProgram->use();
-		this->shaderProgram->setCamMatrix(camera->getProjectionMatrix(45.f, 0.1f, 100.f), camera->getViewMatrix());
-		this->transformation->useTransformation(this->shaderProgram->getTransformID());
-		this->model->drawModel();
+	
+	this->shaderProgram->use();
+	if (this->color != glm::vec4(-1.0f))
+	{
+		this->shaderProgram->setVec4Uniform("objectColor", this->color);
+	}
+	this->shaderProgram->setCamMatrix(camera->getProjectionMatrix(45.f, 0.1f, 100.f), camera->getViewMatrix());
+	this->transformation->useTransformation(this->shaderProgram->getTransformID());
+	this->model->drawModel();
 }
 
 void DrawableObject::addModel(Model* model)

@@ -31,9 +31,11 @@ private:
 	Model* model;
 	Transformation* transformation;
 	Camera* camera;
+	glm::vec4 color;
 
 public:
 	DrawableObject(ShaderProgram* shaderProgram);
+	DrawableObject(ShaderProgram* shaderProgram, glm::vec4 color);
 	DrawableObject(ShaderProgram* shaderProgram, Model* model);
 	DrawableObject(ShaderProgram* shaderProgram, Model* model, Transformation* transformation);
 	void draw(Camera* camera);
