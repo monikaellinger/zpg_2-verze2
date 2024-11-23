@@ -19,6 +19,7 @@ glm::mat4 Camera::getProjectionMatrix(float fov, float near, float far) {
 	return glm::perspective(glm::radians(fov), this->aspect, near, far);
 }
 
+
 void Camera::setAspect(float aspect)
 {
 	this->aspect = aspect;

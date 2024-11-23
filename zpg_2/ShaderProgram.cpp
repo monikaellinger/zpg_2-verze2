@@ -16,17 +16,6 @@ ShaderProgram::ShaderProgram(const char* vertexPath, const char* fragmentPath, v
 	this->lightCount = lights.size();
 }
 
-
-ShaderProgram::ShaderProgram(const char* vertexPath, const char* fragmentPath, vector<Light*> lights, Color* color)
-{
-	ShaderLoader* shaderLoader = new ShaderLoader();
-	this->programID = shaderLoader->loadShader(vertexPath, fragmentPath);
-	this->lights = lights;
-	this->color = color;
-	this->lightCount = lights.size();
-}
-
-
 void ShaderProgram::setMat4Uniform(const char* name, glm::mat4 value)
 {
 	GLuint id = glGetUniformLocation(this->programID, name);
@@ -58,16 +47,17 @@ void ShaderProgram::setVec4Uniform(const char* name, glm::vec4 value)
 }
 
 void ShaderProgram::use() {
+
 	glUseProgram(this->programID);
+	
 	if (!lights.empty()) {
 		setIntUniform("numberOfLights", this->lightCount);
 		for (int i = 0; i < this->lightCount; ++i) {
 			sendLight("lights", i, *lights[i]);
 		}
 	}
+	glUniform1i(glGetUniformLocation(this->programID, "textureSampler"), 0);
 }
-
-
 
 GLuint ShaderProgram::getProjectionMatrixID()
 {

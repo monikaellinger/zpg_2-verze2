@@ -104,13 +104,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\MonikaEllingerová\source\repos\Libs\glew-2.1.0\glew-2.1.0\include;C:\Users\MonikaEllingerová\source\repos\Libs\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\include;C:\Users\MonikaEllingerová\source\repos\Libs\glm-master\glm-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\MonikaEllingerová\source\repos\Libs\soil-vc2012\soil\include;C:\Users\MonikaEllingerová\source\repos\Libs\glew-2.1.0\glew-2.1.0\include;C:\Users\MonikaEllingerová\source\repos\Libs\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\include;C:\Users\MonikaEllingerová\source\repos\Libs\glm-master\glm-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\MonikaEllingerová\source\repos\Libs\glew-2.1.0-win32\glew-2.1.0\lib\Release\x64;C:\Users\MonikaEllingerová\source\repos\Libs\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;glfw3.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\MonikaEllingerová\source\repos\Libs\soil-vc2012\soil\lib-vc2012\Platform_x64;C:\Users\MonikaEllingerová\source\repos\Libs\glew-2.1.0-win32\glew-2.1.0\lib\Release\x64;C:\Users\MonikaEllingerová\source\repos\Libs\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;glfw3.lib;glew32.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -132,10 +132,10 @@
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Color.cpp" />
     <ClCompile Include="DrawableObject.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Material.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Observer.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -151,9 +151,9 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="bushes.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="Color.h" />
     <ClInclude Include="DrawableObject.h" />
     <ClInclude Include="Light.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Observer.h" />
     <ClInclude Include="Scene.h" />
@@ -174,9 +174,14 @@
     <None Include="fragment_sphere_def.frag" />
     <None Include="fragment_tree_def.frag" />
     <None Include="fragment_triangle_def.frag" />
+    <None Include="test_frag.frag" />
+    <None Include="test_vert.vert" />
+    <None Include="texture_fragment.frag" />
+    <None Include="texture_vertex.vert" />
     <None Include="vertex_def.vert" />
     <None Include="vertex_scene.vert" />
     <None Include="vertex_short_def.vert" />
+    <None Include="zigi_frag.frag" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
