@@ -22,22 +22,16 @@ struct Light {
     float outerCutoff;    // Kosinus vnìjšího úhlu pro reflektor (mìkký pøechod)
 };
 
-struct Material {
-    vec3 ra;
-    vec3 rd;
-    vec3 rs;
-};
-
 uniform Light lights[MAX_LIGHTS];
 uniform int numberOfLights;
 
 uniform vec3 viewPosition;
 uniform vec4 objectColor;
 uniform sampler2D textureSampler; // Texturový sampler
-uniform Material material;
+
 
 vec4 calculateLight(Light light, vec3 norm, vec3 viewDir, vec3 fragPos, vec4 texColor) {
-    vec4 ambient = light.color * texColor * 0.1 * vec4(material.ra, 1.0); // Ambientní složka
+    vec4 ambient = light.color * texColor * 0.1;
     vec4 diffuse = vec4(0.0);
     vec4 specular = vec4(0.0);
 
@@ -48,8 +42,8 @@ vec4 calculateLight(Light light, vec3 norm, vec3 viewDir, vec3 fragPos, vec4 tex
             vec3 reflectDir = reflect(-lightDir, norm);
             float spec = pow(max(dot(viewDir, reflectDir), 0.0), 1.0);
 
-            diffuse = diff * light.diffuse * texColor * light.color * objectColor * vec4(material.rd, 1.0);
-            specular = spec * light.specular * light.color * vec4(material.rs, 1.0);
+            diffuse = diff * light.diffuse * texColor * light.color * objectColor;
+            specular = spec * light.specular * light.color;
         }
 
     } else if (light.type == LIGHT_TYPE_DIRECTIONAL) {
@@ -74,8 +68,8 @@ vec4 calculateLight(Light light, vec3 norm, vec3 viewDir, vec3 fragPos, vec4 tex
             vec3 reflectDir = reflect(-lightDir, norm);
             float spec = pow(max(dot(viewDir, reflectDir), 0.0), 1.0);
 
-            diffuse = diff * light.diffuse * texColor * light.color * objectColor * intensity * vec4(material.rd, 1.0);
-            specular = spec * light.specular * light.color * intensity * vec4(material.rs, 1.0);
+            diffuse = diff * light.diffuse * texColor * light.color * objectColor * intensity;
+            specular = spec * light.specular * light.color * intensity;
         }
     }
 

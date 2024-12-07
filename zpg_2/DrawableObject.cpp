@@ -31,14 +31,14 @@ DrawableObject::DrawableObject(ShaderProgram* shaderProgram, Model* model, Trans
 void DrawableObject::draw(Camera* camera)
 {	
 	this->shaderProgram->use();
-	/*
+	
 	if (this->color != glm::vec4(-1.0f))
 	{
 		this->shaderProgram->setVec4Uniform("objectColor", this->color);
-	}*/
+	}
 	//if (this->textureID >= 0) {
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, this->textureID);
+	//glActiveTexture(GL_TEXTURE0);
+	//glBindTexture(GL_TEXTURE_2D, this->textureID);
 
 	//}
 	this->shaderProgram->setCamMatrix(camera->getProjectionMatrix(45.f, 0.1f, 100.f), camera->getViewMatrix());
@@ -78,12 +78,16 @@ void DrawableObject::setSpin(float angle, float speed, glm::vec3 axis, float del
 
 void DrawableObject::setTexture(const string& filePath)
 {
-	//glActiveTexture(GL_TEXTURE0); // Aktivace texturové jednotky
+
+	glActiveTexture(GL_TEXTURE0); // Aktivace texturové jednotky
 	this->textureID = SOIL_load_OGL_texture(filePath.c_str(), SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+	//std::cerr << "SOIL error: " << SOIL_last_result() << std::endl;
+
 	if (textureID == 0) {
 		cerr << "Failed to load texture: " << filePath << std::endl;
 		exit(EXIT_FAILURE);
-	}
+	} 
+	glBindTexture(GL_TEXTURE_2D, this->textureID);
 }
 
 void DrawableObject::setMaterial(Material* material)

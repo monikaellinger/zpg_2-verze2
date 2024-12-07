@@ -56,7 +56,7 @@ void ShaderProgram::use() {
 			sendLight("lights", i, *lights[i]);
 		}
 	}
-	glUniform1i(glGetUniformLocation(this->programID, "textureSampler"), 0);
+	
 }
 
 GLuint ShaderProgram::getProjectionMatrixID()

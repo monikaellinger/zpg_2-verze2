@@ -194,13 +194,13 @@
 		vector<Light*> light_objects;
 
 		Light* light = new Light(
-			glm::vec4(-50.f, 10.f, 5.0f, 0.0f),		// Position
+			glm::vec4(30.f, 20.f, 10.0f, 0.0f),		// Position
 			glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),      // Diffuse color
 			glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),      // Specular color
 			glm::vec4(0.0f, 1.0f, 0.0f, 1.0f),      // Light color
 			glm::vec3(0.0f, 0.0f, 0.0f),            // Direction (not used for point light)
-			0.0f,                                     // Cutoff (not used for point light)
-			0.0f);
+			0.5f,                                     // Cutoff (not used for point light)
+			10.f);
 
 		light->type = LIGHT_TYPE_POINT;
 		light_objects.push_back(light);
@@ -212,7 +212,7 @@
 		}
 
 		ShaderProgram* shader_tree = new ShaderProgram("vertex_phong.vert", "fragment_phong.frag", light_objects);
-		ShaderProgram* shader_plain = new ShaderProgram("vertex_phong.vert", "fragment_phong.frag", light_objects);
+		ShaderProgram* shader_plain = new ShaderProgram("texture_vertex.vert", "texture_fragment.frag", light_objects);
 		ShaderProgram* shader_sphere = new ShaderProgram("vertex_phong.vert", "fragment_phong.frag", light_objects);
 
 		for (Light* light : light_objects)
@@ -254,7 +254,7 @@
 			Model* bush_model = Model::createBush();
 			Transformation* transform_bush = new Transformation();
 
-			transform_bush->scale(0.2f);
+			transform_bush->scale(2.2f);
 
 			glm::vec3 translation_bush((i % 5) * 2.f, -4.0f, (i / 5) * 9.0f);
 			transform_bush->translate(translation_bush);
@@ -266,12 +266,11 @@
 		Model* plain_model = Model::createPlain();
 		Transformation* transform_plain = new Transformation();
 		transform_plain->scale(10.0f);
-		glm::vec3 translation_plain(0.f, -0.008f, 0.0f);
+		glm::vec3 translation_plain(0.8f, -0.080f, 0.8f);
 		transform_plain->translate(translation_plain);
-		
 		plain->addModel(plain_model);
 		plain->addTransformation(transform_plain);
-		//plain->setTexture("grass.png");
+		plain->setTexture("grass.png");
 		
 
 		Model* sphere_model = Model::createSphere();

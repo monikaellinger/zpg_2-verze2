@@ -104,13 +104,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\MonikaEllingerová\source\repos\Libs\soil-vc2012\soil\include;C:\Users\MonikaEllingerová\source\repos\Libs\glew-2.1.0\glew-2.1.0\include;C:\Users\MonikaEllingerová\source\repos\Libs\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\include;C:\Users\MonikaEllingerová\source\repos\Libs\glm-master\glm-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\MonikaEllingerová\source\repos\Libs\assimp\assimp\include;C:\Users\MonikaEllingerová\source\repos\Libs\soil-vc2012\soil\include;C:\Users\MonikaEllingerová\source\repos\Libs\glew-2.1.0\glew-2.1.0\include;C:\Users\MonikaEllingerová\source\repos\Libs\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\include;C:\Users\MonikaEllingerová\source\repos\Libs\glm-master\glm-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\MonikaEllingerová\source\repos\Libs\soil-vc2012\soil\lib-vc2012\Platform_x64;C:\Users\MonikaEllingerová\source\repos\Libs\glew-2.1.0-win32\glew-2.1.0\lib\Release\x64;C:\Users\MonikaEllingerová\source\repos\Libs\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;glfw3.lib;glew32.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\MonikaEllingerová\source\repos\Libs\assimp\assimp\lib\x64\v141\Release;C:\Users\MonikaEllingerová\source\repos\Libs\soil-vc2012\soil\lib-vc2012\Platform_x64;C:\Users\MonikaEllingerová\source\repos\Libs\glew-2.1.0-win32\glew-2.1.0\lib\Release\x64;C:\Users\MonikaEllingerová\source\repos\Libs\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;glfw3.lib;glew32.lib;SOIL.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -142,11 +142,11 @@
     <ClCompile Include="ShaderLoader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="Subject.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Transformation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\Documents\VSB\Models\Models\tree.h" />
-    <ClInclude Include="..\..\..\..\Documents\VSB\Models\Models\plain.h" />
     <ClInclude Include="..\..\..\..\Documents\VSB\Models\Models\sphere.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="bushes.h" />
@@ -156,10 +156,12 @@
     <ClInclude Include="Material.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Observer.h" />
+    <ClInclude Include="plain.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ShaderLoader.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="Subject.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="Transformation.h" />
     <ClInclude Include="triangle.h" />
   </ItemGroup>
@@ -174,8 +176,6 @@
     <None Include="fragment_sphere_def.frag" />
     <None Include="fragment_tree_def.frag" />
     <None Include="fragment_triangle_def.frag" />
-    <None Include="test_frag.frag" />
-    <None Include="test_vert.vert" />
     <None Include="texture_fragment.frag" />
     <None Include="texture_vertex.vert" />
     <None Include="vertex_def.vert" />
