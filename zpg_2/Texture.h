@@ -1,11 +1,21 @@
 #include <string>
+
 #include <SOIL.h>
+#include <GL/glew.h>
 using namespace std;
 
-class Texture
-{
+class Texture {
 private:
-	int textureID;
+    GLuint textureID;
+    std::string filePath;
+
 public:
-	Texture(string path);
+    Texture(const std::string& path);
+    ~Texture();
+
+    void bind(GLenum textureUnit = GL_TEXTURE0) const;
+    void unbind() const;
+
+    GLuint getID() const { return textureID; }
 };
+

@@ -31,19 +31,23 @@ DrawableObject::DrawableObject(ShaderProgram* shaderProgram, Model* model, Trans
 void DrawableObject::draw(Camera* camera)
 {	
 	this->shaderProgram->use();
+
+	if (texture) {
+		texture->bind();
+	}
 	
 	if (this->color != glm::vec4(-1.0f))
 	{
 		this->shaderProgram->setVec4Uniform("objectColor", this->color);
 	}
-	//if (this->textureID >= 0) {
-	//glActiveTexture(GL_TEXTURE0);
-	//glBindTexture(GL_TEXTURE_2D, this->textureID);
-
-	//}
+	
 	this->shaderProgram->setCamMatrix(camera->getProjectionMatrix(45.f, 0.1f, 100.f), camera->getViewMatrix());
 	this->transformation->useTransformation(this->shaderProgram->getTransformID());
 	this->model->drawModel();
+
+	if (texture) {
+		texture->unbind();
+	}
 }
 
 void DrawableObject::addModel(Model* model)
@@ -76,6 +80,11 @@ void DrawableObject::setSpin(float angle, float speed, glm::vec3 axis, float del
 	this->transformation->spin(angle, speed, axis, deltaTime);
 }
 
+void DrawableObject::setTexture(Texture* newTexture) {
+	this->texture = newTexture;
+}
+
+/*
 void DrawableObject::setTexture(const string& filePath)
 {
 
@@ -95,4 +104,4 @@ void DrawableObject::setMaterial(Material* material)
 	this->material = material;
 }
 
-
+*/

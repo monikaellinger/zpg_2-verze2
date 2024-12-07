@@ -192,6 +192,8 @@
 	{
 		vector<DrawableObject*> forest_objects;
 		vector<Light*> light_objects;
+		Texture* grassTexture = new Texture("grass.png");
+
 
 		Light* light = new Light(
 			glm::vec4(30.f, 20.f, 10.0f, 0.0f),		// Position
@@ -270,7 +272,7 @@
 		transform_plain->translate(translation_plain);
 		plain->addModel(plain_model);
 		plain->addTransformation(transform_plain);
-		plain->setTexture("grass.png");
+		plain->setTexture(grassTexture);
 		
 
 		Model* sphere_model = Model::createSphere();

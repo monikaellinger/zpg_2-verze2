@@ -141,12 +141,6 @@
     <None Include="fragment_lambert.frag">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="vertex_scene.vert">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="fragment_scene.frag">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="vertex_def.vert">
       <Filter>Resource Files</Filter>
     </None>
@@ -156,7 +150,10 @@
     <None Include="texture_fragment.frag">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="zigi_frag.frag">
+    <None Include="PhongVertexShader.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PhongFragmentShader.frag">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

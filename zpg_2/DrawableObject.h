@@ -23,6 +23,7 @@ using namespace std;
 #include "Transformation.h"
 #include "Camera.h"
 #include "Material.h"
+#include "Texture.h"
 
 #include <SOIL.h>
 #include <iostream>
@@ -37,6 +38,7 @@ private:
 	Material* material;
 	glm::vec4 color;
 	GLuint textureID;
+	Texture* texture;
 
 
 public:
@@ -53,7 +55,8 @@ public:
 	Transformation* getTransformastion() const;
 	ShaderProgram* getShaderProgram() const;
 	void setSpin(float angle, float speed, glm::vec3 axis, float deltaTime);
-	void setTexture(const std::string& filePath);
+	//void setTexture(const std::string& filePath);
 	void setMaterial(Material* material);
+	void setTexture(Texture* newTexture);
 };
 
