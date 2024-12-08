@@ -5,6 +5,11 @@ Scene::Scene(vector<DrawableObject*>& objects)
 	this->objects = objects;
 }
 
+Scene::Scene(vector<Skybox*>& skybox_objects)
+{
+	this->skybox_objects = skybox_objects;
+}
+
 Scene::Scene(vector<DrawableObject*>& objects, ShaderProgram* shader_program)
 {
 	this->objects = objects;

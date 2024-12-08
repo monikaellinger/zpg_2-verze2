@@ -21,13 +21,13 @@
 	using namespace std;
 
 	#include "Model.h"
-	//#include "Shader.h"
 	#include "Scene.h"
 	#include "ShaderProgram.h"
 	#include "DrawableObject.h"
 	#include "Transformation.h"
 	#include "Light.h"
 	#include "Camera.h"
+	#include "Skybox.h"
 	#include <chrono>
 
 	#include <SOIL.h>
@@ -42,6 +42,7 @@
 		bool forest_scene;
 		bool triangle_scene;
 		bool balls_scene;
+		bool skybox_scene;
 		bool shaders_example_scene;
 
 		float lastX, lastY; 
@@ -70,6 +71,7 @@
 		vector<DrawableObject*> createTriangleScene();
 		vector<DrawableObject*> createBallsScene();
 		vector<DrawableObject*> createShadersExampleScene();
+		vector<Skybox*> createSkyboxScene();
 		void run();
 
 		void error_callback(int error, const char* description);

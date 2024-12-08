@@ -3,7 +3,6 @@
 class Observer;
 class Subject
 {
-
 	
 public:
 	virtual void attach(Observer* observer) = 0;

@@ -21,11 +21,13 @@ using namespace std;
 #include "DrawableObject.h"
 #include "ShaderProgram.h"
 #include "Model.h"
+#include "Skybox.h"
 
 class Scene
 {
 private:
 	vector<DrawableObject*> objects;
+	vector<Skybox*> skybox_objects;
 	vector<DrawableObject*> triangle_objects;
 	ShaderProgram* shader_program;
 	bool triangle;
@@ -35,6 +37,7 @@ private:
 public:
 
 	Scene(vector<DrawableObject*>& objects);
+	Scene(vector<Skybox*>& skybox_objects);
 	Scene(vector<DrawableObject*>& objects, ShaderProgram* shader_program);
 	void render(Camera* camera);
 	ShaderProgram* getShaderProgram();

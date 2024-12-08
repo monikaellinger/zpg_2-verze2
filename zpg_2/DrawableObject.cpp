@@ -36,6 +36,8 @@ void DrawableObject::draw(Camera* camera)
 		texture->bind();
 	}
 	
+	//this->modelLoader->bind();
+
 	if (this->color != glm::vec4(-1.0f))
 	{
 		this->shaderProgram->setVec4Uniform("objectColor", this->color);
@@ -45,6 +47,7 @@ void DrawableObject::draw(Camera* camera)
 	this->transformation->useTransformation(this->shaderProgram->getTransformID());
 	this->model->drawModel();
 
+	//this->modelLoader->unbind();
 	if (texture) {
 		texture->unbind();
 	}
@@ -83,8 +86,12 @@ void DrawableObject::setSpin(float angle, float speed, glm::vec3 axis, float del
 void DrawableObject::setTexture(Texture* newTexture) {
 	this->texture = newTexture;
 }
-
 /*
+void DrawableObject::setModelLoader(ModelLoader* loader) {
+	modelLoader = loader;
+}
+
+
 void DrawableObject::setTexture(const string& filePath)
 {
 
