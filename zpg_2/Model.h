@@ -49,10 +49,12 @@ private:
 	const float* points;
 	GLenum drawMode;
 	int numVertices;
+	int draw; // elements/array
 
 public:
-	Model(GLenum drawMode, const float* points, GLuint vao, GLuint vbo, int numVertices);
-	void drawModel();
+	Model(GLenum drawMode, const float* points, GLuint vao, GLuint vbo, int numVertices, int draw);
+	void drawModelElements();
+	void drawModelArrays();
 	static Model* createTriangle();
 	static Model* createTree();
 	static Model* createBush();
@@ -60,5 +62,6 @@ public:
 	static Model* createPlain();
 	static Model* createSkycube();
 	static Model* createLogin(const string& filePath);
+	int getDraw();
 };
 

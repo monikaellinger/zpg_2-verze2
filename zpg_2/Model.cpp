@@ -1,15 +1,23 @@
 #include "Model.h"
 
-Model::Model(GLenum drawMode, const float* points, GLuint vao, GLuint vbo, int numVertices) {
+Model::Model(GLenum drawMode, const float* points, GLuint vao, GLuint vbo, int numVertices, int draw) {
 
 	this->drawMode = drawMode;
 	this->points = points;
 	this->vao = vao;
 	this->vbo = vbo;
 	this->numVertices = numVertices;
+	this->draw = draw;
 }
 
-void Model::drawModel()
+void Model::drawModelArrays()
+{
+	glBindVertexArray(this->vao);
+	glDrawArrays(GL_TRIANGLES, 0, numVertices);
+	//glDrawElements(GL_TRIANGLES, numVertices, GL_UNSIGNED_INT, NULL);
+}
+
+void Model::drawModelElements()
 {
 	glBindVertexArray(this->vao);
 	//glDrawArrays(GL_TRIANGLES, 0, numVertices);
@@ -35,7 +43,7 @@ Model* Model::createTriangle()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (GLvoid*)0);
 	glBindVertexArray(0);
 
-	return new Model(GL_TRIANGLES, triangle_points, vao, vbo, 3);
+	return new Model(GL_TRIANGLES, triangle_points, vao, vbo, 3, 1);
 }
 
 Model* Model::createTree()
@@ -59,7 +67,7 @@ Model* Model::createTree()
 
 	glBindVertexArray(0); 
 
-	return new Model(GL_TRIANGLES, tree, vao, vbo, 92814);
+	return new Model(GL_TRIANGLES, tree, vao, vbo, 92814, 1);
 }
 
 Model* Model::createBush()
@@ -73,8 +81,8 @@ Model* Model::createBush()
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
-	glEnableVertexAttribArray(0); // Pozice
-	glEnableVertexAttribArray(1); // Normály (nebo barvy)
+	glEnableVertexAttribArray(0); // Position
+	glEnableVertexAttribArray(1); // Normals
 
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
@@ -83,7 +91,7 @@ Model* Model::createBush()
 
 	glBindVertexArray(0);
 
-	return new Model(GL_TRIANGLES, bushes, vao, vbo, 8730);
+	return new Model(GL_TRIANGLES, bushes, vao, vbo, 8730, 1);
 }
 
 Model* Model::createSphere()
@@ -106,7 +114,7 @@ Model* Model::createSphere()
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*)(3 * sizeof(float)));
 	glBindVertexArray(0);
 
-	return new Model(GL_TRIANGLES, sphere, vao, vbo, 2880);
+	return new Model(GL_TRIANGLES, sphere, vao, vbo, 2880, 1);
 }
 
 Model* Model::createPlain()
@@ -128,7 +136,7 @@ Model* Model::createPlain()
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid*)(3 * sizeof(float)));
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid*)(6 * sizeof(float)));
 
-	return new Model(GL_TRIANGLES, plain, VAO, VBO, 6);
+	return new Model(GL_TRIANGLES, plain, VAO, VBO, 6, 1);
 }
 
 Model* Model::createSkycube()
@@ -150,7 +158,7 @@ Model* Model::createSkycube()
 
 
 
-	return new Model(GL_TRIANGLES, triangle_points, VAO, VBO, 3);
+	return new Model(GL_TRIANGLES, triangle_points, VAO, VBO, 3, 1);
 }
 
 
@@ -169,7 +177,6 @@ Model* Model::createLogin(const std::string& filePath)
 	std::vector<Vertex> vertices;
 	std::vector<GLuint> indices;
 
-	// Explicitnì definovaný typ pro parametr node a parentTransform
 	std::function<void(aiNode*, const aiMatrix4x4&)> processNode = [&](aiNode* node, const aiMatrix4x4& parentTransform) {
 		aiMatrix4x4 nodeTransform = parentTransform * node->mTransformation;
 
@@ -255,6 +262,11 @@ Model* Model::createLogin(const std::string& filePath)
 
 	glBindVertexArray(0);
 
-	return new Model(GL_TRIANGLES, nullptr, vao, vbo, indices.size());
+	return new Model(GL_TRIANGLES, nullptr, vao, vbo, indices.size(), 2);
+}
+
+int Model::getDraw()
+{
+	return this->draw;
 }
 

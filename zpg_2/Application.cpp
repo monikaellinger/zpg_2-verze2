@@ -136,7 +136,6 @@ vector<DrawableObject*> Application::createShadersExampleScene()
 	light_objects.push_back(light3);
 
 	ShaderProgram* shader = new ShaderProgram("vertex_phong.vert", "fragment_phong.frag", light_objects);
-	ShaderProgram* shader_lambert = new ShaderProgram("vertex_phong.vert", "fragment_lambert.frag", light_objects);
 
 	for (Light* light : light_objects)
 	{
@@ -172,19 +171,6 @@ vector<DrawableObject*> Application::createShadersExampleScene()
 	tree_obj->addModel(tree_model);
 	tree_obj->addTransformation(transform_tree);
 
-	// Lambert example - Sphere
-	DrawableObject* sphere = new DrawableObject(shader_lambert, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
-	shaders_example_objects.push_back(sphere);
-	this->camera->attach(sphere->getShaderProgram());
-
-	Model* sphere_model = Model::createSphere();
-	Transformation* transform_sphere = new Transformation();
-	transform_sphere->scale(1.0f);
-	glm::vec3 translation_sphere(5.f, 5.f, 0.0f);
-	transform_sphere->translate(translation_sphere);
-	sphere->addModel(sphere_model);
-	sphere->addTransformation(transform_sphere);
-
 	return shaders_example_objects;
 }
 
@@ -200,6 +186,7 @@ vector<Skybox*> Application::createSkyboxScene()
 		glm::vec3(0.0f, 0.0f, 0.0f),            // Direction (not used for point light)
 		0.0f,                                     // Cutoff (not used for point light)
 		0.0f);                                    // Outer cutoff (not used for point light)
+
 	light1->type = LIGHT_TYPE_POINT;
 	sky_lights.push_back(light1);
 
@@ -531,10 +518,8 @@ void Application::run()
 	Scene scene_triangle(triangle_objects_create);
 	Scene scene_shaders_example(shaders_example_objects_create);
 	Scene scene_balls(balls_objects_create);
-	
 	Scene scene_skybox(skybox_objects_create);
 
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	while (!glfwWindowShouldClose(this->window))
 	{
 
