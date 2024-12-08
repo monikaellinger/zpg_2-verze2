@@ -40,8 +40,6 @@ private:
 	glm::vec4 color;
 	GLuint textureID;
 	Texture* texture;
-	//ModelLoader* modelLoader;
-
 
 
 public:
@@ -60,6 +58,5 @@ public:
 	void setSpin(float angle, float speed, glm::vec3 axis, float deltaTime);
 	void setMaterial(Material* material);
 	void setTexture(Texture* newTexture);
-	//void setModelLoader(ModelLoader* loader);
 };
 

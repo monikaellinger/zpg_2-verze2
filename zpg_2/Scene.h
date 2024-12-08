@@ -40,6 +40,7 @@ public:
 	Scene(vector<Skybox*>& skybox_objects);
 	Scene(vector<DrawableObject*>& objects, ShaderProgram* shader_program);
 	void render(Camera* camera);
+	void addObject(DrawableObject* obj);
 	ShaderProgram* getShaderProgram();
 };
 

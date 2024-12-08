@@ -17,15 +17,18 @@ Scene::Scene(vector<DrawableObject*>& objects, ShaderProgram* shader_program)
 }
 
 void Scene::render(Camera* camera)
-{
-	
-	for (DrawableObject* obj : objects) {
-		obj->draw(camera);
+{	
+	for (size_t i = 0; i < objects.size(); ++i) {
+		glStencilFunc(GL_ALWAYS, static_cast<GLuint>(i + 1), 0xFF); // Assign stencil ID
+		objects[i]->draw(camera);
 	}
-	
 }
 
 ShaderProgram* Scene::getShaderProgram()
 {
 	return shader_program;
+}
+
+void Scene::addObject(DrawableObject* obj) {
+	objects.push_back(obj);
 }

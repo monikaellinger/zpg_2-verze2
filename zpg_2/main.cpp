@@ -3,6 +3,9 @@
 #include <stdio.h>
 
 
+// Monika Ellingerová
+// ELL0014
+
 int main(void)
 {
 	

@@ -210,7 +210,7 @@ vector<Skybox*> Application::createSkyboxScene()
 
 vector<DrawableObject*> Application::createForest()
 {
-	vector<DrawableObject*> forest_objects;
+	//vector<DrawableObject*> forest_objects;
 	vector<Light*> light_objects;
 	Texture* grassTexture = new Texture("grass.png");
 
@@ -259,21 +259,21 @@ vector<DrawableObject*> Application::createForest()
 
 
 	for (int i = 1; i <= 100; i++) {
-		forest_objects.push_back(new DrawableObject(shader_tree));
-		this->camera->attach(forest_objects[i - 1]->getShaderProgram());
+		this->forest_objects.push_back(new DrawableObject(shader_tree));
+		this->camera->attach(this->forest_objects[i - 1]->getShaderProgram());
 	}
 
 	DrawableObject* plain = new DrawableObject(shader_plain);
-	forest_objects.push_back(plain);
+	this->forest_objects.push_back(plain);
 	this->camera->attach(plain->getShaderProgram());
 
 
 	DrawableObject* sphere = new DrawableObject(shader_sphere);
-	forest_objects.push_back(sphere);
+	this->forest_objects.push_back(sphere);
 	this->camera->attach(sphere->getShaderProgram());
 	
 	DrawableObject* login = new DrawableObject(shader_login, glm::vec4(0.f, 0.f, 1.f, 1.f));
-	forest_objects.push_back(login);
+	this->forest_objects.push_back(login);
 	this->camera->attach(login->getShaderProgram());
 	
 
@@ -285,8 +285,8 @@ vector<DrawableObject*> Application::createForest()
 		glm::vec3 translation_tree((i % 5) * 10.0f, -4.0f, (i / 5) * 10.0f);
 		transform_tree->translate(translation_tree);
 
-		forest_objects[i]->addModel(tree_model);
-		forest_objects[i]->addTransformation(transform_tree);
+		this->forest_objects[i]->addModel(tree_model);
+		this->forest_objects[i]->addTransformation(transform_tree);
 	}
 
 
@@ -299,8 +299,8 @@ vector<DrawableObject*> Application::createForest()
 		glm::vec3 translation_bush((i % 5) * 2.f, -4.0f, (i / 5) * 9.0f);
 		transform_bush->translate(translation_bush);
 
-		forest_objects[i]->addModel(bush_model);
-		forest_objects[i]->addTransformation(transform_bush);
+		this->forest_objects[i]->addModel(bush_model);
+		this->forest_objects[i]->addTransformation(transform_bush);
 	}
 
 	Model* plain_model = Model::createPlain();
@@ -331,7 +331,7 @@ vector<DrawableObject*> Application::createForest()
 	login->addTransformation(transform_login);
 	login->setTexture(grassTexture);
 	
-	return forest_objects;
+	return this->forest_objects;
 
 }
 
@@ -458,9 +458,74 @@ void Application::cursor_callback(GLFWwindow* window, double x, double y) {
 }
 
 void Application::button_callback(GLFWwindow* window, int button, int action, int mode) {
+	if (action == GLFW_PRESS && button == GLFW_MOUSE_BUTTON_LEFT) {
+		double cursorX, cursorY;
+		glfwGetCursorPos(window, &cursorX, &cursorY);
 
-	if (action == GLFW_PRESS) printf("button_callback [%d,%d,%d]\n", button, action, mode);
+		GLint x = static_cast<GLint>(cursorX);
+		GLint y = static_cast<GLint>(cursorY);
+		GLint width, height;
+		glfwGetFramebufferSize(window, &width, &height);
+		GLint newY = height - y;
+
+		// Read stencil, depth, and color buffers
+		GLuint index = 0;
+		GLfloat depth = 0.0f;
+		glReadPixels(x, newY, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
+		glReadPixels(x, newY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
+
+		if (index > 0) {
+			// Unproject screen coordinates to world space
+			glm::mat4 view = camera->getViewMatrix();
+			glm::mat4 projection = camera->getProjectionMatrix(45.0f, 0.1f, 100.0f);
+			glm::vec4 viewport = glm::vec4(0, 0, width, height);
+
+			glm::vec3 screenCoords = glm::vec3(x, newY, depth);
+			glm::vec3 worldPos = glm::unProject(screenCoords, view, projection, viewport);
+
+			printf("Clicked on object ID %u at world position [%f, %f, %f]\n", index, worldPos.x, worldPos.y, worldPos.z);
+
+
+			vector<Light*> light_objects;
+
+			Light* light1 = new Light(
+				glm::vec4(30.f, 20.f, 1.0f, 0.0f),		// Position
+				glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),      // Diffuse color
+				glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),      // Specular color
+				glm::vec4(0.0f, 1.0f, 0.0f, 1.0f),      // Light color
+				glm::vec3(0.0f, 0.0f, 0.0f),            // Direction (not used for point light)
+				0.f,                                     // Cutoff (not used for point light)
+				0.f);
+
+			light1->type = LIGHT_TYPE_POINT;
+			light_objects.push_back(light1);
+
+
+			ShaderProgram* shader = new ShaderProgram("vertex_phong.vert", "fragment_phong.frag", light_objects);
+			// Add a tree at the clicked position
+			DrawableObject* tree = new DrawableObject(shader, glm::vec4(1.f, 0.f, 1.f, 1.f));
+			printf("Total objects: %lu\n", this->forest_objects.size());
+			this->forest_objects.push_back(tree);
+			this->camera->attach(tree->getShaderProgram());
+			Model* treeModel = Model::createTree();
+			Transformation* treeTransform = new Transformation();
+			treeTransform->translate(worldPos);
+			treeTransform->scale(0.5f);
+			tree->addModel(treeModel);
+			tree->addTransformation(treeTransform);
+
+			for (Light* light : light_objects)
+			{
+				light->attach(shader);
+			}
+			printf("Tree added at [%f, %f, %f]\n", worldPos.x, worldPos.y, worldPos.z);
+			printf("Total objects: %lu\n", this->forest_objects.size());
+
+			
+		}
+	}
 }
+
 
 void Application::error_callback_static(int error, const char* description) { fputs(description, stderr); }
 
@@ -506,6 +571,8 @@ void Application::run()
 	glfwSetMouseButtonCallback(window, button_callback_static);
 
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_STENCIL_TEST);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 	
 	vector<DrawableObject*> forest_objects_create = createForest();
 	vector<DrawableObject*> triangle_objects_create = createTriangleScene();
@@ -526,6 +593,7 @@ void Application::run()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		if (forest_scene == true) {
+			printf("Number of objects in forest scene: %lu\n", forest_objects.size());
 			scene_forest.render(this->camera);
 		}
 

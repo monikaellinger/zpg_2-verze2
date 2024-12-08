@@ -45,6 +45,8 @@
 		bool skybox_scene;
 		bool shaders_example_scene;
 
+		vector<DrawableObject*> forest_objects;
+
 		float lastX, lastY; 
 		bool firstMouse;    
 		glm::mat4 projection;
