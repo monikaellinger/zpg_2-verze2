@@ -180,7 +180,6 @@
     <None Include="cube.vert" />
     <None Include="fragment_phong.frag" />
     <None Include="fragment_lambert.frag" />
-    <None Include="fragment_plain_def.frag" />
     <None Include="fragment_sphere_def.frag" />
     <None Include="fragment_tree_def.frag" />
     <None Include="fragment_triangle_def.frag" />
@@ -190,7 +189,6 @@
     <None Include="TestVertex.glsl" />
     <None Include="texture_fragment.frag" />
     <None Include="texture_vertex.vert" />
-    <None Include="vertex_def.vert" />
     <None Include="vertex_short_def.vert" />
   </ItemGroup>
   <ItemGroup>

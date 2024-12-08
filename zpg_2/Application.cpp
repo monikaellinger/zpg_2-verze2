@@ -3,10 +3,10 @@
 
 Application::Application() : lastX(400), lastY(300), firstMouse(true) {
 	this->camera = new Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	this->triangle_scene = false;
+	this->triangle_scene = true;
 	this->forest_scene = false;
 	this->balls_scene = false;
-	this->skybox_scene = true;
+	this->skybox_scene = false;
 	this->shaders_example_scene = false;
 }
 
@@ -60,7 +60,7 @@ vector<DrawableObject*> Application::createBallsScene()
 	}
 
 
-	DrawableObject* ball_obj_1 = new DrawableObject(shader, glm::vec4(0.f, 1.f, 0.f, 1.f));
+	DrawableObject* ball_obj_1 = new DrawableObject(shader);
 	balls_objects.push_back(ball_obj_1);
 	this->camera->attach(ball_obj_1->getShaderProgram());
 
@@ -136,7 +136,7 @@ vector<DrawableObject*> Application::createShadersExampleScene()
 	light_objects.push_back(light3);
 
 	ShaderProgram* shader = new ShaderProgram("vertex_phong.vert", "fragment_phong.frag", light_objects);
-	ShaderProgram* shader_lambert = new ShaderProgram("vertex_phong.vert", "fragment_lambert.frag");
+	ShaderProgram* shader_lambert = new ShaderProgram("vertex_phong.vert", "fragment_lambert.frag", light_objects);
 
 	for (Light* light : light_objects)
 	{
@@ -192,24 +192,16 @@ vector<Skybox*> Application::createSkyboxScene()
 {
 	vector<Light*> sky_lights;
 
-	Light* light1 = new Light(glm::vec4(0.f, 0.f, 0.f, 1.0f),  // Pozice
-		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),                       // Diffuse color
-		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),                       // Specular color
-		glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),                       // Light color
-		glm::vec3(0.0f, 0.0f, -10.0f),                          // Direction
-		glm::cos(glm::radians(15.0f)),                          // Cutoff (inner cone angle)
-		glm::cos(glm::radians(20.0f)));
-
-	light1->type = LIGHT_TYPE_SPOT;
+	Light* light1 = new Light(
+		glm::vec4(0.f, 0.f, 0.0f, 0.0f),		// Position
+		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),      // Diffuse color
+		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),      // Specular color
+		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),      // Light color
+		glm::vec3(0.0f, 0.0f, 0.0f),            // Direction (not used for point light)
+		0.0f,                                     // Cutoff (not used for point light)
+		0.0f);                                    // Outer cutoff (not used for point light)
+	light1->type = LIGHT_TYPE_POINT;
 	sky_lights.push_back(light1);
-
-	ShaderProgram* shader = new ShaderProgram("vertex_phong.vert", "fragment_phong.frag", sky_lights);
-	ShaderProgram* shader_lambert = new ShaderProgram("vertex_phong.vert", "fragment_lambert.frag");
-
-	for (Light* light : sky_lights)
-	{
-		light->attach(shader);
-	}
 
 	vector<Skybox*> skybox_objects;
 
@@ -217,6 +209,12 @@ vector<Skybox*> Application::createSkyboxScene()
 	Skybox* skybox = new Skybox();
 	skybox_objects.push_back(skybox);
 	this->camera->attach(skybox);
+
+
+	for (Light* light : sky_lights)
+	{
+		light->attach(skybox);
+	}
 
 	return skybox_objects;
 
@@ -230,28 +228,40 @@ vector<DrawableObject*> Application::createForest()
 	Texture* grassTexture = new Texture("grass.png");
 
 
-	Light* light = new Light(
+	Light* light1 = new Light(
 		glm::vec4(30.f, 20.f, 1.0f, 0.0f),		// Position
 		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),      // Diffuse color
 		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),      // Specular color
 		glm::vec4(0.0f, 1.0f, 0.0f, 1.0f),      // Light color
 		glm::vec3(0.0f, 0.0f, 0.0f),            // Direction (not used for point light)
-		0.5f,                                     // Cutoff (not used for point light)
-		10.f);
+		0.f,                                     // Cutoff (not used for point light)
+		0.f);
 
-	light->type = LIGHT_TYPE_POINT;
-	light_objects.push_back(light);
+	light1->type = LIGHT_TYPE_POINT;
+	light_objects.push_back(light1);
+
+	Light* light2 = new Light(
+		glm::vec4(-80.f, 20.f, 55.0f, 0.0f),		// Position
+		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),      // Diffuse color
+		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),      // Specular color
+		glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),      // Light color
+		glm::vec3(0.0f, 0.0f, 0.0f),            // Direction (not used for point light)
+		0.f,                                     // Cutoff (not used for point light)
+		0.f);
+
+	light2->type = LIGHT_TYPE_POINT;
+	light_objects.push_back(light2);
 
 	for (int i = 0; i < 10; ++i) {
-		float x = static_cast<float>(rand() % 101 - 50); // -50 až 50
-		float y = static_cast<float>(rand() % 50 + 1);   // 1 až 50 (nad osou y = 0)
-		float z = static_cast<float>(rand() % 50 + 1); // -50 až 50		
+		float x = static_cast<float>(rand() % 101 - 50); // -50 to 50
+		float y = static_cast<float>(rand() % 50 + 1);   // 1 to 50 (above y = 0)
+		float z = static_cast<float>(rand() % 50 + 1); // -50 to 50		
 	}
 
 	ShaderProgram* shader_tree = new ShaderProgram("vertex_phong.vert", "fragment_phong.frag", light_objects);
 	ShaderProgram* shader_plain = new ShaderProgram("texture_vertex.vert", "texture_fragment.frag", light_objects);
 	ShaderProgram* shader_sphere = new ShaderProgram("vertex_phong.vert", "fragment_phong.frag", light_objects);
-	ShaderProgram* shader_login = new ShaderProgram("PhongVertexShader.vert", "PhongFragmentShader.frag", light_objects);
+	ShaderProgram* shader_login = new ShaderProgram("texture_vertex.vert", "texture_fragment.frag", light_objects);
 
 	for (Light* light : light_objects)
 	{
@@ -274,11 +284,11 @@ vector<DrawableObject*> Application::createForest()
 	DrawableObject* sphere = new DrawableObject(shader_sphere);
 	forest_objects.push_back(sphere);
 	this->camera->attach(sphere->getShaderProgram());
-
-	DrawableObject* login = new DrawableObject(shader_login, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-	forest_objects.push_back(sphere);
-	this->camera->attach(sphere->getShaderProgram());
-
+	
+	DrawableObject* login = new DrawableObject(shader_login, glm::vec4(0.f, 0.f, 1.f, 1.f));
+	forest_objects.push_back(login);
+	this->camera->attach(login->getShaderProgram());
+	
 
 
 	for (int i = 0; i < 50; ++i) {
@@ -323,17 +333,17 @@ vector<DrawableObject*> Application::createForest()
 	transform_sphere->translate(translation_sphere);
 	sphere->addModel(sphere_model);
 	sphere->addTransformation(transform_sphere);
-
-
+	
+	
 	Model* login_model = Model::createLogin("ell0014.obj");
 	Transformation* transform_login = new Transformation();
-	transform_login->scale(100.0f);
-	glm::vec3 translation_login(10.f, 10.f, 0.0f);
+	transform_login->scale(2.0f);
+	glm::vec3 translation_login(1.f, 1.f, 0.0f);
 	transform_login->translate(translation_login);
 	login->addModel(login_model);
 	login->addTransformation(transform_login);
-	//login->setTexture(grassTexture);
-
+	login->setTexture(grassTexture);
+	
 	return forest_objects;
 
 }
@@ -509,19 +519,19 @@ void Application::run()
 	glfwSetMouseButtonCallback(window, button_callback_static);
 
 	glEnable(GL_DEPTH_TEST);
-	/*
+	
 	vector<DrawableObject*> forest_objects_create = createForest();
 	vector<DrawableObject*> triangle_objects_create = createTriangleScene();
 	vector<DrawableObject*> balls_objects_create = createBallsScene();
 	vector<DrawableObject*> shaders_example_objects_create = createShadersExampleScene();
-	*/
+	
 	vector<Skybox*> skybox_objects_create = createSkyboxScene();
-	/*
+	
 	Scene scene_forest(forest_objects_create);
 	Scene scene_triangle(triangle_objects_create);
 	Scene scene_shaders_example(shaders_example_objects_create);
 	Scene scene_balls(balls_objects_create);
-	*/
+	
 	Scene scene_skybox(skybox_objects_create);
 
 	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -529,7 +539,7 @@ void Application::run()
 	{
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		/*
+		
 		if (forest_scene == true) {
 			scene_forest.render(this->camera);
 		}
@@ -541,16 +551,16 @@ void Application::run()
 		if (balls_scene == true) {
 			scene_balls.render(this->camera);
 		}
-		*/
+		
 		if (skybox_scene == true) {
 			scene_skybox.render(this->camera);
 		}
-		/*
+		
 		if (shaders_example_scene == true) {
 			scene_shaders_example.render(this->camera);
 			shaders_example_objects_create[1]->setSpin(3.0f, 160.0f, glm::vec3(0.0f, 1.0f, 0.0f), 0.016f);
 		}
-		*/
+		
 		glfwPollEvents();
 		glfwSwapBuffers(this->window);
 	}

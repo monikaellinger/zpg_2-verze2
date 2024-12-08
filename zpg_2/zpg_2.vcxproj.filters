@@ -150,9 +150,6 @@
     <None Include="fragment_triangle_def.frag">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="fragment_plain_def.frag">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="fragment_sphere_def.frag">
       <Filter>Resource Files</Filter>
     </None>
@@ -160,9 +157,6 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="fragment_lambert.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="vertex_def.vert">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="texture_vertex.vert">

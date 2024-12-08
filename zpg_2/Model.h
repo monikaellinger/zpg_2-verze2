@@ -32,6 +32,7 @@
 
 using namespace std;
 
+// used for obj only
 struct Vertex {
 	float Position[3];
 	float Normal[3];

@@ -35,9 +35,6 @@ void DrawableObject::draw(Camera* camera)
 	if (texture) {
 		texture->bind();
 	}
-	
-	//this->modelLoader->bind();
-
 	if (this->color != glm::vec4(-1.0f))
 	{
 		this->shaderProgram->setVec4Uniform("objectColor", this->color);
@@ -47,7 +44,6 @@ void DrawableObject::draw(Camera* camera)
 	this->transformation->useTransformation(this->shaderProgram->getTransformID());
 	this->model->drawModel();
 
-	//this->modelLoader->unbind();
 	if (texture) {
 		texture->unbind();
 	}

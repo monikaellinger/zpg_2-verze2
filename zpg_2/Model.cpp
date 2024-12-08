@@ -12,7 +12,8 @@ Model::Model(GLenum drawMode, const float* points, GLuint vao, GLuint vbo, int n
 void Model::drawModel()
 {
 	glBindVertexArray(this->vao);
-	glDrawArrays(GL_TRIANGLES, 0, numVertices);
+	//glDrawArrays(GL_TRIANGLES, 0, numVertices);
+	glDrawElements(GL_TRIANGLES, numVertices, GL_UNSIGNED_INT, NULL);
 }
 
 
