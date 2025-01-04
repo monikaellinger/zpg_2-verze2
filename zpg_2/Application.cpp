@@ -233,7 +233,7 @@ vector<DrawableObject*> Application::createForest()
 	);
 
 	light1->type = LIGHT_TYPE_SPOT;
-	light_objects.push_back(light1);
+	//light_objects.push_back(light1);
 
 	
 	Light* light2 = new Light(
@@ -250,7 +250,7 @@ vector<DrawableObject*> Application::createForest()
 
 
 	light2->type = LIGHT_TYPE_POINT;
-	//light_objects.push_back(light2);
+	light_objects.push_back(light2);
 
 	
 	for (int i = 0; i < 10; ++i) {
