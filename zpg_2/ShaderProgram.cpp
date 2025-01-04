@@ -105,26 +105,22 @@ void ShaderProgram::sendLight(const std::string& baseName, int index, const Ligh
 {
 	string typeName = baseName + "[" + to_string(index) + "].type";
 	string posName = baseName + "[" + to_string(index) + "].position";
-	//string colorName = baseName + "[" + to_string(index) + "].color";
 	string colorName = baseName + "[" + to_string(index) + "].color";
-	
-
 	string dirName = baseName + "[" + to_string(index) + "].direction";
 	string cutName = baseName + "[" + to_string(index) + "].cutoff";
-	//string outName = baseName + "[" + to_string(index) + "].outerCutoff";
+	string outName = baseName + "[" + to_string(index) + "].outerCutoff";
 	string constantName = baseName + "[" + to_string(index) + "].constant";
 	string linearName = baseName + "[" + to_string(index) + "].linear";
 	string quadraticName = baseName + "[" + to_string(index) + "].quadratic";
 
 	setIntUniform(typeName.c_str(), light.type);
 	setVec3Uniform(posName.c_str(), light.position);
-	//setVec3Uniform(colorName.c_str(), light.color);
 	setVec3Uniform(colorName.c_str(), light.color);
 	if (light.type == LIGHT_TYPE_SPOT) {
 		setVec3Uniform(dirName.c_str(), light.direction);
 		setFloatUniform(cutName.c_str(), light.cutoff);	
+		//setFloatUniform(outName.c_str(), light.outerCutoff);
 	}
-	//setFloatUniform(outName.c_str(), light.outerCutoff);
 	setFloatUniform(constantName.c_str(), light.constant);
 	setFloatUniform(linearName.c_str(), light.linear);
 	setFloatUniform(quadraticName.c_str(), light.quadratic);

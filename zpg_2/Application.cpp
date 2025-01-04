@@ -237,7 +237,7 @@ vector<DrawableObject*> Application::createForest()
 
 	
 	Light* light2 = new Light(
-		glm::vec3(1.0f, 10.0f, 1.0f), // Pozice svìtla
+		glm::vec3(1.0f, 5.0f, 1.0f), // Pozice svìtla
 		glm::vec3(1.0f, 1.0f, 1.0f),  // Èervená barva svìtla
 		glm::vec3(0.0f, 0.0f, 0.0f),  // Smìr (nepoužívá se pro Point Light)
 		0.0f,                         // Cutoff (nepoužívá se)
@@ -248,9 +248,24 @@ vector<DrawableObject*> Application::createForest()
 		nullptr                       // Kamera (není nutná pro Point Light)
 	);
 
-
 	light2->type = LIGHT_TYPE_POINT;
 	light_objects.push_back(light2);
+
+
+	Light* light3 = new Light(
+		glm::vec3(10.0f, 5.0f, 1.0f), // Pozice svìtla
+		glm::vec3(1.0f, 1.0f, 1.0f),  // Èervená barva svìtla
+		glm::vec3(0.0f, 0.0f, 0.0f),  // Smìr (nepoužívá se pro Point Light)
+		0.0f,                         // Cutoff (nepoužívá se)
+		0.0f,                         // Outer cutoff (nepoužívá se)
+		1.0f,                         // Konstantní èlen
+		0.09f,                        // Lineární èlen
+		0.032f,                       // Kvadratický èlen
+		nullptr                       // Kamera (není nutná pro Point Light)
+	);
+
+	light3->type = LIGHT_TYPE_POINT;
+	light_objects.push_back(light3);
 
 	
 	for (int i = 0; i < 10; ++i) {
@@ -259,37 +274,33 @@ vector<DrawableObject*> Application::createForest()
 		float z = static_cast<float>(rand() % 50 + 1); // -50 to 50		
 	}
 
-	ShaderProgram* shader_tree = new ShaderProgram("vertex_phong.vert", "test_lights.frag", light_objects);
-	//ShaderProgram* shader_plain = new ShaderProgram("texture_vertex.vert", "texture_fragment.frag", light_objects);
-	//ShaderProgram* shader_sphere = new ShaderProgram("vertex_phong.vert", "test_lights.frag", light_objects);
-	//ShaderProgram* shader_login = new ShaderProgram("texture_vertex.vert", "texture_fragment.frag", light_objects);
+	ShaderProgram* shader_phong = new ShaderProgram("vertex_phong.vert", "test_lights.frag", light_objects);
+	ShaderProgram* shader_texture= new ShaderProgram("texture_vertex.vert", "texture_fragment.frag", light_objects);
 
 	for (Light* light : light_objects)
 	{
-		light->attach(shader_tree);
-		//light->attach(shader_plain);
-		//light->attach(shader_sphere);
+		light->attach(shader_phong);
+		light->attach(shader_texture);
 	}
 
 
 	for (int i = 1; i <= 100; i++) {
-		forest_objects.push_back(new DrawableObject(shader_tree, glm::vec4(0.f, 1.f, 0.f, 0.f)));
+		forest_objects.push_back(new DrawableObject(shader_phong, glm::vec4(0.f, 1.f, 0.f, 0.f)));
 		this->camera->attach(forest_objects[i - 1]->getShaderProgram());
 	}
-	/*
-	DrawableObject* plain = new DrawableObject(shader_plain);
+	
+	DrawableObject* plain = new DrawableObject(shader_texture, glm::vec4(0.f, 0.f, 1.f, 0.f));
 	forest_objects.push_back(plain);
 	this->camera->attach(plain->getShaderProgram());
-	*/
-
-	DrawableObject* sphere = new DrawableObject(shader_tree);
+	
+	DrawableObject* sphere = new DrawableObject(shader_phong, glm::vec4(1.f, 1.f, 0.f, 0.f));
 	forest_objects.push_back(sphere);
 	this->camera->attach(sphere->getShaderProgram());
-	/*
-	DrawableObject* login = new DrawableObject(shader_login, glm::vec4(0.f, 0.f, 1.f, 1.f));
+	
+	DrawableObject* login = new DrawableObject(shader_texture, glm::vec4(1.f, 0.f, 0.f, 1.f));
 	forest_objects.push_back(login);
 	this->camera->attach(login->getShaderProgram());
-	*/
+	
 
 
 	for (int i = 0; i < 50; ++i) {
@@ -316,7 +327,7 @@ vector<DrawableObject*> Application::createForest()
 		forest_objects[i]->addModel(bush_model);
 		forest_objects[i]->addTransformation(transform_bush);
 	}
-	/*
+	
 	Model* plain_model = Model::createPlain();
 	Transformation* transform_plain = new Transformation();
 	transform_plain->scale(10.0f);
@@ -325,7 +336,7 @@ vector<DrawableObject*> Application::createForest()
 	plain->addModel(plain_model);
 	plain->addTransformation(transform_plain);
 	plain->setTexture(grassTexture);
-	*/
+	
 
 	Model* sphere_model = Model::createSphere();
 	Transformation* transform_sphere = new Transformation();
@@ -335,7 +346,7 @@ vector<DrawableObject*> Application::createForest()
 	sphere->addModel(sphere_model);
 	sphere->addTransformation(transform_sphere);
 	
-	/*
+	
 	Model* login_model = Model::createLogin("ell0014.obj");
 	Transformation* transform_login = new Transformation();
 	transform_login->scale(2.0f);
@@ -344,7 +355,7 @@ vector<DrawableObject*> Application::createForest()
 	login->addModel(login_model);
 	login->addTransformation(transform_login);
 	login->setTexture(grassTexture);
-	*/
+	
 	return forest_objects;
 
 }
