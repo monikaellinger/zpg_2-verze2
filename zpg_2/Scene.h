@@ -22,6 +22,7 @@ using namespace std;
 #include "ShaderProgram.h"
 #include "Model.h"
 #include "Skybox.h"
+#include "Camera.h"
 
 class Scene
 {
@@ -35,7 +36,7 @@ private:
 	bool balls;
 
 public:
-
+	Camera* camera;
 	Scene(vector<DrawableObject*>& objects);
 	Scene(vector<Skybox*>& skybox_objects);
 	Scene(vector<DrawableObject*>& objects, ShaderProgram* shader_program);

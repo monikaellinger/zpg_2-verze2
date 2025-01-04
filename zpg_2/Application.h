@@ -45,7 +45,6 @@
 		bool skybox_scene;
 		bool shaders_example_scene;
 
-		vector<DrawableObject*> forest_objects;
 
 		float lastX, lastY; 
 		bool firstMouse;    
@@ -66,14 +65,12 @@
 		void initialize();
 		float getDeltaTime();
 		Camera* camera;
-		vector<Light*> createLights();
-		vector<Light*> createLightsForest();
-		vector<Light*> createLightsExample();
 		vector<DrawableObject*> createForest();
 		vector<DrawableObject*> createTriangleScene();
 		vector<DrawableObject*> createBallsScene();
 		vector<DrawableObject*> createShadersExampleScene();
 		vector<Skybox*> createSkyboxScene();
+
 		void run();
 
 		void error_callback(int error, const char* description);

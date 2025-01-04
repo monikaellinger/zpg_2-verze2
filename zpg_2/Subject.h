@@ -1,6 +1,8 @@
 #pragma once
 #include "Observer.h"
 class Observer;
+class Camera;
+class Light;
 class Subject
 {
 	

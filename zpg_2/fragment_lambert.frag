@@ -15,7 +15,6 @@ struct Light {
     vec4 color;
 };
 
-uniform Light lights[MAX_LIGHTS];
 uniform int numberOfLights;
 
 uniform vec3 viewPosition;

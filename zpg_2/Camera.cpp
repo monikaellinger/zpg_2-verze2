@@ -82,15 +82,21 @@ void Camera::notify()
 
 glm::vec3 Camera::getPosition()
 {
-	return position;
+	return this->position;
+}
+
+glm::vec3 Camera::getFront()
+{
+	return this->front;
 }
 
 void Camera::updateVectors() {
-	glm::vec3 newFfront;
-	newFfront.x = cos(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
-	newFfront.y = sin(glm::radians(this->pitch));
-	newFfront.z = sin(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
-	this->front = glm::normalize(newFfront);
+	glm::vec3 newFront;
+	newFront.x = cos(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
+	newFront.y = sin(glm::radians(this->pitch));
+	newFront.z = sin(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
+	this->front = glm::normalize(newFront);
 	this->right = glm::normalize(glm::cross(this->front, this->worldUp));
 	this->up = glm::normalize(glm::cross(this->right, this->front));
+	this->notify();
 }

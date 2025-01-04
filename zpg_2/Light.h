@@ -9,7 +9,9 @@
 
 #include "Subject.h"
 #include "Observer.h"
+#include "Camera.h"
 using namespace std;
+
 
 class Light : public Subject
 {
@@ -22,16 +24,23 @@ public:
 	#define LIGHT_TYPE_SPOT 2
 
 	int type;
-	glm::vec4 position;
-	glm::vec4 diffuse;
-	glm::vec4 specular;
-	glm::vec4 color;
+	glm::vec3 position;
+	//glm::vec4 ambient;
+	//glm::vec4 diffuse;
+	//glm::vec4 specular;
+	glm::vec3 color;
 	glm::vec3 direction;      
 	float cutoff;        
 	float outerCutoff;
+	float constant;
+	float linear;
+	float quadratic;
+	Camera* camera;
 
-	Light(glm::vec4 position, glm::vec4 diffuse, glm::vec4 specular, glm::vec4 color);
-	Light(glm::vec4 position, glm::vec4 diffuse, glm::vec4 specular, glm::vec4 color, glm::vec3 direction, float cutoff, float outerCutoff);
+	//Light(glm::vec4 position, glm::vec4 ambient, glm::vec4 diffuse, glm::vec4 specular, glm::vec4 color);
+	//Light(glm::vec4 position, glm::vec4 ambient, glm::vec4 diffuse, glm::vec4 specular, glm::vec4 color, glm::vec3 direction, float cutoff, float outerCutoff);
+	Light(glm::vec3 position, glm::vec3 color, glm::vec3 direction, float cutoff, float outerCutoff, float constant, float linear, float quadratic, Camera* camera);
+	//Light(glm::vec4 position, glm::vec4 diffuse, glm::vec4 specular, glm::vec4 color, glm::vec3 direction, float cutoff, float outerCutoff, float constant, float linear, float quadratic);
 	void setPosition(glm::vec4 new_position);
 	glm::vec3 getPosition();
 	glm::vec3 getColor(); 

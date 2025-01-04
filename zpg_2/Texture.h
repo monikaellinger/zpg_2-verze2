@@ -10,7 +10,7 @@ private:
     std::string filePath;
 
 public:
-    Texture(const std::string& path);
+    Texture(const string& path);
     ~Texture();
 
     void bind(GLenum textureUnit = GL_TEXTURE0) const;

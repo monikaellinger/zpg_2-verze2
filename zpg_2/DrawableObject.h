@@ -24,7 +24,6 @@ using namespace std;
 #include "Camera.h"
 #include "Material.h"
 #include "Texture.h"
-//#include "ModelLoader.h"
 
 #include <SOIL.h>
 #include <iostream>
@@ -58,5 +57,6 @@ public:
 	void setSpin(float angle, float speed, glm::vec3 axis, float deltaTime);
 	void setMaterial(Material* material);
 	void setTexture(Texture* newTexture);
+	//void setTextureObj(TextureObj* newTextureObj);
 };
 

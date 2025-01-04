@@ -61,4 +61,5 @@ public:
 	void detach(Observer* observer) override;
 	void notify() override;
 	glm::vec3 getPosition();
+	glm::vec3 getFront();
 };

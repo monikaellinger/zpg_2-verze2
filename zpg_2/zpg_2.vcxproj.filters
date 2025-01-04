@@ -63,6 +63,9 @@
     <ClCompile Include="CubeTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TextureObj.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Model.h">
@@ -128,6 +131,9 @@
     <ClInclude Include="CubeTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TextureObj.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="vertex_phong.vert">
@@ -175,6 +181,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="TestFragment.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="test_lights.frag">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

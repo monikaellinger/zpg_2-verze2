@@ -31,6 +31,8 @@ DrawableObject::DrawableObject(ShaderProgram* shaderProgram, Model* model, Trans
 void DrawableObject::draw(Camera* camera)
 {	
 	this->shaderProgram->use();
+	this->shaderProgram->sendAllLights(camera);
+	
 
 	if (texture) {
 		texture->bind();
@@ -90,28 +92,8 @@ void DrawableObject::setTexture(Texture* newTexture) {
 	this->texture = newTexture;
 }
 /*
-void DrawableObject::setModelLoader(ModelLoader* loader) {
-	modelLoader = loader;
-}
-
-
-void DrawableObject::setTexture(const string& filePath)
+void DrawableObject::setTextureObj(TextureObj* newTextureObj)
 {
-
-	glActiveTexture(GL_TEXTURE0); // Aktivace texturové jednotky
-	this->textureID = SOIL_load_OGL_texture(filePath.c_str(), SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
-	//std::cerr << "SOIL error: " << SOIL_last_result() << std::endl;
-
-	if (textureID == 0) {
-		cerr << "Failed to load texture: " << filePath << std::endl;
-		exit(EXIT_FAILURE);
-	} 
-	glBindTexture(GL_TEXTURE_2D, this->textureID);
+	this->textureObj = newTextureObj;
 }
-
-void DrawableObject::setMaterial(Material* material)
-{
-	this->material = material;
-}
-
 */

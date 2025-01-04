@@ -53,7 +53,7 @@ void ShaderProgram::use() {
 	if (!lights.empty()) {
 		setIntUniform("numberOfLights", this->lightCount);
 		for (int i = 0; i < this->lightCount; ++i) {
-			sendLight("lights", i, *lights[i]);
+			//sendLight("lights", i, *lights[i]);
 		}
 	}
 	
@@ -103,23 +103,44 @@ void ShaderProgram::setCamMatrix(glm::mat4 projectionMat, glm::mat4 viewMat)
 
 void ShaderProgram::sendLight(const std::string& baseName, int index, const Light& light)
 {
+	string typeName = baseName + "[" + to_string(index) + "].type";
 	string posName = baseName + "[" + to_string(index) + "].position";
-	string diffName = baseName + "[" + to_string(index) + "].diffuse";
-	string specName = baseName + "[" + to_string(index) + "].specular";
+	//string colorName = baseName + "[" + to_string(index) + "].color";
 	string colorName = baseName + "[" + to_string(index) + "].color";
+	
+
 	string dirName = baseName + "[" + to_string(index) + "].direction";
 	string cutName = baseName + "[" + to_string(index) + "].cutoff";
-	string outName = baseName + "[" + to_string(index) + "].outerCutoff";
+	//string outName = baseName + "[" + to_string(index) + "].outerCutoff";
+	string constantName = baseName + "[" + to_string(index) + "].constant";
+	string linearName = baseName + "[" + to_string(index) + "].linear";
+	string quadraticName = baseName + "[" + to_string(index) + "].quadratic";
 
-	setVec4Uniform(posName.c_str(), light.position);
-	setVec4Uniform(diffName.c_str(), light.diffuse);
-	setVec4Uniform(specName.c_str(), light.specular);
-	setVec4Uniform(colorName.c_str(), light.color);
-	setVec3Uniform(dirName.c_str(), light.direction);
-	setFloatUniform(cutName.c_str(), light.cutoff);
-	setFloatUniform(outName.c_str(), light.outerCutoff);
+	setIntUniform(typeName.c_str(), light.type);
+	setVec3Uniform(posName.c_str(), light.position);
+	//setVec3Uniform(colorName.c_str(), light.color);
+	setVec3Uniform(colorName.c_str(), light.color);
+	if (light.type == LIGHT_TYPE_SPOT) {
+		setVec3Uniform(dirName.c_str(), light.direction);
+		setFloatUniform(cutName.c_str(), light.cutoff);	
+	}
+	//setFloatUniform(outName.c_str(), light.outerCutoff);
+	setFloatUniform(constantName.c_str(), light.constant);
+	setFloatUniform(linearName.c_str(), light.linear);
+	setFloatUniform(quadraticName.c_str(), light.quadratic);
 }
 
+void ShaderProgram::sendAllLights(Camera* camera)
+{
+	for (size_t i = 0; i < this->lights.size(); i++)
+	{
+		if (lights[i]->type == LIGHT_TYPE_SPOT) {
+			this->lights[i]->position = camera->getPosition();
+			this->lights[i]->direction = camera->getFront();
+		}
+		this->sendLight("lights", i, *this->lights[i]);
+	}
+}
 
 void ShaderProgram::setIntUniform(const char* name, int value)
 {
@@ -150,12 +171,10 @@ void ShaderProgram::update(Subject* subject)
 	}
 
 	if (auto light = dynamic_cast<Light*>(subject)) {
-		for (size_t i = 0; i < lights.size(); ++i) {
-			if (lights[i] == light) {
+		for (size_t i = 0; i < this->lights.size(); ++i) {
 				use();
-				sendLight("lights", i, *light);
 				break;
-			}
+			
 		}
 	}
 }
