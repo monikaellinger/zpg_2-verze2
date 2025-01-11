@@ -145,7 +145,6 @@
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="Subject.cpp" />
     <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="TextureObj.cpp" />
     <ClCompile Include="Transformation.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -168,7 +167,6 @@
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="Subject.h" />
     <ClInclude Include="Texture.h" />
-    <ClInclude Include="TextureObj.h" />
     <ClInclude Include="Transformation.h" />
     <ClInclude Include="triangle.h" />
   </ItemGroup>
@@ -178,13 +176,7 @@
   <ItemGroup>
     <None Include="cube.fert" />
     <None Include="cube.vert" />
-    <None Include="fragment_phong.frag" />
-    <None Include="fragment_lambert.frag" />
-    <None Include="fragment_sphere_def.frag" />
-    <None Include="fragment_tree_def.frag" />
     <None Include="fragment_triangle_def.frag" />
-    <None Include="PhongFragmentShader.frag" />
-    <None Include="PhongVertexShader.vert" />
     <None Include="TestFragment.glsl" />
     <None Include="TestVertex.glsl" />
     <None Include="test_lights.frag" />

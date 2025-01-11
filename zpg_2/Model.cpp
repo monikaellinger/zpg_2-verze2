@@ -14,13 +14,11 @@ void Model::drawModelArrays()
 {
 	glBindVertexArray(this->vao);
 	glDrawArrays(GL_TRIANGLES, 0, numVertices);
-	//glDrawElements(GL_TRIANGLES, numVertices, GL_UNSIGNED_INT, NULL);
 }
 
 void Model::drawModelElements()
 {
 	glBindVertexArray(this->vao);
-	//glDrawArrays(GL_TRIANGLES, 0, numVertices);
 	glDrawElements(GL_TRIANGLES, numVertices, GL_UNSIGNED_INT, NULL);
 }
 
@@ -174,10 +172,10 @@ Model* Model::createLogin(const std::string& filePath)
 		return nullptr;
 	}
 
-	std::vector<Vertex> vertices;
-	std::vector<GLuint> indices;
+	vector<Vertex> vertices;
+	vector<GLuint> indices;
 
-	std::function<void(aiNode*, const aiMatrix4x4&)> processNode = [&](aiNode* node, const aiMatrix4x4& parentTransform) {
+	function<void(aiNode*, const aiMatrix4x4&)> processNode = [&](aiNode* node, const aiMatrix4x4& parentTransform) {
 		aiMatrix4x4 nodeTransform = parentTransform * node->mTransformation;
 
 		for (unsigned int i = 0; i < node->mNumMeshes; i++) {

@@ -52,9 +52,6 @@ void ShaderProgram::use() {
 	
 	if (!lights.empty()) {
 		setIntUniform("numberOfLights", this->lightCount);
-		for (int i = 0; i < this->lightCount; ++i) {
-			//sendLight("lights", i, *lights[i]);
-		}
 	}
 	
 }
@@ -108,7 +105,6 @@ void ShaderProgram::sendLight(const std::string& baseName, int index, const Ligh
 	string colorName = baseName + "[" + to_string(index) + "].color";
 	string dirName = baseName + "[" + to_string(index) + "].direction";
 	string cutName = baseName + "[" + to_string(index) + "].cutoff";
-	string outName = baseName + "[" + to_string(index) + "].outerCutoff";
 	string constantName = baseName + "[" + to_string(index) + "].constant";
 	string linearName = baseName + "[" + to_string(index) + "].linear";
 	string quadraticName = baseName + "[" + to_string(index) + "].quadratic";
@@ -119,7 +115,6 @@ void ShaderProgram::sendLight(const std::string& baseName, int index, const Ligh
 	if (light.type == LIGHT_TYPE_SPOT) {
 		setVec3Uniform(dirName.c_str(), light.direction);
 		setFloatUniform(cutName.c_str(), light.cutoff);	
-		//setFloatUniform(outName.c_str(), light.outerCutoff);
 	}
 	setFloatUniform(constantName.c_str(), light.constant);
 	setFloatUniform(linearName.c_str(), light.linear);
@@ -136,6 +131,11 @@ void ShaderProgram::sendAllLights(Camera* camera)
 		}
 		this->sendLight("lights", i, *this->lights[i]);
 	}
+}
+
+void ShaderProgram::stop()
+{
+	glUseProgram(0);
 }
 
 void ShaderProgram::setIntUniform(const char* name, int value)
@@ -162,15 +162,18 @@ void ShaderProgram::setFloatUniform(const char* name, float value)
 void ShaderProgram::update(Subject* subject)
 {
 	if (auto camera = dynamic_cast<Camera*>(subject)) {
+		this->use();
 		setMat4Uniform("viewMatrix", camera->getViewMatrix());
 		setMat4Uniform("projectionMatrix", camera->getProjectionMatrix(45.0f, 0.1f, 100.0f));
+		this->setVec3Uniform("viewPosition", camera->getPosition());
+		this->stop();
 	}
 
 	if (auto light = dynamic_cast<Light*>(subject)) {
-		for (size_t i = 0; i < this->lights.size(); ++i) {
+		/*for (size_t i = 0; i < this->lights.size(); ++i) {
 				use();
 				break;
 			
-		}
+		}*/
 	}
 }

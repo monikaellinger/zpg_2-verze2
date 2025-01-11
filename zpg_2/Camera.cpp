@@ -27,25 +27,25 @@ void Camera::setAspect(float aspect)
 
 void Camera::moveForward() {
 	this->position += this->front * this->speed;
-	updateVectors();
+	//updateVectors(); - podje J
 	notify();
 }
 
 void Camera::moveBackward() {
 	this->position -= this->front * this->speed;
-	updateVectors();
+	//updateVectors(); - podle J
 	notify();
 }
 
 void Camera::moveLeft() {
 	this->position -= this->right * this->speed;
-	updateVectors();
+	//updateVectors(); - podle J
 	notify();
 }
 
 void Camera::moveRight() {
 	this->position += this->right * this->speed;
-	updateVectors();
+	//updateVectors(); - podle J
 	notify();
 }
 
@@ -59,7 +59,7 @@ void Camera::moveMouse(float width, float height, float posX, float posY) {
 		this->pitch = -89.0f;
 
 	updateVectors();
-	notify();
+	//notify(); - podle J
 }
 
 void Camera::attach(Observer* observer)

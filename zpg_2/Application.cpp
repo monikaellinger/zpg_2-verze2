@@ -4,10 +4,11 @@
 Application::Application() : lastX(400), lastY(300), firstMouse(true) {
 	this->camera = new Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	this->triangle_scene = false;
-	this->forest_scene = true;
-	this->balls_scene = false;
+	this->forest_scene = false;
+	this->balls_scene = true;
 	this->skybox_scene = false;
 	this->shaders_example_scene = false;
+	this->solar_scene = false;
 }
 
 
@@ -35,7 +36,7 @@ vector<DrawableObject*> Application::createTriangleScene()
 	return triangle_objects;
 
 }
-/*
+
 vector<DrawableObject*> Application::createBallsScene()
 {
 	vector<DrawableObject*> balls_objects;
@@ -43,37 +44,40 @@ vector<DrawableObject*> Application::createBallsScene()
 
 	// Point Light
 	Light* light1 = new Light(
-		glm::vec4(0.f, 0.f, -5.0f, 0.0f),		// Position
-		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
-		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),      // Diffuse color
-		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),      // Specular color
-		glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),      // Light color
-		glm::vec3(0.0f, 0.0f, 0.0f),            // Direction (not used for point light)
-		0.0f,                                     // Cutoff (not used for point light)
-		0.0f);                                    // Outer cutoff (not used for point light)
+		glm::vec3(0.0f, 0.0f, .0f), // Pozice svìtla
+		glm::vec3(1.0f, .0f, .0f),  // Èervená barva svìtla
+		glm::vec3(0.0f, 0.0f, 0.0f),  // Smìr (nepoužívá se pro Point Light)
+		0.0f,                         // Cutoff (nepoužívá se)
+		0.0f,                         // Outer cutoff (nepoužívá se)
+		1.0f,                         // Konstantní èlen
+		0.09f,                        // Lineární èlen
+		0.032f,                       // Kvadratický èlen
+		nullptr                       // Kamera (není nutná pro Point Light)
+	);
+	// Outer cutoff (not used for point light)
 	light1->type = LIGHT_TYPE_POINT;
 	light_objects.push_back(light1);
 
-	ShaderProgram* shader = new ShaderProgram("vertex_phong.vert", "fragment_phong.frag", light_objects);
+	ShaderProgram* shader = new ShaderProgram("vertex_phong.vert", "test_lights.frag", light_objects);
 	for (Light* light : light_objects)
 	{
 		light->attach(shader);
 	}
 
 
-	DrawableObject* ball_obj_1 = new DrawableObject(shader);
+	DrawableObject* ball_obj_1 = new DrawableObject(shader, glm::vec4(0.3f, 0.3f, 0.3f, 1.f));
 	balls_objects.push_back(ball_obj_1);
 	this->camera->attach(ball_obj_1->getShaderProgram());
 
-	DrawableObject* ball_obj_2 = new DrawableObject(shader);
+	DrawableObject* ball_obj_2 = new DrawableObject(shader, glm::vec4(0.3f, 0.3f, 0.3f, 1.f));
 	balls_objects.push_back(ball_obj_2);
 	this->camera->attach(ball_obj_2->getShaderProgram());
 
-	DrawableObject* ball_obj_3 = new DrawableObject(shader);
+	DrawableObject* ball_obj_3 = new DrawableObject(shader, glm::vec4(0.3f, 0.3f, 0.3f, 1.f));
 	balls_objects.push_back(ball_obj_3);
 	this->camera->attach(ball_obj_3->getShaderProgram());
 
-	DrawableObject* ball_obj_4 = new DrawableObject(shader);
+	DrawableObject* ball_obj_4 = new DrawableObject(shader, glm::vec4(0.3f, 0.3f, 0.3f, 1.f));
 	balls_objects.push_back(ball_obj_4);
 	this->camera->attach(ball_obj_4->getShaderProgram());
 
@@ -81,7 +85,7 @@ vector<DrawableObject*> Application::createBallsScene()
 	Model* balls_model_1 = Model::createSphere();
 	Transformation* transform_balls_1 = new Transformation();
 	transform_balls_1->scale(0.5f);
-	glm::vec3 translation_balls_1(0.f, 3.f, -10.f);
+	glm::vec3 translation_balls_1(0.f, 2.f, .0f);
 	transform_balls_1->translate(translation_balls_1);
 
 	ball_obj_1->addModel(balls_model_1);
@@ -91,7 +95,7 @@ vector<DrawableObject*> Application::createBallsScene()
 	Model* balls_model_2 = Model::createSphere();
 	Transformation* transform_balls_2 = new Transformation();
 	transform_balls_2->scale(0.5f);
-	glm::vec3 translation_balls_2(3.f, 0.f, -10.f);
+	glm::vec3 translation_balls_2(2.f, 0.f, .0f);
 	transform_balls_2->translate(translation_balls_2);
 
 	ball_obj_2->addModel(balls_model_2);
@@ -101,7 +105,7 @@ vector<DrawableObject*> Application::createBallsScene()
 	Model* balls_model_3 = Model::createSphere();
 	Transformation* transform_balls_3 = new Transformation();
 	transform_balls_3->scale(0.5f);
-	glm::vec3 translation_balls_3(0.f, -3.f, -10.f);
+	glm::vec3 translation_balls_3(-2.f, 0.f, .0f);
 	transform_balls_3->translate(translation_balls_3);
 
 	ball_obj_3->addModel(balls_model_3);
@@ -111,7 +115,7 @@ vector<DrawableObject*> Application::createBallsScene()
 	Model* balls_model_4 = Model::createSphere();
 	Transformation* transform_balls_4 = new Transformation();
 	transform_balls_4->scale(0.5f);
-	glm::vec3 translation_balls_4(-3.f, 0.f, -10.f);
+	glm::vec3 translation_balls_4(0.f, -2.f, .0f);
 	transform_balls_4->translate(translation_balls_4);
 
 	ball_obj_4->addModel(balls_model_4);
@@ -119,25 +123,28 @@ vector<DrawableObject*> Application::createBallsScene()
 
 	return balls_objects;
 }
-*/
-/*
+
+
 vector<DrawableObject*> Application::createShadersExampleScene()
 {
 	vector<Light*> light_objects;
 
-	Light* light3 = new Light(glm::vec4(0.f, 0.f, 0.f, 1.0f),  // Pozice
-		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
-		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),                       // Diffuse color
-		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),                       // Specular color
-		glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),                       // Light color
-		glm::vec3(0.0f, 0.0f, -10.0f),                          // Direction
-		glm::cos(glm::radians(15.0f)),                          // Cutoff (inner cone angle)
-		glm::cos(glm::radians(20.0f)));
+	Light* light1 = new Light(
+		glm::vec3(2.0f, 2.0f, 2.0f), // Pozice svìtla
+		glm::vec3(1.0f, 1.0f, 1.0f),  // Èervená barva svìtla
+		glm::vec3(0.0f, 0.0f, 0.0f),  // Smìr (nepoužívá se pro Point Light)
+		0.0f,                         // Cutoff (nepoužívá se)
+		0.0f,                         // Outer cutoff (nepoužívá se)
+		1.0f,                         // Konstantní èlen
+		0.09f,                        // Lineární èlen
+		0.032f,                       // Kvadratický èlen
+		nullptr                       // Kamera (není nutná pro Point Light)
+	);
 
-	light3->type = LIGHT_TYPE_SPOT;
-	light_objects.push_back(light3);
+	light1->type = LIGHT_TYPE_POINT;
+	light_objects.push_back(light1);
 
-	ShaderProgram* shader = new ShaderProgram("vertex_phong.vert", "fragment_phong.frag", light_objects);
+	ShaderProgram* shader = new ShaderProgram("vertex_phong.vert", "test_lights.frag", light_objects);
 
 	for (Light* light : light_objects)
 	{
@@ -147,7 +154,7 @@ vector<DrawableObject*> Application::createShadersExampleScene()
 	vector<DrawableObject*> shaders_example_objects;
 
 	// Phong example - Sphere
-	DrawableObject* ball_obj = new DrawableObject(shader);
+	DrawableObject* ball_obj = new DrawableObject(shader, glm::vec4(1.f, 0.f, 1.f, 0.f));
 	shaders_example_objects.push_back(ball_obj);
 	this->camera->attach(ball_obj->getShaderProgram());
 
@@ -161,7 +168,7 @@ vector<DrawableObject*> Application::createShadersExampleScene()
 	ball_obj->addTransformation(transform_ball);
 
 	// Tree (constant object)
-	DrawableObject* tree_obj = new DrawableObject(shader);
+	DrawableObject* tree_obj = new DrawableObject(shader, glm::vec4(0.f, 1.f, 0.f, 0.f));
 	shaders_example_objects.push_back(tree_obj);
 	this->camera->attach(tree_obj->getShaderProgram());
 
@@ -176,41 +183,61 @@ vector<DrawableObject*> Application::createShadersExampleScene()
 	return shaders_example_objects;
 }
 
-vector<Skybox*> Application::createSkyboxScene()
+// Upravena metoda createSolarSystemScene
+vector<DrawableObject*> Application::createSolarSystemScene()
 {
-	vector<Light*> sky_lights;
+	vector<DrawableObject*> solar_system_objects;
+	vector<Light*> lights;
 
+	// Svìtlo
 	Light* light1 = new Light(
-		glm::vec4(0.f, 0.f, 0.0f, 0.0f),		// Position
-		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
-		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),      // Diffuse color
-		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),      // Specular color
-		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),      // Light color
-		glm::vec3(0.0f, 0.0f, 0.0f),            // Direction (not used for point light)
-		0.0f,                                     // Cutoff (not used for point light)
-		0.0f);                                    // Outer cutoff (not used for point light)
+		glm::vec3(2.0f, 5.0f, -1.0f),
+		glm::vec3(1.0f, 1.0f, 1.0f),
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		0.0f,
+		0.0f,
+		1.0f,
+		0.09f,
+		0.032f,
+		nullptr
+	);
 
 	light1->type = LIGHT_TYPE_POINT;
-	sky_lights.push_back(light1);
+	lights.push_back(light1);
 
-	vector<Skybox*> skybox_objects;
+	ShaderProgram* shader = new ShaderProgram("vertex_phong.vert", "test_lights.frag");
 
-	// Phong example - Sphere
-	Skybox* skybox = new Skybox();
-	skybox_objects.push_back(skybox);
-	this->camera->attach(skybox);
-
-
-	for (Light* light : sky_lights)
+	for (Light* light : lights)
 	{
-		light->attach(skybox);
+		light->attach(shader);
 	}
 
-	return skybox_objects;
+	// Centrální sféra
+	DrawableObject* central_sphere = new DrawableObject(shader, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	solar_system_objects.push_back(central_sphere);
+	this->camera->attach(central_sphere->getShaderProgram());
 
+	Model* central_model = Model::createSphere();
+	Transformation* central_transform = new Transformation();
+	central_transform->scale(1.0f);
+	glm::vec3 tsl(0.f, 0.f, 0.f);
+	central_transform->translate(tsl);
+	central_sphere->addModel(central_model);
+	central_sphere->addTransformation(central_transform);
+
+	// Orbitující sféra
+	DrawableObject* orbiting_sphere = new DrawableObject(shader, glm::vec4(1.f, 1.f, 1.0f, 1.0f));
+	solar_system_objects.push_back(orbiting_sphere);
+	this->camera->attach(orbiting_sphere->getShaderProgram());
+
+	Model* orbiting_model = Model::createSphere();
+	Transformation* orbiting_transform = new Transformation();
+	orbiting_transform->scale(1.f);
+	orbiting_sphere->addModel(orbiting_model);
+	orbiting_sphere->addTransformation(orbiting_transform);
+
+	return solar_system_objects;
 }
-*/
-
 
 
 vector<DrawableObject*> Application::createForest()
@@ -429,35 +456,42 @@ void Application::key_callback(GLFWwindow* window, int key, int scancode, int ac
 		this->balls_scene = false;
 		this->shaders_example_scene = false;
 		this->skybox_scene = false;
+		this->solar_scene = false;
 	}
 	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
 		this->triangle_scene = false;
 		this->forest_scene = true;
 		this->balls_scene = false;
 		this->shaders_example_scene = false;
-		this->skybox_scene = false;
+		this->solar_scene = false;
 	}
 	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
 		this->triangle_scene = false;
 		this->forest_scene = false;
 		this->balls_scene = true;
 		this->shaders_example_scene = false;
-		this->skybox_scene = false;
+		this->solar_scene = false;
 	}
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
 		this->triangle_scene = false;
 		this->forest_scene = false;
 		this->balls_scene = false;
 		this->shaders_example_scene = true;
-		this->skybox_scene = false;
+		this->solar_scene = false;
 	}
 	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
 		this->triangle_scene = false;
 		this->forest_scene = false;
 		this->balls_scene = false;
 		this->shaders_example_scene = false;
-		this->skybox_scene = true;
-		//printf("key_callback [%d,%d,%d,%d] \n", key, scancode, action, mods);
+		this->solar_scene = false;
+	}
+	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS) {
+		this->triangle_scene = false;
+		this->forest_scene = false;
+		this->balls_scene = false;
+		this->shaders_example_scene = false;
+		this->solar_scene = true;
 	}
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwDestroyWindow(window);
@@ -510,45 +544,7 @@ void Application::button_callback(GLFWwindow* window, int button, int action, in
 			glm::vec3 worldPos = glm::unProject(screenCoords, view, projection, viewport);
 
 			printf("Clicked on object ID %u at world position [%f, %f, %f]\n", index, worldPos.x, worldPos.y, worldPos.z);
-			/*
-
-			vector<Light*> light_objects;
-
-			Light* light1 = new Light(
-				glm::vec4(30.f, 20.f, 1.0f, 0.0f),		// Position
-				glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
-				glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),      // Diffuse color
-				glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),      // Specular color
-				glm::vec4(0.0f, 1.0f, 0.0f, 1.0f),      // Light color
-				glm::vec3(0.0f, 0.0f, 0.0f),            // Direction (not used for point light)
-				0.f,                                     // Cutoff (not used for point light)
-				0.f);
-
-			light1->type = LIGHT_TYPE_POINT;
-			light_objects.push_back(light1);
-
-			
-			ShaderProgram* shader = new ShaderProgram("vertex_phong.vert", "fragment_phong.frag", light_objects);
-			// Add a tree at the clicked position
-			DrawableObject* tree = new DrawableObject(shader, glm::vec4(1.f, 0.f, 1.f, 1.f));
-			printf("Total objects: %lu\n", this->forest_objects.size());
-			this->forest_objects.push_back(tree);
-			this->camera->attach(tree->getShaderProgram());
-			Model* treeModel = Model::createTree();
-			Transformation* treeTransform = new Transformation();
-			treeTransform->translate(worldPos);
-			treeTransform->scale(0.5f);
-			tree->addModel(treeModel);
-			tree->addTransformation(treeTransform);
-
-			for (Light* light : light_objects)
-			{
-				light->attach(shader);
-			}
-			printf("Tree added at [%f, %f, %f]\n", worldPos.x, worldPos.y, worldPos.z);
-			printf("Total objects: %lu\n", this->forest_objects.size());
-			*/
-			
+		
 		}
 	}
 }
@@ -602,21 +598,19 @@ void Application::run()
 	glEnable(GL_STENCIL_TEST);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 	
-	vector<DrawableObject*> forest_objects_create = createForest();
-	/*
+	vector<DrawableObject*> forest_objects_create = createForest();	
 	vector<DrawableObject*> triangle_objects_create = createTriangleScene();
 	vector<DrawableObject*> balls_objects_create = createBallsScene();
 	vector<DrawableObject*> shaders_example_objects_create = createShadersExampleScene();
-	vector<Skybox*> skybox_objects_create = createSkyboxScene();
-	*/
+	vector<DrawableObject*> solar_system_objects_create = createSolarSystemScene();
+	Scene scene_solar_system(solar_system_objects_create);
+	
 	
 	Scene scene_forest(forest_objects_create);
-	/*
 	Scene scene_triangle(triangle_objects_create);
 	Scene scene_shaders_example(shaders_example_objects_create);
 	Scene scene_balls(balls_objects_create);
-	Scene scene_skybox(skybox_objects_create);
-	*/
+	
 
 	while (!glfwWindowShouldClose(this->window))
 	{
@@ -626,7 +620,7 @@ void Application::run()
 		if (forest_scene == true) {
 			scene_forest.render(this->camera);
 		}
-		/*
+		
 		if (triangle_scene == true) {
 			scene_triangle.render(this->camera);
 		}
@@ -635,15 +629,31 @@ void Application::run()
 			scene_balls.render(this->camera);
 		}
 		
-		if (skybox_scene == true) {
-			scene_skybox.render(this->camera);
+		if (solar_scene == true) {
+			scene_solar_system.render(this->camera);
+			// Animace
+			float deltaTime = getDeltaTime();
+
+			// Rotace kolem vlastní osy centrální sféry
+			//solar_system_objects_create[0]->setSpin(1.0f, 50.0f, glm::vec3(0.0f, 1.0f, 0.0f), deltaTime);
+
+			// Orbitální rotace s periodou 5 sekund kolem centrální sféry
+			static float orbit_angle = 0.0f;
+			float orbit_speed = 360.0f / 20.0f; // 360 stupòù za 5 sekund
+			orbit_angle += orbit_speed * deltaTime;
+
+			// Výpoèet pozice orbitální sféry kolem centrální sféry
+			glm::mat4 orbit_transform = glm::rotate(glm::mat4(1.0f), glm::radians(orbit_angle), glm::vec3(0.0f, 1.0f, 0.0f));
+			glm::vec3 central_position = glm::vec3(0.f, 0.0f, 0.0f); // Pozice centrální sféry
+			glm::vec3 orbit_translation = glm::vec3(orbit_transform * glm::vec4(1.0f, 0.0f, 0.0f, 0.0f));
+			solar_system_objects_create[1]->setTranslation(central_position + orbit_translation);
 		}
 		
 		if (shaders_example_scene == true) {
 			scene_shaders_example.render(this->camera);
 			shaders_example_objects_create[1]->setSpin(3.0f, 160.0f, glm::vec3(0.0f, 1.0f, 0.0f), 0.016f);
 		}
-		*/
+		
 		glfwPollEvents();
 		glfwSwapBuffers(this->window);
 	}

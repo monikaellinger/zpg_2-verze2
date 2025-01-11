@@ -50,5 +50,6 @@ using namespace std;
 		void setCamMatrix(glm::mat4 projectionMat, glm::mat4 viewMat);
 		void sendLight(const std::string& baseName, int index, const Light& light);
 		void sendAllLights(Camera* camera);
+		void stop();
 	};
 

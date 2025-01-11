@@ -1,29 +1,6 @@
 #include "Light.h"
 
-/*
 
-Light::Light(glm::vec4 position, glm::vec4 ambient, glm::vec4 diffuse, glm::vec4 specular, glm::vec4 color)
-{
-	this->position = position;
-	//this->ambient = ambient;
-	//this->diffuse = diffuse;
-	//this->specular = specular;
-	this->color = color;
-}
-
-
-Light::Light(glm::vec4 position, glm::vec4 ambient, glm::vec4 diffuse, glm::vec4 specular, glm::vec4 color, glm::vec3 direction, float cutoff, float outerCutoff)
-{
-	this->position = position;
-	//this->ambient = ambient;
-	//this->diffuse = diffuse;
-	//this->specular = specular;
-	this->color = color;
-	this->direction = direction;
-	this->cutoff = cutoff;
-	this->outerCutoff = outerCutoff;
-}
-*/
 Light::Light(glm::vec3 position, glm::vec3 color, glm::vec3 direction, float cutoff, float outerCutoff, float constant, float linear, float quadratic, Camera* camera)
 {
 	this->position = position;
@@ -52,7 +29,6 @@ glm::vec3 Light::getColor()
 {
 	return color;
 }
-
 
 void Light::attach(Observer* observer)
 {

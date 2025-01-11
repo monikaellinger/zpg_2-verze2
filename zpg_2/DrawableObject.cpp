@@ -44,6 +44,7 @@ void DrawableObject::draw(Camera* camera)
 	
 	this->shaderProgram->setCamMatrix(camera->getProjectionMatrix(45.f, 0.1f, 100.f), camera->getViewMatrix());
 	this->transformation->useTransformation(this->shaderProgram->getTransformID());
+
 	if (this->model->getDraw() == 1)
 	{
 		this->model->drawModelArrays();
@@ -51,11 +52,13 @@ void DrawableObject::draw(Camera* camera)
 	else {
 		this->model->drawModelElements();
 	}
-	
 
 	if (texture) {
 		texture->unbind();
 	}
+
+	this->shaderProgram->stop();
+
 }
 
 void DrawableObject::addModel(Model* model)
@@ -91,9 +94,3 @@ void DrawableObject::setSpin(float angle, float speed, glm::vec3 axis, float del
 void DrawableObject::setTexture(Texture* newTexture) {
 	this->texture = newTexture;
 }
-/*
-void DrawableObject::setTextureObj(TextureObj* newTextureObj)
-{
-	this->textureObj = newTextureObj;
-}
-*/

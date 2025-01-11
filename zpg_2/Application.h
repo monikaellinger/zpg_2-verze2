@@ -44,6 +44,7 @@
 		bool balls_scene;
 		bool skybox_scene;
 		bool shaders_example_scene;
+		bool solar_scene;
 
 
 		float lastX, lastY; 
@@ -69,7 +70,7 @@
 		vector<DrawableObject*> createTriangleScene();
 		vector<DrawableObject*> createBallsScene();
 		vector<DrawableObject*> createShadersExampleScene();
-		vector<Skybox*> createSkyboxScene();
+		vector<DrawableObject*> createSolarSystemScene();
 
 		void run();
 

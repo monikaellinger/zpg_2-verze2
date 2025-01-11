@@ -63,9 +63,6 @@
     <ClCompile Include="CubeTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TextureObj.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Model.h">
@@ -131,9 +128,6 @@
     <ClInclude Include="CubeTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TextureObj.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="vertex_phong.vert">
@@ -141,34 +135,16 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <None Include="fragment_phong.frag">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="vertex_short_def.vert">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="fragment_triangle_def.frag">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="fragment_sphere_def.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="fragment_tree_def.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="fragment_lambert.frag">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="texture_vertex.vert">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="texture_fragment.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="PhongVertexShader.vert">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="PhongFragmentShader.frag">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="cube.vert">
