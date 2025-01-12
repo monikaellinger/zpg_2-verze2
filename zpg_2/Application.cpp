@@ -653,7 +653,7 @@ void Application::run()
 
 			// Pøiøazení nové pozice orbitující sféry
 			glm::vec3 orbit_position = central_sphere_position + glm::vec3(x, 0.0f, z);
-			solar_system_objects_create[1]->setTranslation(orbit_position);
+			solar_system_objects_create[1]->setTranslation(orbit_position, glm::mat4(1.0f));
 		
 		}
 		

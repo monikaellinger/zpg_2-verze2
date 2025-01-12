@@ -43,3 +43,8 @@ void Transformation::translate(const glm::vec3& translation)
 {
 	this->modelMatrix = glm::translate(this->modelMatrix, translation);
 }
+
+void Transformation::translate(const glm::vec3& translation, glm::mat4 matrix)
+{
+	this->modelMatrix = glm::translate(matrix, translation);
+}

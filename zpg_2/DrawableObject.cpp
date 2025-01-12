@@ -81,6 +81,11 @@ void DrawableObject::setTranslation(glm::vec3 matrix)
 	this->transformation->translate(matrix);
 }
 
+void DrawableObject::setTranslation(glm::vec3 matrix, glm::mat4 mat)
+{
+	this->transformation->translate(matrix, mat);
+}
+
 ShaderProgram* DrawableObject::getShaderProgram() const
 {
 	return shaderProgram;

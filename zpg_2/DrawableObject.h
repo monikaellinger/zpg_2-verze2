@@ -51,6 +51,7 @@ public:
 	void addTransformation(Transformation* transformation);
 	void setScale(float scale);
 	void setTranslation(glm::vec3 matrix);
+	void setTranslation(glm::vec3 matrix, glm::mat4 mat);
 	void setRotation(float angle, glm::vec3 axis);
 	Transformation* getTransformastion() const;
 	ShaderProgram* getShaderProgram() const;
