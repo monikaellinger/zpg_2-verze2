@@ -183,13 +183,11 @@ vector<DrawableObject*> Application::createShadersExampleScene()
 	return shaders_example_objects;
 }
 
-// Upravena metoda createSolarSystemScene
 vector<DrawableObject*> Application::createSolarSystemScene()
 {
 	vector<DrawableObject*> solar_system_objects;
 	vector<Light*> lights;
 
-	// Svìtlo
 	Light* light1 = new Light(
 		glm::vec3(2.0f, 5.0f, -1.0f),
 		glm::vec3(1.0f, 1.0f, 1.0f),
@@ -205,7 +203,7 @@ vector<DrawableObject*> Application::createSolarSystemScene()
 	light1->type = LIGHT_TYPE_POINT;
 	lights.push_back(light1);
 
-	ShaderProgram* shader = new ShaderProgram("vertex_phong.vert", "test_lights.frag");
+	ShaderProgram* shader = new ShaderProgram("vertex_phong.vert", "test_lights.frag", lights);
 
 	for (Light* light : lights)
 	{
@@ -213,15 +211,14 @@ vector<DrawableObject*> Application::createSolarSystemScene()
 	}
 
 	// Centrální sféra
-	DrawableObject* central_sphere = new DrawableObject(shader, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	DrawableObject* central_sphere = new DrawableObject(shader, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
 	solar_system_objects.push_back(central_sphere);
 	this->camera->attach(central_sphere->getShaderProgram());
 
 	Model* central_model = Model::createSphere();
 	Transformation* central_transform = new Transformation();
 	central_transform->scale(1.0f);
-	glm::vec3 tsl(0.f, 0.f, 0.f);
-	central_transform->translate(tsl);
+	central_transform->translate(glm::vec3(0.f, 0.f, 0.f));
 	central_sphere->addModel(central_model);
 	central_sphere->addTransformation(central_transform);
 
@@ -233,6 +230,8 @@ vector<DrawableObject*> Application::createSolarSystemScene()
 	Model* orbiting_model = Model::createSphere();
 	Transformation* orbiting_transform = new Transformation();
 	orbiting_transform->scale(1.f);
+	float initial_radius = 3.0f;
+	orbiting_transform->translate(glm::vec3(initial_radius, 0.0f, 0.0f));
 	orbiting_sphere->addModel(orbiting_model);
 	orbiting_sphere->addTransformation(orbiting_transform);
 
@@ -260,7 +259,7 @@ vector<DrawableObject*> Application::createForest()
 	);
 
 	light1->type = LIGHT_TYPE_SPOT;
-	//light_objects.push_back(light1);
+	light_objects.push_back(light1);
 
 	
 	Light* light2 = new Light(
@@ -276,7 +275,7 @@ vector<DrawableObject*> Application::createForest()
 	);
 
 	light2->type = LIGHT_TYPE_POINT;
-	light_objects.push_back(light2);
+	//light_objects.push_back(light2);
 
 
 	Light* light3 = new Light(
@@ -596,16 +595,15 @@ void Application::run()
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_STENCIL_TEST);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	//glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 	
 	vector<DrawableObject*> forest_objects_create = createForest();	
 	vector<DrawableObject*> triangle_objects_create = createTriangleScene();
 	vector<DrawableObject*> balls_objects_create = createBallsScene();
 	vector<DrawableObject*> shaders_example_objects_create = createShadersExampleScene();
 	vector<DrawableObject*> solar_system_objects_create = createSolarSystemScene();
-	Scene scene_solar_system(solar_system_objects_create);
 	
-	
+	Scene scene_solar_system(solar_system_objects_create);	
 	Scene scene_forest(forest_objects_create);
 	Scene scene_triangle(triangle_objects_create);
 	Scene scene_shaders_example(shaders_example_objects_create);
@@ -631,22 +629,32 @@ void Application::run()
 		
 		if (solar_scene == true) {
 			scene_solar_system.render(this->camera);
+			
 			// Animace
 			float deltaTime = getDeltaTime();
 
-			// Rotace kolem vlastní osy centrální sféry
+			// Rotace centrální sféry kolem vlastní osy
 			//solar_system_objects_create[0]->setSpin(1.0f, 50.0f, glm::vec3(0.0f, 1.0f, 0.0f), deltaTime);
 
-			// Orbitální rotace s periodou 5 sekund kolem centrální sféry
-			static float orbit_angle = 0.0f;
-			float orbit_speed = 360.0f / 20.0f; // 360 stupòù za 5 sekund
-			orbit_angle += orbit_speed * deltaTime;
+			// Orbitální rotace sféry
+			static float orbit_angle = 0.0f; // Aktuální úhel v radiánech
+			float orbit_speed = glm::radians(360.0f) / 200.0f;
+			orbit_angle += orbit_speed; // * deltaTime;
 
-			// Výpoèet pozice orbitální sféry kolem centrální sféry
-			glm::mat4 orbit_transform = glm::rotate(glm::mat4(1.0f), glm::radians(orbit_angle), glm::vec3(0.0f, 1.0f, 0.0f));
-			glm::vec3 central_position = glm::vec3(0.f, 0.0f, 0.0f); // Pozice centrální sféry
-			glm::vec3 orbit_translation = glm::vec3(orbit_transform * glm::vec4(1.0f, 0.0f, 0.0f, 0.0f));
-			solar_system_objects_create[1]->setTranslation(central_position + orbit_translation);
+			// Pozice centrální sféry
+			glm::vec3 central_sphere_position = glm::vec3(0.0f, 0.0f, 0.0f);
+
+			// Polomìr kružnice
+			float radius = 3.f; // Polomìr orbitální dráhy
+
+			// Výpoèet orbitální pozice
+			float x = radius * glm::cos(orbit_angle);
+			float z = radius * glm::sin(orbit_angle);
+
+			// Pøiøazení nové pozice orbitující sféry
+			glm::vec3 orbit_position = central_sphere_position + glm::vec3(x, 0.0f, z);
+			solar_system_objects_create[1]->setTranslation(orbit_position);
+		
 		}
 		
 		if (shaders_example_scene == true) {

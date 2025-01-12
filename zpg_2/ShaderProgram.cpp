@@ -105,6 +105,7 @@ void ShaderProgram::sendLight(const std::string& baseName, int index, const Ligh
 	string colorName = baseName + "[" + to_string(index) + "].color";
 	string dirName = baseName + "[" + to_string(index) + "].direction";
 	string cutName = baseName + "[" + to_string(index) + "].cutoff";
+	//string outerCutoffName = baseName + "[" + to_string(index) + "].outerCutoff";
 	string constantName = baseName + "[" + to_string(index) + "].constant";
 	string linearName = baseName + "[" + to_string(index) + "].linear";
 	string quadraticName = baseName + "[" + to_string(index) + "].quadratic";
@@ -115,6 +116,7 @@ void ShaderProgram::sendLight(const std::string& baseName, int index, const Ligh
 	if (light.type == LIGHT_TYPE_SPOT) {
 		setVec3Uniform(dirName.c_str(), light.direction);
 		setFloatUniform(cutName.c_str(), light.cutoff);	
+		//setFloatUniform(outerCutoffName.c_str(), light.outerCutoff);
 	}
 	setFloatUniform(constantName.c_str(), light.constant);
 	setFloatUniform(linearName.c_str(), light.linear);
