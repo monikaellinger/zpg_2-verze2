@@ -58,5 +58,6 @@ public:
 	void setSpin(float angle, float speed, glm::vec3 axis, float deltaTime);
 	void setMaterial(Material* material);
 	void setTexture(Texture* newTexture);
+	void updateTranslation(int index, glm::vec3 translation);
 };
 

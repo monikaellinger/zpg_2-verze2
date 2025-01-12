@@ -210,30 +210,41 @@ vector<DrawableObject*> Application::createSolarSystemScene()
 		light->attach(shader);
 	}
 
-	// Centrální sféra
-	DrawableObject* central_sphere = new DrawableObject(shader, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
-	solar_system_objects.push_back(central_sphere);
-	this->camera->attach(central_sphere->getShaderProgram());
+	// Slunce 
+	DrawableObject* sun = new DrawableObject(shader, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+	solar_system_objects.push_back(sun);
+	this->camera->attach(sun->getShaderProgram());
 
 	Model* central_model = Model::createSphere();
 	Transformation* central_transform = new Transformation();
 	central_transform->scale(1.0f);
 	central_transform->translate(glm::vec3(0.f, 0.f, 0.f));
-	central_sphere->addModel(central_model);
-	central_sphere->addTransformation(central_transform);
+	sun->addModel(central_model);
+	sun->addTransformation(central_transform);
 
-	// Orbitující sféra
-	DrawableObject* orbiting_sphere = new DrawableObject(shader, glm::vec4(1.f, 1.f, 1.0f, 1.0f));
-	solar_system_objects.push_back(orbiting_sphere);
-	this->camera->attach(orbiting_sphere->getShaderProgram());
+	// Zemì
+	DrawableObject* earth = new DrawableObject(shader, glm::vec4(0.f, 1.f, 0.0f, 1.0f));
+	solar_system_objects.push_back(earth);
+	this->camera->attach(earth->getShaderProgram());
 
 	Model* orbiting_model = Model::createSphere();
 	Transformation* orbiting_transform = new Transformation();
-	orbiting_transform->scale(1.f);
-	float initial_radius = 3.0f;
-	orbiting_transform->translate(glm::vec3(initial_radius, 0.0f, 0.0f));
-	orbiting_sphere->addModel(orbiting_model);
-	orbiting_sphere->addTransformation(orbiting_transform);
+	orbiting_transform->scale(0.5f);
+	orbiting_transform->translate(glm::vec3(0.f, 0.0f, 0.0f));
+	earth->addModel(orbiting_model);
+	earth->addTransformation(orbiting_transform);
+
+	// Mars
+	DrawableObject* mars = new DrawableObject(shader, glm::vec4(1.f, 1.f, 1.0f, 1.0f));
+	solar_system_objects.push_back(mars);
+	this->camera->attach(mars->getShaderProgram());
+
+	Model* mars_model = Model::createSphere();
+	Transformation* mars_transform = new Transformation();
+	mars_transform->scale(0.5f);
+	mars_transform->translate(glm::vec3(-5.f, 0.0f, 0.0f));
+	mars->addModel(mars_model);
+	mars->addTransformation(mars_transform);
 
 	return solar_system_objects;
 }
@@ -634,26 +645,46 @@ void Application::run()
 			float deltaTime = getDeltaTime();
 
 			// Rotace centrální sféry kolem vlastní osy
-			//solar_system_objects_create[0]->setSpin(1.0f, 50.0f, glm::vec3(0.0f, 1.0f, 0.0f), deltaTime);
+			solar_system_objects_create[0]->setSpin(1.0f, 50.0f, glm::vec3(0.0f, 1.0f, 0.0f), deltaTime);
 
-			// Orbitální rotace sféry
-			static float orbit_angle = 0.0f; // Aktuální úhel v radiánech
-			float orbit_speed = glm::radians(360.0f) / 200.0f;
-			orbit_angle += orbit_speed; // * deltaTime;
+			static float earth_angle = 0.0f; // Úhel pro rotaci Zemì kolem Slunce
+			static float mars_angle = 0.0f;  // Úhel pro rotaci Marsu kolem Zemì
 
-			// Pozice centrální sféry
-			glm::vec3 central_sphere_position = glm::vec3(0.0f, 0.0f, 0.0f);
+			float earth_speed = glm::radians(360.0f) / 10.0f; // Rychlost Zemì (10 sekund na obìh)
+			float mars_speed = glm::radians(360.0f) / 2.0f;   // Rychlost Marsu (5 sekund na obìh)
+
+			earth_angle += earth_speed * deltaTime; // Aktualizace úhlu Zemì
+			mars_angle += mars_speed * deltaTime;   // Aktualizace úhlu Marsu
+
+
+			// støed rotace zemì
+			glm::vec3 sun_position = glm::vec3(0.0f, 0.0f, 0.0f);
 
 			// Polomìr kružnice
-			float radius = 3.f; // Polomìr orbitální dráhy
+			float earth_radius = 15.f; // Polomìr orbitální dráhy
 
 			// Výpoèet orbitální pozice
-			float x = radius * glm::cos(orbit_angle);
-			float z = radius * glm::sin(orbit_angle);
+			float earth_x = earth_radius * glm::cos(earth_angle);
+			float earth_z = earth_radius * glm::sin(earth_angle);
 
 			// Pøiøazení nové pozice orbitující sféry
-			glm::vec3 orbit_position = central_sphere_position + glm::vec3(x, 0.0f, z);
-			solar_system_objects_create[1]->setTranslation(orbit_position, glm::mat4(1.0f));
+			glm::vec3 earth_position = sun_position + glm::vec3(earth_x, 0.0f, earth_z);
+			solar_system_objects_create[1]->updateTranslation(1, earth_position);
+
+			// MARS
+			// Støed rotace Marsu je aktuální pozice Zemì
+			glm::vec3 mars_center = earth_position;
+
+			// Polomìr dráhy Marsu kolem Zemì
+			float mars_radius = 5.0f;
+
+			// Výpoèet pozice Marsu na kružnici
+			float mars_x = mars_radius * glm::cos(mars_angle);
+			float mars_z = mars_radius * glm::sin(mars_angle);
+
+			glm::vec3 mars_position = mars_center + glm::vec3(mars_x, 0.0f, mars_z);
+			solar_system_objects_create[2]->updateTranslation(1, mars_position); // Mars
+
 		
 		}
 		

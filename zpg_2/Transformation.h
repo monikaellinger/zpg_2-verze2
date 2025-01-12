@@ -23,6 +23,7 @@ class Transformation
 {
 private:
 	glm::mat4 modelMatrix;
+	vector<glm::mat4> transformations;
 
 public:
 	Transformation();
@@ -33,6 +34,7 @@ public:
 	void useTransformation(GLuint matrixID);
 	void rotate(float angle, glm::vec3 axis);
 	void spin(float angle, float speed, glm::vec3 axis, float deltaTime);
+	void updateTranslation(int index, glm::vec3 translation);
 };
 
 

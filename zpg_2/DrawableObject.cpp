@@ -99,3 +99,8 @@ void DrawableObject::setSpin(float angle, float speed, glm::vec3 axis, float del
 void DrawableObject::setTexture(Texture* newTexture) {
 	this->texture = newTexture;
 }
+
+void DrawableObject::updateTranslation(int index, glm::vec3 translation)
+{
+	this->transformation->updateTranslation(index, translation);
+}
