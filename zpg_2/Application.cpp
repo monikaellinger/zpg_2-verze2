@@ -4,11 +4,11 @@
 Application::Application() : lastX(400), lastY(300), firstMouse(true) {
 	this->camera = new Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	this->triangle_scene = false;
-	this->forest_scene = false;
+	this->forest_scene = true;
 	this->balls_scene = false;
 	this->skybox_scene = false;
 	this->shaders_example_scene = false;
-	this->solar_scene = true;
+	this->solar_scene = false;
 }
 
 
@@ -206,13 +206,13 @@ vector<DrawableObject*> Application::createSolarSystemScene()
 	light1->type = LIGHT_TYPE_POINT;
 	lights.push_back(light1);
 
-	ShaderProgram* shader = new ShaderProgram("vertex_phong.vert", "test_lights.frag", lights);
-	ShaderProgram* shader_const = new ShaderProgram("texture_vertex.vert", "fragment_triangle_def.frag");
+	//ShaderProgram* shader = new ShaderProgram("vertex_phong.vert", "test_lights.frag", lights);
+	//ShaderProgram* shader_const = new ShaderProgram("texture_vertex.vert", "fragment_triangle_def.frag");
 	ShaderProgram* shader_texture = new ShaderProgram("texture_vertex.vert", "texture_fragment.frag", lights);
 
 	for (Light* light : lights)
 	{
-		light->attach(shader);
+		//light->attach(shader);
 		light->attach(shader_texture);
 	}
 
@@ -335,7 +335,7 @@ vector<DrawableObject*> Application::createForest()
 	);
 
 	light2->type = LIGHT_TYPE_POINT;
-	//light_objects.push_back(light2);
+	light_objects.push_back(light2);
 
 
 	Light* light3 = new Light(
@@ -658,11 +658,12 @@ void Application::run()
 	glEnable(GL_STENCIL_TEST);
 	//glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 	
-	vector<DrawableObject*> forest_objects_create = createForest();	
+	
 	vector<DrawableObject*> triangle_objects_create = createTriangleScene();
 	vector<DrawableObject*> balls_objects_create = createBallsScene();
 	vector<DrawableObject*> shaders_example_objects_create = createShadersExampleScene();
 	vector<DrawableObject*> solar_system_objects_create = createSolarSystemScene();
+	vector<DrawableObject*> forest_objects_create = createForest();
 	
 	Scene scene_solar_system(solar_system_objects_create);	
 	Scene scene_forest(forest_objects_create);
@@ -680,14 +681,26 @@ void Application::run()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		if (forest_scene == true) {
+			for (int i = 0; i < forest_objects_create.size(); i++)
+			{
+				forest_objects_create[i]->setMatrix(glm::mat4(1.f));
+			}
 			scene_forest.render(this->camera);
 		}
 		
 		if (triangle_scene == true) {
+			for (int i = 0; i < triangle_objects_create.size(); i++)
+			{
+				triangle_objects_create[i]->setMatrix(glm::mat4(1.f));
+			}
 			scene_triangle.render(this->camera);
 		}
 
 		if (balls_scene == true) {
+			for (int i = 0; i < balls_objects_create.size(); i++)
+			{
+				balls_objects_create[i]->setMatrix(glm::mat4(1.f));
+			}
 			scene_balls.render(this->camera);
 		}
 		
@@ -744,6 +757,10 @@ void Application::run()
 		}
 		
 		if (shaders_example_scene == true) {
+			for (int i = 0; i < shaders_example_objects_create.size(); i++)
+			{
+				shaders_example_objects_create[i]->setMatrix(glm::mat4(1.f));
+			}
 			scene_shaders_example.render(this->camera);
 			shaders_example_objects_create[1]->setSpin(3.0f, 160.0f, glm::vec3(0.0f, 1.0f, 0.0f), 0.016f);
 		}
