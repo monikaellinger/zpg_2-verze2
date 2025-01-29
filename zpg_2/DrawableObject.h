@@ -59,5 +59,8 @@ public:
 	void setMaterial(Material* material);
 	void setTexture(Texture* newTexture);
 	void updateTranslation(int index, glm::vec3 translation);
+	void updateRotation(int index, glm::vec3 axis, float angle);
+	void setMatrix(glm::mat4 matrix);
+	glm::mat4 getMatrix();
 };
 

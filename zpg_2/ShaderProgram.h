@@ -51,5 +51,6 @@ using namespace std;
 		void sendLight(const std::string& baseName, int index, const Light& light);
 		void sendAllLights(Camera* camera);
 		void stop();
+		void setTextureID(GLuint id);
 	};
 

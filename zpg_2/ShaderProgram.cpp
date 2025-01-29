@@ -140,6 +140,16 @@ void ShaderProgram::stop()
 	glUseProgram(0);
 }
 
+void ShaderProgram::setTextureID(GLuint id)
+{
+	GLuint variableID = glGetUniformLocation(this->programID, "textureSampler");
+	if (id == -1) {
+		fprintf(stderr, "Error: Uniform variable '%s' not found in shader program.\n", "textureSampler");
+		exit(EXIT_FAILURE);
+	}
+	glUniform1i(variableID, id);
+}
+
 void ShaderProgram::setIntUniform(const char* name, int value)
 {
 	GLuint id = glGetUniformLocation(this->programID, name);

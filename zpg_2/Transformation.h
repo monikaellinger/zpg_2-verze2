@@ -35,6 +35,9 @@ public:
 	void rotate(float angle, glm::vec3 axis);
 	void spin(float angle, float speed, glm::vec3 axis, float deltaTime);
 	void updateTranslation(int index, glm::vec3 translation);
+	void updateRotation(int index, glm::vec3 axis, float angle);
+	void setMatrix(glm::mat4 modelMatrix);
+	glm::mat4 getMatrix();
 };
 
 

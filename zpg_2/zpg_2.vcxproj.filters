@@ -162,6 +162,9 @@
     <None Include="test_lights.frag">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="constant_texture_frag.frag">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\Downloads\cubemap\negx.jpg">

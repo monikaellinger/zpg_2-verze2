@@ -35,6 +35,7 @@ void DrawableObject::draw(Camera* camera)
 	
 
 	if (texture) {
+		this->shaderProgram->setTextureID(texture->getTextureID());
 		texture->bind();
 	}
 	if (this->color != glm::vec4(-1.0f))
@@ -103,4 +104,19 @@ void DrawableObject::setTexture(Texture* newTexture) {
 void DrawableObject::updateTranslation(int index, glm::vec3 translation)
 {
 	this->transformation->updateTranslation(index, translation);
+}
+
+void DrawableObject::updateRotation(int index, glm::vec3 axis, float angle)
+{
+	this->transformation->updateRotation(index, axis, angle);
+}
+
+void DrawableObject::setMatrix(glm::mat4 matrix)
+{
+	this->transformation->setMatrix(matrix);
+}
+
+glm::mat4 DrawableObject::getMatrix()
+{
+	return this->transformation->getMatrix();
 }

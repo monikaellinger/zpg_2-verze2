@@ -5,10 +5,10 @@ Application::Application() : lastX(400), lastY(300), firstMouse(true) {
 	this->camera = new Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	this->triangle_scene = false;
 	this->forest_scene = false;
-	this->balls_scene = true;
+	this->balls_scene = false;
 	this->skybox_scene = false;
 	this->shaders_example_scene = false;
-	this->solar_scene = false;
+	this->solar_scene = true;
 }
 
 
@@ -187,9 +187,12 @@ vector<DrawableObject*> Application::createSolarSystemScene()
 {
 	vector<DrawableObject*> solar_system_objects;
 	vector<Light*> lights;
+	Texture* sunText = new Texture("2k_sun.png", 1);
+	Texture* moonText = new Texture("2k_moon.png", 2);
+	Texture* eText = new Texture("2k_earth_daymap.png", 3);
 
 	Light* light1 = new Light(
-		glm::vec3(2.0f, 5.0f, -1.0f),
+		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(1.0f, 1.0f, 1.0f),
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		0.0f,
@@ -204,12 +207,58 @@ vector<DrawableObject*> Application::createSolarSystemScene()
 	lights.push_back(light1);
 
 	ShaderProgram* shader = new ShaderProgram("vertex_phong.vert", "test_lights.frag", lights);
+	ShaderProgram* shader_const = new ShaderProgram("texture_vertex.vert", "fragment_triangle_def.frag");
+	ShaderProgram* shader_texture = new ShaderProgram("texture_vertex.vert", "texture_fragment.frag", lights);
 
 	for (Light* light : lights)
 	{
 		light->attach(shader);
+		light->attach(shader_texture);
 	}
 
+
+	// Slunce P
+	DrawableObject* sun_planet = new DrawableObject(new ShaderProgram("texture_vertex.vert", "constant_texture_frag.frag"), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	solar_system_objects.push_back(sun_planet);
+	this->camera->attach(sun_planet->getShaderProgram());
+
+	Model* sun_model = Model::createLogin("planet.obj");
+	Transformation* transform_login = new Transformation();
+	transform_login->scale(1.0f);
+	glm::vec3 translation_login(0.f, 0.f, 0.0f);
+	transform_login->translate(translation_login);
+	sun_planet->addModel(sun_model);
+	sun_planet->addTransformation(transform_login);
+	sun_planet->setTexture(sunText);
+
+	// Earth P
+	DrawableObject* earth_planet = new DrawableObject(shader_texture, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	solar_system_objects.push_back(earth_planet);
+	this->camera->attach(earth_planet->getShaderProgram());
+
+	Model* earth_model = Model::createLogin("planet.obj");
+	Transformation* earth_transform = new Transformation();
+	earth_transform->translate(glm::vec3(6.f, 0.f, 0.f));
+	earth_transform->scale(0.5f);
+	earth_planet->addModel(earth_model);
+	earth_planet->addTransformation(earth_transform);
+	earth_planet->setTexture(eText);
+
+	// Moon P
+	DrawableObject* moon_planet = new DrawableObject(shader_texture, glm::vec4(1.f, 1.f, 1.0f, 1.0f));
+	solar_system_objects.push_back(moon_planet);
+	this->camera->attach(moon_planet->getShaderProgram());
+
+	Model* moon_model = Model::createLogin("planet.obj");
+	Transformation* moon_transform = new Transformation();
+	moon_transform->translate(glm::vec3(3.f, 0.f, 0.f));
+	moon_transform->scale(0.2f);
+	moon_planet->addModel(moon_model);
+	moon_planet->addTransformation(moon_transform);
+	moon_planet->setTexture(moonText);
+
+
+	/*
 	// Slunce 
 	DrawableObject* sun = new DrawableObject(shader, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
 	solar_system_objects.push_back(sun);
@@ -245,7 +294,7 @@ vector<DrawableObject*> Application::createSolarSystemScene()
 	mars_transform->translate(glm::vec3(-5.f, 0.0f, 0.0f));
 	mars->addModel(mars_model);
 	mars->addTransformation(mars_transform);
-
+	*/
 	return solar_system_objects;
 }
 
@@ -254,7 +303,7 @@ vector<DrawableObject*> Application::createForest()
 {
 	vector<DrawableObject*> forest_objects;
 	vector<Light*> light_objects;
-	Texture* grassTexture = new Texture("grass.png");
+	Texture* grassTexture = new Texture("grass.png", 4);
 
 
 	Light* light1 = new Light(
@@ -397,6 +446,7 @@ vector<DrawableObject*> Application::createForest()
 
 }
 
+
 void Application::initialize()
 {
 
@@ -406,7 +456,7 @@ void Application::initialize()
 		exit(EXIT_FAILURE);
 	}
 
-	this->window = glfwCreateWindow(800, 600, "ZPG", NULL, NULL);
+	this->window = glfwCreateWindow(1200, 1000, "ZPG", NULL, NULL);
 	if (!this->window) {
 		glfwTerminate();
 		exit(EXIT_FAILURE);
@@ -619,6 +669,9 @@ void Application::run()
 	Scene scene_triangle(triangle_objects_create);
 	Scene scene_shaders_example(shaders_example_objects_create);
 	Scene scene_balls(balls_objects_create);
+
+	float planetAngle = 0.0f, planetSelfRotation = 0.0f;
+	float moonAngle = 0.0f, moonSelfRotation = 0.0f;
 	
 
 	while (!glfwWindowShouldClose(this->window))
@@ -639,52 +692,54 @@ void Application::run()
 		}
 		
 		if (solar_scene == true) {
+
 			scene_solar_system.render(this->camera);
+			for (int i = 0; i < solar_system_objects_create.size(); i++)
+			{
+				solar_system_objects_create[i]->setMatrix(glm::mat4(1.f));
+			}
 			
 			// Animace
 			float deltaTime = getDeltaTime();
 
 			// Rotace centrální sféry kolem vlastní osy
 			solar_system_objects_create[0]->setSpin(1.0f, 50.0f, glm::vec3(0.0f, 1.0f, 0.0f), deltaTime);
+			solar_system_objects_create[1]->setSpin(1.0f, 50.0f, glm::vec3(0.0f, 1.0f, 0.0f), deltaTime);
+			solar_system_objects_create[2]->setSpin(1.0f, 50.0f, glm::vec3(0.0f, 1.0f, 0.0f), deltaTime);
 
 			static float earth_angle = 0.0f; // Úhel pro rotaci Zemì kolem Slunce
-			static float mars_angle = 0.0f;  // Úhel pro rotaci Marsu kolem Zemì
+			static float moon_angle = 0.0f;  // Úhel pro rotaci Mìsíce kolem Zemì
 
-			float earth_speed = glm::radians(360.0f) / 10.0f; // Rychlost Zemì (10 sekund na obìh)
-			float mars_speed = glm::radians(360.0f) / 2.0f;   // Rychlost Marsu (5 sekund na obìh)
+			float earth_speed = glm::radians(360.0f) / 10.0f;
+			float moon_speed = glm::radians(360.0f) / 2.0f;
 
 			earth_angle += earth_speed * deltaTime; // Aktualizace úhlu Zemì
-			mars_angle += mars_speed * deltaTime;   // Aktualizace úhlu Marsu
-
+			moon_angle += moon_speed * deltaTime;   // Aktualizace úhlu Mìsíce
 
 			// støed rotace zemì
-			glm::vec3 sun_position = glm::vec3(0.0f, 0.0f, 0.0f);
+			glm::vec3 earth_center = glm::vec3(0.0f, 0.0f, 0.0f);
 
-			// Polomìr kružnice
-			float earth_radius = 15.f; // Polomìr orbitální dráhy
+			float earth_radius = 5.f; 
 
-			// Výpoèet orbitální pozice
 			float earth_x = earth_radius * glm::cos(earth_angle);
 			float earth_z = earth_radius * glm::sin(earth_angle);
 
 			// Pøiøazení nové pozice orbitující sféry
-			glm::vec3 earth_position = sun_position + glm::vec3(earth_x, 0.0f, earth_z);
-			solar_system_objects_create[1]->updateTranslation(1, earth_position);
+			glm::vec3 earth_position = earth_center + glm::vec3(earth_x, 0.0f, earth_z);
+			solar_system_objects_create[1]->updateTranslation(0, earth_position);
 
-			// MARS
-			// Støed rotace Marsu je aktuální pozice Zemì
-			glm::vec3 mars_center = earth_position;
+			// moon
+			glm::vec3 moon_center = earth_position;
 
-			// Polomìr dráhy Marsu kolem Zemì
-			float mars_radius = 5.0f;
+			float moon_radius = 3.0f;
 
 			// Výpoèet pozice Marsu na kružnici
-			float mars_x = mars_radius * glm::cos(mars_angle);
-			float mars_z = mars_radius * glm::sin(mars_angle);
+			float moon_x = moon_radius * glm::cos(moon_angle);
+			float moon_z = moon_radius * glm::sin(moon_angle);
 
-			glm::vec3 mars_position = mars_center + glm::vec3(mars_x, 0.0f, mars_z);
-			solar_system_objects_create[2]->updateTranslation(1, mars_position); // Mars
-
+			glm::vec3 moon_position = moon_center + glm::vec3(moon_x, 0.0f, moon_z);
+			solar_system_objects_create[2]->updateTranslation(0, moon_position);
+		
 		
 		}
 		

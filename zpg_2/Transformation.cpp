@@ -16,7 +16,7 @@ Transformation::Transformation(float scale, glm::vec3 translation, float angle, 
 
 void Transformation::useTransformation(GLuint matrixID)
 {
-	this->modelMatrix = glm::mat4(1.f);
+	//this->modelMatrix = glm::mat4(1.f);
 	for (auto transformation : this->transformations) {
 		this->modelMatrix *= transformation;
 	}
@@ -42,6 +42,21 @@ void Transformation::spin(float angle,float speed, glm::vec3 axis, float deltaTi
 void Transformation::updateTranslation(int index, glm::vec3 translation)
 {
 	transformations[index] = glm::translate(glm::mat4(1.f), translation);
+}
+
+void Transformation::updateRotation(int index, glm::vec3 axis, float angle)
+{
+	transformations[index] = glm::rotate(glm::mat4(1.f), glm::radians(angle), axis);
+}
+
+void Transformation::setMatrix(glm::mat4 modelMatrix)
+{
+	this->modelMatrix = modelMatrix;
+}
+
+glm::mat4 Transformation::getMatrix()
+{
+	return this->modelMatrix;
 }
 
 
