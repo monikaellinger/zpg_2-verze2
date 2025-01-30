@@ -304,8 +304,8 @@ vector<DrawableObject*> Application::createTeren()
 	vector<DrawableObject*> teren_objects;
 	vector<Light*> light_objects;
 
-	Texture* tree_text = new Texture("tree.png", 5);
-	Texture* teren_text = new Texture("grass.png", 6);
+	//Texture* tree_text = new Texture("tree.png", 5);
+	Texture* teren_text = new Texture("grass.png", 5);
 
 	Light* light1 = new Light(
 		glm::vec3(1.0f, 5.0f, 1.0f), // Pozice svìtla
@@ -322,8 +322,6 @@ vector<DrawableObject*> Application::createTeren()
 	light1->type = LIGHT_TYPE_POINT;
 	light_objects.push_back(light1);
 
-	//ShaderProgram* shader = new ShaderProgram("vertex_phong.vert", "test_lights.frag", lights);
-	//ShaderProgram* shader_const = new ShaderProgram("texture_vertex.vert", "fragment_triangle_def.frag");
 	ShaderProgram* shader_texture = new ShaderProgram("texture_vertex.vert", "texture_fragment.frag", light_objects);
 
 	for (Light* light : light_objects)
@@ -332,9 +330,8 @@ vector<DrawableObject*> Application::createTeren()
 	}
 
 
-	// Slunce P
 	DrawableObject* sun_planet = new DrawableObject(new ShaderProgram("texture_vertex.vert", "constant_texture_frag.frag"), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	teren_objects.push_back(sun_planet);
+	this->teren_scene_pr->addObject(sun_planet);
 	this->camera->attach(sun_planet->getShaderProgram());
 
 	Model* sun_model = Model::createLogin("teren.obj");
@@ -347,7 +344,7 @@ vector<DrawableObject*> Application::createTeren()
 	sun_planet->setTexture(teren_text);
 
 
-	return teren_objects;
+	return teren_scene_pr->getObjects();
 }
 
 
@@ -680,7 +677,9 @@ void Application::button_callback(GLFWwindow* window, int button, int action, in
 
 		printf("Clicked on object ID %u at world position [%f, %f, %f]\n", index, worldPos.x, worldPos.y, worldPos.z);
 		
+		vector<DrawableObject*> teren_obj;
 		vector<Light*> lights;
+		Texture* tree_text = new Texture("tree.png", 6);
 
 		Light* light1 = new Light(
 			glm::vec3(1.0f, 5.0f, 1.0f), // Pozice svìtla
@@ -704,7 +703,7 @@ void Application::button_callback(GLFWwindow* window, int button, int action, in
 			light->attach(shader_texture);
 		}
 
-		std::unique_ptr<DrawableObject> tree = std::make_unique<DrawableObject>(shader_texture, glm::vec4(0.3f, 0.8f, 0.3f, 1.f));
+		DrawableObject* tree = new DrawableObject(shader_texture, glm::vec4(0.3f, 0.8f, 0.3f, 1.f));
 
 		Model* treeModel = Model::createLogin("tree.obj");  // Správné naètení modelu
 		if (!treeModel) {
@@ -717,11 +716,12 @@ void Application::button_callback(GLFWwindow* window, int button, int action, in
 		transform_tree->scale(0.5f);
 		tree->addModel(treeModel);
 		tree->addTransformation(transform_tree);
+		//tree->setTexture();
 
 		// Pøidání objektu do scény
-		this->objects.push_back(std::move(tree));
+		this->teren_scene_pr->addObject(tree);
 		printf("Tree added at [%f, %f, %f]\n", worldPos.x, worldPos.y, worldPos.z);
-		printf("Total objects: %lu\n", this->objects.size());
+		printf("Total objects: %lu\n", teren_obj.size());
 	}
 }
 
@@ -786,7 +786,7 @@ void Application::run()
 	Scene scene_triangle(triangle_objects_create);
 	Scene scene_shaders_example(shaders_example_objects_create);
 	Scene scene_balls(balls_objects_create);
-	Scene scene_teren(teren_obj_create);
+	this->teren_scene_pr = new Scene(teren_obj_create);
 
 	float planetAngle = 0.0f, planetSelfRotation = 0.0f;
 	float moonAngle = 0.0f, moonSelfRotation = 0.0f;
@@ -883,7 +883,7 @@ void Application::run()
 		}
 
 		if (teren_scene == true) {
-			scene_teren.render(this->camera);
+			this->teren_scene_pr->render(this->camera);
 		}
 		
 		glfwPollEvents();

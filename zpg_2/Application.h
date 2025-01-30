@@ -67,7 +67,8 @@
 		void initialize();
 		float getDeltaTime();
 		Camera* camera;
-		std::vector<std::unique_ptr<DrawableObject>> objects;
+		Scene* teren_scene_pr;
+		vector<DrawableObject*> objects;
 		vector<DrawableObject*> createForest();
 		vector<DrawableObject*> createTriangleScene();
 		vector<DrawableObject*> createBallsScene();

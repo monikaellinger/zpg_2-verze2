@@ -43,6 +43,7 @@ public:
 	void render(Camera* camera);
 	void addObject(DrawableObject* obj);
 	ShaderProgram* getShaderProgram();
+	vector<DrawableObject*> getObjects();
 };
 
  

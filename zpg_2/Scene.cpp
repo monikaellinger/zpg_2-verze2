@@ -28,6 +28,11 @@ ShaderProgram* Scene::getShaderProgram()
 	return shader_program;
 }
 
+vector<DrawableObject*> Scene::getObjects()
+{
+	return objects;
+}
+
 void Scene::addObject(DrawableObject* obj) {
 	objects.push_back(obj);
 }
