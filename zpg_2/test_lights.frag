@@ -42,7 +42,7 @@ void main() {
             vec3 reflection_direction = reflect(-light_direction, ex_worldNorm);
 
             float light_distance = length(lights[i].position - ex_worldPos);
-
+                
             attenuation = 1.0 / (lights[i].constant + (lights[i].linear * light_distance) + (lights[i].quadratic * pow(light_distance, 2)));
 
             float diffuse_strength = max(dot(normalize(light_direction), normalize(ex_worldNorm)), 0.0);
@@ -50,7 +50,7 @@ void main() {
 
             float spec = max(dot(camera_direction, reflection_direction), 0.0);
             spec = pow(spec, 32);  
-            specular += spec * 1.0 * attenuation * vec4(lights[i].color, 1.0);
+            specular += spec * 1.0 * attenuation * vec4(1.0, 1.0, 1.0, 1.0);
         }
 
         if (lights[i].type == LIGHT_TYPE_SPOT) {

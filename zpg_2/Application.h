@@ -45,6 +45,7 @@
 		bool skybox_scene;
 		bool shaders_example_scene;
 		bool solar_scene;
+		bool teren_scene;
 
 
 		float lastX, lastY; 
@@ -66,11 +67,13 @@
 		void initialize();
 		float getDeltaTime();
 		Camera* camera;
+		std::vector<std::unique_ptr<DrawableObject>> objects;
 		vector<DrawableObject*> createForest();
 		vector<DrawableObject*> createTriangleScene();
 		vector<DrawableObject*> createBallsScene();
 		vector<DrawableObject*> createShadersExampleScene();
 		vector<DrawableObject*> createSolarSystemScene();
+		vector<DrawableObject*> createTeren();
 
 		void run();
 

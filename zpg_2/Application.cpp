@@ -4,11 +4,12 @@
 Application::Application() : lastX(400), lastY(300), firstMouse(true) {
 	this->camera = new Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	this->triangle_scene = false;
-	this->forest_scene = true;
+	this->forest_scene = false;
 	this->balls_scene = false;
 	this->skybox_scene = false;
 	this->shaders_example_scene = false;
 	this->solar_scene = false;
+	this->teren_scene = true;
 }
 
 
@@ -298,6 +299,57 @@ vector<DrawableObject*> Application::createSolarSystemScene()
 	return solar_system_objects;
 }
 
+vector<DrawableObject*> Application::createTeren()
+{
+	vector<DrawableObject*> teren_objects;
+	vector<Light*> light_objects;
+
+	Texture* tree_text = new Texture("tree.png", 5);
+	Texture* teren_text = new Texture("grass.png", 6);
+
+	Light* light1 = new Light(
+		glm::vec3(1.0f, 5.0f, 1.0f), // Pozice svìtla
+		glm::vec3(1.0f, 1.0f, 1.0f),  // Èervená barva svìtla
+		glm::vec3(0.0f, 0.0f, 0.0f),  // Smìr (nepoužívá se pro Point Light)
+		0.0f,                         // Cutoff (nepoužívá se)
+		0.0f,                         // Outer cutoff (nepoužívá se)
+		1.0f,                         // Konstantní èlen
+		0.09f,                        // Lineární èlen
+		0.032f,                       // Kvadratický èlen
+		nullptr                       // Kamera (není nutná pro Point Light)
+	);
+
+	light1->type = LIGHT_TYPE_POINT;
+	light_objects.push_back(light1);
+
+	//ShaderProgram* shader = new ShaderProgram("vertex_phong.vert", "test_lights.frag", lights);
+	//ShaderProgram* shader_const = new ShaderProgram("texture_vertex.vert", "fragment_triangle_def.frag");
+	ShaderProgram* shader_texture = new ShaderProgram("texture_vertex.vert", "texture_fragment.frag", light_objects);
+
+	for (Light* light : light_objects)
+	{
+		light->attach(shader_texture);
+	}
+
+
+	// Slunce P
+	DrawableObject* sun_planet = new DrawableObject(new ShaderProgram("texture_vertex.vert", "constant_texture_frag.frag"), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	teren_objects.push_back(sun_planet);
+	this->camera->attach(sun_planet->getShaderProgram());
+
+	Model* sun_model = Model::createLogin("teren.obj");
+	Transformation* transform_login = new Transformation();
+	glm::vec3 translation_login(0.f, 0.f, 0.0f);
+	transform_login->translate(translation_login);
+	transform_login->scale(1.f);
+	sun_planet->addModel(sun_model);
+	sun_planet->addTransformation(transform_login);
+	sun_planet->setTexture(teren_text);
+
+
+	return teren_objects;
+}
+
 
 vector<DrawableObject*> Application::createForest()
 {
@@ -517,6 +569,7 @@ void Application::key_callback(GLFWwindow* window, int key, int scancode, int ac
 		this->shaders_example_scene = false;
 		this->skybox_scene = false;
 		this->solar_scene = false;
+		this->teren_scene = false;
 	}
 	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
 		this->triangle_scene = false;
@@ -524,6 +577,7 @@ void Application::key_callback(GLFWwindow* window, int key, int scancode, int ac
 		this->balls_scene = false;
 		this->shaders_example_scene = false;
 		this->solar_scene = false;
+		this->teren_scene = false;
 	}
 	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
 		this->triangle_scene = false;
@@ -531,6 +585,7 @@ void Application::key_callback(GLFWwindow* window, int key, int scancode, int ac
 		this->balls_scene = true;
 		this->shaders_example_scene = false;
 		this->solar_scene = false;
+		this->teren_scene = false;
 	}
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
 		this->triangle_scene = false;
@@ -538,6 +593,7 @@ void Application::key_callback(GLFWwindow* window, int key, int scancode, int ac
 		this->balls_scene = false;
 		this->shaders_example_scene = true;
 		this->solar_scene = false;
+		this->teren_scene = false;
 	}
 	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
 		this->triangle_scene = false;
@@ -552,6 +608,15 @@ void Application::key_callback(GLFWwindow* window, int key, int scancode, int ac
 		this->balls_scene = false;
 		this->shaders_example_scene = false;
 		this->solar_scene = true;
+		this->teren_scene = false;
+	}
+	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) {
+		this->triangle_scene = false;
+		this->forest_scene = false;
+		this->balls_scene = false;
+		this->shaders_example_scene = false;
+		this->solar_scene = false;
+		this->teren_scene = true;
 	}
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwDestroyWindow(window);
@@ -581,34 +646,84 @@ void Application::button_callback(GLFWwindow* window, int button, int action, in
 	if (action == GLFW_PRESS && button == GLFW_MOUSE_BUTTON_LEFT) {
 		double cursorX, cursorY;
 		glfwGetCursorPos(window, &cursorX, &cursorY);
-
-		GLint x = static_cast<GLint>(cursorX); // na celociselnou hodnotou
+		GLint x = static_cast<GLint>(cursorX);
 		GLint y = static_cast<GLint>(cursorY);
+
 		GLint width, height;
 		glfwGetFramebufferSize(window, &width, &height);
 		GLint newY = height - y;
 
-		// Read stencil, depth, and color buffers
+		// Ètení hloubky a stencil bufferu
 		GLuint index = 0;
-		GLfloat depth = 0.0f;
+		GLfloat depth = 1.0f;  // Výchozí hodnota je 1.0 (maximální hloubka)
+
 		glReadPixels(x, newY, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
 		glReadPixels(x, newY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
 
-		if (index > 0) {
-			// Unproject screen coordinates to world space
-			glm::mat4 view = camera->getViewMatrix();
-			glm::mat4 projection = camera->getProjectionMatrix(45.0f, 0.1f, 100.0f);
-			glm::vec4 viewport = glm::vec4(0, 0, width, height);
-
-			glm::vec3 screenCoords = glm::vec3(x, newY, depth);
-			glm::vec3 worldPos = glm::unProject(screenCoords, view, projection, viewport);
-
-			printf("Clicked on object ID %u at world position [%f, %f, %f]\n", index, worldPos.x, worldPos.y, worldPos.z);
-		
+		// Pokud hloubka není validní, ukonèíme funkci
+		if (depth >= 1.0f) {
+			printf("Invalid depth value: %f\n", depth);
+			return;
 		}
+
+		// Získání aktuálního viewportu
+		GLint viewport[4];
+		glGetIntegerv(GL_VIEWPORT, viewport);
+		glm::vec4 viewportVec(viewport[0], viewport[1], viewport[2], viewport[3]);
+
+		// Pøevod obrazovkových souøadnic na svìtové souøadnice
+		glm::mat4 view = camera->getViewMatrix();
+		glm::mat4 projection = camera->getProjectionMatrix(45.0f, 0.1f, 100.0f);
+
+		glm::vec3 screenCoords = glm::vec3(x, newY, depth);
+		glm::vec3 worldPos = glm::unProject(screenCoords, view, projection, viewportVec);
+
+		printf("Clicked on object ID %u at world position [%f, %f, %f]\n", index, worldPos.x, worldPos.y, worldPos.z);
+		
+		vector<Light*> lights;
+
+		Light* light1 = new Light(
+			glm::vec3(1.0f, 5.0f, 1.0f), // Pozice svìtla
+			glm::vec3(1.0f, 1.0f, 1.0f),  // Èervená barva svìtla
+			glm::vec3(0.0f, 0.0f, 0.0f),  // Smìr (nepoužívá se pro Point Light)
+			0.0f,                         // Cutoff (nepoužívá se)
+			0.0f,                         // Outer cutoff (nepoužívá se)
+			1.0f,                         // Konstantní èlen
+			0.09f,                        // Lineární èlen
+			0.032f,                       // Kvadratický èlen
+			nullptr                       // Kamera (není nutná pro Point Light)
+		);
+
+		light1->type = LIGHT_TYPE_POINT;
+		lights.push_back(light1);
+
+		ShaderProgram* shader_texture = new ShaderProgram("texture_vertex.vert", "texture_fragment.frag", lights);
+
+		for (Light* light : lights)
+		{
+			light->attach(shader_texture);
+		}
+
+		std::unique_ptr<DrawableObject> tree = std::make_unique<DrawableObject>(shader_texture, glm::vec4(0.3f, 0.8f, 0.3f, 1.f));
+
+		Model* treeModel = Model::createLogin("tree.obj");  // Správné naètení modelu
+		if (!treeModel) {
+			printf("Failed to load tree model!\n");
+			return;
+		}
+
+		Transformation* transform_tree = new Transformation();
+		transform_tree->translate(worldPos);
+		transform_tree->scale(0.5f);
+		tree->addModel(treeModel);
+		tree->addTransformation(transform_tree);
+
+		// Pøidání objektu do scény
+		this->objects.push_back(std::move(tree));
+		printf("Tree added at [%f, %f, %f]\n", worldPos.x, worldPos.y, worldPos.z);
+		printf("Total objects: %lu\n", this->objects.size());
 	}
 }
-
 
 void Application::error_callback_static(int error, const char* description) { fputs(description, stderr); }
 
@@ -664,12 +779,14 @@ void Application::run()
 	vector<DrawableObject*> shaders_example_objects_create = createShadersExampleScene();
 	vector<DrawableObject*> solar_system_objects_create = createSolarSystemScene();
 	vector<DrawableObject*> forest_objects_create = createForest();
+	vector<DrawableObject*> teren_obj_create = createTeren();
 	
 	Scene scene_solar_system(solar_system_objects_create);	
 	Scene scene_forest(forest_objects_create);
 	Scene scene_triangle(triangle_objects_create);
 	Scene scene_shaders_example(shaders_example_objects_create);
 	Scene scene_balls(balls_objects_create);
+	Scene scene_teren(teren_obj_create);
 
 	float planetAngle = 0.0f, planetSelfRotation = 0.0f;
 	float moonAngle = 0.0f, moonSelfRotation = 0.0f;
@@ -744,7 +861,7 @@ void Application::run()
 			// moon
 			glm::vec3 moon_center = earth_position;
 
-			float moon_radius = 3.0f;
+			float moon_radius = 1.0f;
 
 			// Výpoèet pozice Marsu na kružnici
 			float moon_x = moon_radius * glm::cos(moon_angle);
@@ -763,6 +880,10 @@ void Application::run()
 			}
 			scene_shaders_example.render(this->camera);
 			shaders_example_objects_create[1]->setSpin(3.0f, 160.0f, glm::vec3(0.0f, 1.0f, 0.0f), 0.016f);
+		}
+
+		if (teren_scene == true) {
+			scene_teren.render(this->camera);
 		}
 		
 		glfwPollEvents();
